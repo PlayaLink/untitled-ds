@@ -1,0 +1,9 @@
+{
+  "name": "Variables Export",
+  "id": "variables-export-local-dev",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "export.html",
+  "editorType": ["figma"],
+  "networkAccess": { "allowedDomains": ["none"] }
+}

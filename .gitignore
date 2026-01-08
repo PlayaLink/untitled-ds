@@ -18,9 +18,13 @@ out/
 # IDE & Editor
 .idea/
 .vscode/
+.cursor/
 *.swp
 *.swo
 .DS_Store
+
+# MCP Configuration (contains API keys)
+.mcp.json
 
 # Debug logs
 npm-debug.log*

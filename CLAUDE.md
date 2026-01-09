@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Read all the rules in /.cursor/rules
+
+When I tell you about important changes to process or workflow, update CLAUDE.md and any relevant Cursor rules. Create new rules in /.cursor/rules as needed. Keep instructions succint.
+
 ## Project Overview
 
 Unified DS is a design system with 1:1 parity between Figma and React code. Components are based on Untitled UI and built with React Aria and Tailwind CSS 4.
@@ -47,10 +51,11 @@ Use `cx()` from `src/utils/cx.ts` for className merging (wraps tailwind-merge).
 
 When given a Figma component link:
 1. Use Figma MCP to fetch component data
-2. Reference Untitled UI CLI for existing React counterpart
-3. Simplify - Untitled UI has many variants; only implement what's needed
-4. Create component with React Aria primitives
-5. Add Storybook story with final "Figma" page linking back to source
+2. Find the matching component in the Untitled UI React Component library. 
+3. Use the Unitled UI CLI to import the component: https://www.untitledui.com/react/docs/cli
+4. Simplify - check the component in Figma and see if any variants or props were removed. Update the component you just imported via the CLI so that we do not have code that is not needed.
+6. Add Storybook story with final "Figma" page linking back to source
+7. Set up Figma Code Connect for the new component.
 
 ## Commit Messages
 

@@ -1,0 +1,7 @@
+{
+  "$description": "Missing tokens discovered during component implementation. Import into Figma Variables to keep design system in sync.",
+  "Spacing": {
+    "2.5": { "$type": "number", "$value": 10 },
+    "3.5": { "$type": "number", "$value": 14 }
+  }
+}

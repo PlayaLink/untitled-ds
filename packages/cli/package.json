@@ -1,6 +1,6 @@
 {
   "name": "untitled-ds",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CLI for Untitled Design System - add components to your project",
   "type": "module",
   "bin": {

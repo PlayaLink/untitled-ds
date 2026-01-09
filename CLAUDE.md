@@ -33,9 +33,9 @@ We will build this design system component by component. When I paste a link to 
 Untitled UI components contain lots of code to represent many variant possibilities in the Untitled UI starter kit file. 
 
 
-## Design Token Workflow
+## Figma Design Token Workflow
 
-### Figma → Code (Export)
+This step is important because we want it to be easy for us to update the foundations of the project (the design tokens => Tailwind config) from our Figma source of truth, i.e. the Unified DS Figma file that we reference above. 
 
 1. Open the design system file in Figma
 2. Run the plugin: Plugins → Development → Variables Export
@@ -44,6 +44,10 @@ Untitled UI components contain lots of code to represent many variant possibilit
 5. Save to `tokens/primitives.tokens.json`
 6. Run: `node scripts/build-tokens.js`
 React components built with Tailwind CSS and React Aria
+
+### Tailwind Usage
+
+The `tailwind.config.js` is pre-configured with all design tokens:
 
 
 
@@ -73,17 +77,6 @@ unified-ds/
     ├── export.html
     └── import.html
 ```
-
-
-### Code → Figma (Import)
-
-1. Use `tokens/colors.tokens.json` (W3C format)
-2. In Figma: Plugins → Development → Variables Export → Import Variables
-3. Paste the JSON content
-
-## Tailwind Usage
-
-The `tailwind.config.js` is pre-configured with all design tokens:
 
 ## Commands
 

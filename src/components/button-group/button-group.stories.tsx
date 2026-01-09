@@ -201,7 +201,7 @@ export const Figma: Story = {
       <div className="text-center">
         <h2 className="text-display-xs font-semibold text-gray-900 mb-2">Figma Source</h2>
         <p className="text-gray-600 mb-6">
-          This component was built from the Unified Design System in Figma.
+          This component was built from the Untitled Design System in Figma.
         </p>
       </div>
       <a

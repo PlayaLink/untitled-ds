@@ -4,7 +4,7 @@
 > **Date:** 2026-01-08
 
 ## Overview
-Implement a Button component with full Figma parity from the Unified Design System.
+Implement a Button component with full Figma parity from the Untitled Design System.
 
 **Figma Source:** https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=18-30003
 

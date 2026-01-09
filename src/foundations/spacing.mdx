@@ -1,0 +1,96 @@
+{/* @figma https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=18-27467 */}
+import { Meta } from '@storybook/blocks'
+
+<Meta title="Foundations/Spacing" />
+
+# Spacing
+
+Spacing tokens provide consistent rhythm and visual hierarchy throughout the design system. All spacing values are based on a 4px grid.
+
+## Spacing Scale
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '48px' }}>
+  {[
+    { token: '0', value: '0px', px: 0 },
+    { token: '0.5', value: '2px', px: 2 },
+    { token: '1', value: '4px', px: 4 },
+    { token: '1.5', value: '6px', px: 6 },
+    { token: '2', value: '8px', px: 8 },
+    { token: '2.5', value: '10px', px: 10 },
+    { token: '3', value: '12px', px: 12 },
+    { token: '3.5', value: '14px', px: 14 },
+    { token: '4', value: '16px', px: 16 },
+    { token: '5', value: '20px', px: 20 },
+    { token: '6', value: '24px', px: 24 },
+    { token: '8', value: '32px', px: 32 },
+    { token: '10', value: '40px', px: 40 },
+    { token: '12', value: '48px', px: 48 },
+    { token: '16', value: '64px', px: 64 },
+    { token: '20', value: '80px', px: 80 },
+    { token: '24', value: '96px', px: 96 },
+  ].map(({ token, value, px }) => (
+    <div key={token} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <code style={{ fontSize: '12px', color: '#717680', width: '40px' }}>{token}</code>
+      <div style={{ width: `${Math.min(px, 200)}px`, height: '24px', backgroundColor: '#7f56d9', borderRadius: '4px', minWidth: px === 0 ? '2px' : undefined }} />
+      <span style={{ fontSize: '14px', color: '#414651' }}>{value}</span>
+    </div>
+  ))}
+</div>
+
+## Extended Scale
+
+For larger layout spacing:
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '48px' }}>
+  {[
+    { token: '32', value: '128px' },
+    { token: '40', value: '160px' },
+    { token: '48', value: '192px' },
+    { token: '56', value: '224px' },
+    { token: '64', value: '256px' },
+    { token: '80', value: '320px' },
+    { token: '96', value: '384px' },
+    { token: '120', value: '480px' },
+    { token: '140', value: '560px' },
+    { token: '160', value: '640px' },
+  ].map(({ token, value }) => (
+    <div key={token} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <code style={{ fontSize: '12px', color: '#717680', width: '40px' }}>{token}</code>
+      <span style={{ fontSize: '14px', color: '#414651' }}>{value}</span>
+    </div>
+  ))}
+</div>
+
+## Usage
+
+Spacing tokens can be used with padding, margin, gap, and dimension utilities:
+
+```jsx
+// Padding
+<div className="p-4" />      // 16px all sides
+<div className="px-6 py-4" /> // 24px horizontal, 16px vertical
+<div className="pt-8" />      // 32px top only
+
+// Margin
+<div className="m-2" />       // 8px all sides
+<div className="mt-4 mb-6" /> // 16px top, 24px bottom
+<div className="mx-auto" />   // auto horizontal centering
+
+// Gap (flexbox/grid)
+<div className="flex gap-4" />  // 16px gap between items
+<div className="grid gap-6" /> // 24px gap between grid items
+
+// Dimensions
+<div className="w-64 h-32" /> // 256px width, 128px height
+```
+
+## Common Patterns
+
+| Use Case | Token | Value |
+|----------|-------|-------|
+| Tight spacing (icons, badges) | 1, 1.5, 2 | 4px, 6px, 8px |
+| Component internal padding | 2, 2.5, 3 | 8px, 10px, 12px |
+| Standard component padding | 3, 4 | 12px, 16px |
+| Section spacing | 6, 8 | 24px, 32px |
+| Large section spacing | 12, 16 | 48px, 64px |
+| Page sections | 20, 24 | 80px, 96px |

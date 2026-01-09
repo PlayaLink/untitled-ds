@@ -1,0 +1,166 @@
+{/* @figma https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=18-8829 */}
+import { Meta } from '@storybook/blocks'
+
+<Meta title="Foundations/Typography" />
+
+# Typography
+
+Typography tokens define the type scale, font weights, and line heights used throughout the design system.
+
+## Font Family
+
+The design system uses **Inter** as the primary typeface for both display and body text.
+
+```css
+font-family: 'Inter', system-ui, sans-serif;
+```
+
+## Type Scale
+
+### Display Sizes
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginBottom: '48px' }}>
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '24px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '72px', lineHeight: '90px', fontWeight: 600 }}>Display 2xl</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>72px / 90px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-display-2xl</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '24px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '60px', lineHeight: '72px', fontWeight: 600 }}>Display xl</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>60px / 72px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-display-xl</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '24px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '48px', lineHeight: '60px', fontWeight: 600 }}>Display lg</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>48px / 60px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-display-lg</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '24px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '36px', lineHeight: '44px', fontWeight: 600 }}>Display md</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>36px / 44px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-display-md</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '24px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '30px', lineHeight: '38px', fontWeight: 600 }}>Display sm</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>30px / 38px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-display-sm</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '24px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '24px', lineHeight: '32px', fontWeight: 600 }}>Display xs</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>24px / 32px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-display-xs</code>
+  </div>
+</div>
+
+### Text Sizes
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '48px' }}>
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '16px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '20px', lineHeight: '30px' }}>Text xl - The quick brown fox jumps over the lazy dog</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>20px / 30px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-xl</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '16px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '18px', lineHeight: '28px' }}>Text lg - The quick brown fox jumps over the lazy dog</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>18px / 28px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-lg</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '16px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '16px', lineHeight: '24px' }}>Text md - The quick brown fox jumps over the lazy dog</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>16px / 24px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-md</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '16px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '14px', lineHeight: '20px' }}>Text sm - The quick brown fox jumps over the lazy dog</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>14px / 20px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-sm</code>
+  </div>
+
+  <div style={{ borderBottom: '1px solid #e9eaeb', paddingBottom: '16px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+      <span style={{ fontSize: '12px', lineHeight: '18px' }}>Text xs - The quick brown fox jumps over the lazy dog</span>
+      <code style={{ fontSize: '12px', color: '#717680' }}>12px / 18px</code>
+    </div>
+    <code style={{ fontSize: '12px', color: '#717680' }}>text-xs</code>
+  </div>
+</div>
+
+## Font Weights
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '48px' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '24px', padding: '16px 0', borderBottom: '1px solid #e9eaeb' }}>
+    <span style={{ fontSize: '24px', fontWeight: 400, width: '300px' }}>Regular</span>
+    <code style={{ fontSize: '12px', color: '#717680' }}>font-regular (400)</code>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '24px', padding: '16px 0', borderBottom: '1px solid #e9eaeb' }}>
+    <span style={{ fontSize: '24px', fontWeight: 500, width: '300px' }}>Medium</span>
+    <code style={{ fontSize: '12px', color: '#717680' }}>font-medium (500)</code>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '24px', padding: '16px 0', borderBottom: '1px solid #e9eaeb' }}>
+    <span style={{ fontSize: '24px', fontWeight: 600, width: '300px' }}>Semibold</span>
+    <code style={{ fontSize: '12px', color: '#717680' }}>font-semibold (600)</code>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '24px', padding: '16px 0', borderBottom: '1px solid #e9eaeb' }}>
+    <span style={{ fontSize: '24px', fontWeight: 700, width: '300px' }}>Bold</span>
+    <code style={{ fontSize: '12px', color: '#717680' }}>font-bold (700)</code>
+  </div>
+</div>
+
+## Usage
+
+```jsx
+// Display text
+<h1 className="text-display-xl font-semibold">Heading</h1>
+<h2 className="text-display-md font-semibold">Subheading</h2>
+
+// Body text
+<p className="text-md font-regular">Body text</p>
+<p className="text-sm font-medium">Small text</p>
+
+// Combining size and weight
+<span className="text-lg font-semibold">Label</span>
+```
+
+## Token Reference
+
+| Token | Size | Line Height | Class |
+|-------|------|-------------|-------|
+| display-2xl | 72px | 90px | `text-display-2xl` |
+| display-xl | 60px | 72px | `text-display-xl` |
+| display-lg | 48px | 60px | `text-display-lg` |
+| display-md | 36px | 44px | `text-display-md` |
+| display-sm | 30px | 38px | `text-display-sm` |
+| display-xs | 24px | 32px | `text-display-xs` |
+| xl | 20px | 30px | `text-xl` |
+| lg | 18px | 28px | `text-lg` |
+| md | 16px | 24px | `text-md` |
+| sm | 14px | 20px | `text-sm` |
+| xs | 12px | 18px | `text-xs` |

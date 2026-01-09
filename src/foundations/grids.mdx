@@ -1,0 +1,163 @@
+{/* @figma https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=18-27957 */}
+import { Meta } from '@storybook/blocks'
+
+<Meta title="Foundations/Grids" />
+
+# Grids & Layout
+
+Layout tokens define container widths, breakpoints, and grid systems for consistent page structure.
+
+## Container Widths
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '48px' }}>
+  {[
+    { token: 'xxs', value: '320px', width: 320 },
+    { token: 'xs', value: '384px', width: 384 },
+    { token: 'sm', value: '480px', width: 480 },
+    { token: 'md', value: '560px', width: 560 },
+    { token: 'lg', value: '640px', width: 640 },
+    { token: 'xl', value: '768px', width: 768 },
+    { token: '2xl', value: '1024px', width: 1024 },
+    { token: '3xl', value: '1280px', width: 1280 },
+    { token: '4xl', value: '1440px', width: 1440 },
+    { token: '5xl', value: '1600px', width: 1600 },
+    { token: '6xl', value: '1920px', width: 1920 },
+  ].map(({ token, value, width }) => (
+    <div key={token} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <code style={{ fontSize: '12px', color: '#717680', width: '48px' }}>{token}</code>
+      <div style={{
+        width: `${Math.min(width / 4, 200)}px`,
+        height: '24px',
+        backgroundColor: '#e9d7fe',
+        border: '1px solid #7f56d9',
+        borderRadius: '4px',
+      }} />
+      <span style={{ fontSize: '14px', color: '#414651' }}>{value}</span>
+    </div>
+  ))}
+</div>
+
+## Max Width Tokens
+
+| Token | Value | Use Case |
+|-------|-------|----------|
+| `container-mobile` | 100% | Mobile full-width |
+| `container-desktop` | 1280px | Desktop max container |
+
+## 12-Column Grid
+
+The design system uses a 12-column grid for flexible layouts:
+
+<div style={{ marginBottom: '48px' }}>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '8px', marginBottom: '24px' }}>
+    {Array.from({ length: 12 }).map((_, i) => (
+      <div key={i} style={{
+        height: '48px',
+        backgroundColor: '#f4ebff',
+        border: '1px solid #d6bbfb',
+        borderRadius: '4px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '12px',
+        color: '#6941c6',
+      }}>
+        {i + 1}
+      </div>
+    ))}
+  </div>
+
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '8px' }}>
+      <div style={{ gridColumn: 'span 12', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>12 cols</div>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '8px' }}>
+      <div style={{ gridColumn: 'span 6', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>6 cols</div>
+      <div style={{ gridColumn: 'span 6', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>6 cols</div>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '8px' }}>
+      <div style={{ gridColumn: 'span 4', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>4 cols</div>
+      <div style={{ gridColumn: 'span 4', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>4 cols</div>
+      <div style={{ gridColumn: 'span 4', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>4 cols</div>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '8px' }}>
+      <div style={{ gridColumn: 'span 3', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>3</div>
+      <div style={{ gridColumn: 'span 3', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>3</div>
+      <div style={{ gridColumn: 'span 3', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>3</div>
+      <div style={{ gridColumn: 'span 3', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>3</div>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '8px' }}>
+      <div style={{ gridColumn: 'span 8', height: '32px', backgroundColor: '#7f56d9', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>8 cols</div>
+      <div style={{ gridColumn: 'span 4', height: '32px', backgroundColor: '#9e77ed', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '12px' }}>4 cols</div>
+    </div>
+  </div>
+</div>
+
+## Usage
+
+```jsx
+// Container with max width
+<div className="max-w-container-desktop mx-auto px-4">
+  {/* Content */}
+</div>
+
+// Fixed width containers
+<div className="w-sm" />   // 480px
+<div className="w-lg" />   // 640px
+<div className="w-2xl" />  // 1024px
+
+// 12-column grid
+<div className="grid grid-cols-12 gap-6">
+  <div className="col-span-8">Main content</div>
+  <div className="col-span-4">Sidebar</div>
+</div>
+
+// Responsive grid
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div>Card 1</div>
+  <div>Card 2</div>
+  <div>Card 3</div>
+</div>
+```
+
+## Common Grid Patterns
+
+### Two Column (8/4)
+```jsx
+<div className="grid grid-cols-12 gap-6">
+  <main className="col-span-12 lg:col-span-8">Content</main>
+  <aside className="col-span-12 lg:col-span-4">Sidebar</aside>
+</div>
+```
+
+### Three Column Equal
+```jsx
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div>Column 1</div>
+  <div>Column 2</div>
+  <div>Column 3</div>
+</div>
+```
+
+### Card Grid
+```jsx
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  {cards.map(card => <Card key={card.id} {...card} />)}
+</div>
+```
+
+## Width Token Reference
+
+| Token | Value | Class |
+|-------|-------|-------|
+| xxs | 320px | `w-xxs` |
+| xs | 384px | `w-xs` |
+| sm | 480px | `w-sm` |
+| md | 560px | `w-md` |
+| lg | 640px | `w-lg` |
+| xl | 768px | `w-xl` |
+| 2xl | 1024px | `w-2xl` |
+| 3xl | 1280px | `w-3xl` |
+| 4xl | 1440px | `w-4xl` |
+| 5xl | 1600px | `w-5xl` |
+| 6xl | 1920px | `w-6xl` |

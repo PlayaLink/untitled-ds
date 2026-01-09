@@ -1,0 +1,115 @@
+{/* @figma https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=18-27870 */}
+import { Meta } from '@storybook/blocks'
+
+<Meta title="Foundations/Radius" />
+
+# Border Radius
+
+Border radius tokens create consistent rounded corners across all components.
+
+## Radius Scale
+
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', marginBottom: '48px' }}>
+  {[
+    { token: 'none', value: '0px', radius: 0 },
+    { token: 'xxs', value: '2px', radius: 2 },
+    { token: 'xs', value: '4px', radius: 4 },
+    { token: 'sm', value: '6px', radius: 6 },
+    { token: 'md', value: '8px', radius: 8 },
+    { token: 'lg', value: '10px', radius: 10 },
+    { token: 'xl', value: '12px', radius: 12 },
+    { token: '2xl', value: '16px', radius: 16 },
+    { token: '3xl', value: '20px', radius: 20 },
+    { token: '4xl', value: '24px', radius: 24 },
+    { token: 'full', value: '9999px', radius: 9999 },
+  ].map(({ token, value, radius }) => (
+    <div key={token} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+      <div style={{
+        width: '80px',
+        height: '80px',
+        backgroundColor: '#7f56d9',
+        borderRadius: token === 'full' ? '50%' : `${radius}px`,
+      }} />
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: '14px', fontWeight: 500, color: '#181d27' }}>{token}</div>
+        <code style={{ fontSize: '12px', color: '#717680' }}>{value}</code>
+      </div>
+    </div>
+  ))}
+</div>
+
+## Visual Comparison
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '48px' }}>
+  {[
+    { token: 'none', value: '0px', radius: 0 },
+    { token: 'xxs', value: '2px', radius: 2 },
+    { token: 'xs', value: '4px', radius: 4 },
+    { token: 'sm', value: '6px', radius: 6 },
+    { token: 'md', value: '8px', radius: 8 },
+    { token: 'lg', value: '10px', radius: 10 },
+    { token: 'xl', value: '12px', radius: 12 },
+    { token: '2xl', value: '16px', radius: 16 },
+    { token: '3xl', value: '20px', radius: 20 },
+    { token: '4xl', value: '24px', radius: 24 },
+  ].map(({ token, value, radius }) => (
+    <div key={token} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <code style={{ fontSize: '12px', color: '#717680', width: '48px' }}>{token}</code>
+      <div style={{
+        flex: 1,
+        maxWidth: '400px',
+        height: '48px',
+        backgroundColor: '#f4ebff',
+        border: '2px solid #7f56d9',
+        borderRadius: `${radius}px`,
+      }} />
+      <span style={{ fontSize: '14px', color: '#414651', width: '60px' }}>{value}</span>
+    </div>
+  ))}
+</div>
+
+## Usage
+
+```jsx
+// Apply border radius
+<div className="rounded-none" />  // 0px
+<div className="rounded-xs" />    // 4px
+<div className="rounded-sm" />    // 6px
+<div className="rounded-md" />    // 8px
+<div className="rounded-lg" />    // 10px
+<div className="rounded-xl" />    // 12px
+<div className="rounded-2xl" />   // 16px
+<div className="rounded-full" />  // 9999px (circle/pill)
+
+// Per-corner radius
+<div className="rounded-t-lg" />  // top corners only
+<div className="rounded-r-xl" />  // right corners only
+<div className="rounded-tl-md" /> // top-left only
+```
+
+## Common Patterns
+
+| Use Case | Token | Value |
+|----------|-------|-------|
+| Sharp corners | `none` | 0px |
+| Subtle rounding | `xxs`, `xs` | 2px, 4px |
+| Buttons, inputs | `lg` | 10px |
+| Cards, modals | `xl`, `2xl` | 12px, 16px |
+| Large containers | `3xl`, `4xl` | 20px, 24px |
+| Pills, avatars | `full` | 9999px |
+
+## Token Reference
+
+| Token | Value | Class |
+|-------|-------|-------|
+| none | 0px | `rounded-none` |
+| xxs | 2px | `rounded-xxs` |
+| xs | 4px | `rounded-xs` |
+| sm | 6px | `rounded-sm` |
+| md | 8px | `rounded-md` |
+| lg | 10px | `rounded-lg` |
+| xl | 12px | `rounded-xl` |
+| 2xl | 16px | `rounded-2xl` |
+| 3xl | 20px | `rounded-3xl` |
+| 4xl | 24px | `rounded-4xl` |
+| full | 9999px | `rounded-full` |

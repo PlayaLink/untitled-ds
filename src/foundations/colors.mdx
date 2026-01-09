@@ -1,0 +1,321 @@
+{/* @figma https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=1-2831 */}
+import { Meta } from '@storybook/blocks'
+
+<Meta title="Foundations/Colors" />
+
+# Colors
+
+The color palette is the foundation of our design system. Colors are defined as design tokens and used consistently across all components.
+
+## Base Colors
+
+<div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+    <div style={{ width: '80px', height: '80px', backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e9eaeb' }} />
+    <span style={{ fontSize: '12px', color: '#535862' }}>White</span>
+    <code style={{ fontSize: '11px' }}>#ffffff</code>
+  </div>
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+    <div style={{ width: '80px', height: '80px', backgroundColor: '#000000', borderRadius: '8px' }} />
+    <span style={{ fontSize: '12px', color: '#535862' }}>Black</span>
+    <code style={{ fontSize: '11px' }}>#000000</code>
+  </div>
+</div>
+
+## Gray
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#fdfdfd' },
+    { name: '50', value: '#fafafa' },
+    { name: '100', value: '#f5f5f5' },
+    { name: '200', value: '#e9eaeb' },
+    { name: '300', value: '#d5d7da' },
+    { name: '400', value: '#a4a7ae' },
+    { name: '500', value: '#717680' },
+    { name: '600', value: '#535862' },
+    { name: '700', value: '#414651' },
+    { name: '800', value: '#252b37' },
+    { name: '900', value: '#181d27' },
+    { name: '950', value: '#0a0d12' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Brand
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#fcfaff' },
+    { name: '50', value: '#f9f5ff' },
+    { name: '100', value: '#f4ebff' },
+    { name: '200', value: '#e9d7fe' },
+    { name: '300', value: '#d6bbfb' },
+    { name: '400', value: '#b692f6' },
+    { name: '500', value: '#9e77ed' },
+    { name: '600', value: '#7f56d9' },
+    { name: '700', value: '#6941c6' },
+    { name: '800', value: '#53389e' },
+    { name: '900', value: '#42307d' },
+    { name: '950', value: '#2c1c5f' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Error
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#fffbfa' },
+    { name: '50', value: '#fef3f2' },
+    { name: '100', value: '#fee4e2' },
+    { name: '200', value: '#fecdca' },
+    { name: '300', value: '#fda29b' },
+    { name: '400', value: '#f97066' },
+    { name: '500', value: '#f04438' },
+    { name: '600', value: '#d92d20' },
+    { name: '700', value: '#b42318' },
+    { name: '800', value: '#912018' },
+    { name: '900', value: '#7a271a' },
+    { name: '950', value: '#55160c' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Warning
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#fffcf5' },
+    { name: '50', value: '#fffaeb' },
+    { name: '100', value: '#fef0c7' },
+    { name: '200', value: '#fedf89' },
+    { name: '300', value: '#fec84b' },
+    { name: '400', value: '#fdb022' },
+    { name: '500', value: '#f79009' },
+    { name: '600', value: '#dc6803' },
+    { name: '700', value: '#b54708' },
+    { name: '800', value: '#93370d' },
+    { name: '900', value: '#7a2e0e' },
+    { name: '950', value: '#4e1d09' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Success
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#f6fef9' },
+    { name: '50', value: '#ecfdf3' },
+    { name: '100', value: '#dcfae6' },
+    { name: '200', value: '#abefc6' },
+    { name: '300', value: '#75e0a7' },
+    { name: '400', value: '#47cd89' },
+    { name: '500', value: '#17b26a' },
+    { name: '600', value: '#079455' },
+    { name: '700', value: '#067647' },
+    { name: '800', value: '#085d3a' },
+    { name: '900', value: '#074d31' },
+    { name: '950', value: '#053321' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Blue
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#f5faff' },
+    { name: '50', value: '#eff8ff' },
+    { name: '100', value: '#d1e9ff' },
+    { name: '200', value: '#b2ddff' },
+    { name: '300', value: '#84caff' },
+    { name: '400', value: '#53b1fd' },
+    { name: '500', value: '#2e90fa' },
+    { name: '600', value: '#1570ef' },
+    { name: '700', value: '#175cd3' },
+    { name: '800', value: '#1849a9' },
+    { name: '900', value: '#194185' },
+    { name: '950', value: '#102a56' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Indigo
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#f5f8ff' },
+    { name: '50', value: '#eef4ff' },
+    { name: '100', value: '#e0eaff' },
+    { name: '200', value: '#c7d7fe' },
+    { name: '300', value: '#a4bcfd' },
+    { name: '400', value: '#8098f9' },
+    { name: '500', value: '#6172f3' },
+    { name: '600', value: '#444ce7' },
+    { name: '700', value: '#3538cd' },
+    { name: '800', value: '#2d31a6' },
+    { name: '900', value: '#2d3282' },
+    { name: '950', value: '#1f235b' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Purple
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#fafaff' },
+    { name: '50', value: '#f4f3ff' },
+    { name: '100', value: '#ebe9fe' },
+    { name: '200', value: '#d9d6fe' },
+    { name: '300', value: '#bdb4fe' },
+    { name: '400', value: '#9b8afb' },
+    { name: '500', value: '#7a5af8' },
+    { name: '600', value: '#6938ef' },
+    { name: '700', value: '#5925dc' },
+    { name: '800', value: '#4a1fb8' },
+    { name: '900', value: '#3e1c96' },
+    { name: '950', value: '#27115f' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Pink
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#fef6fb' },
+    { name: '50', value: '#fdf2fa' },
+    { name: '100', value: '#fce7f6' },
+    { name: '200', value: '#fcceee' },
+    { name: '300', value: '#faa7e0' },
+    { name: '400', value: '#f670c7' },
+    { name: '500', value: '#ee46bc' },
+    { name: '600', value: '#dd2590' },
+    { name: '700', value: '#c11574' },
+    { name: '800', value: '#9e165f' },
+    { name: '900', value: '#851651' },
+    { name: '950', value: '#4e0d30' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Orange
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#fefaf5' },
+    { name: '50', value: '#fef6ee' },
+    { name: '100', value: '#fdead7' },
+    { name: '200', value: '#f9dbaf' },
+    { name: '300', value: '#f7b27a' },
+    { name: '400', value: '#f38744' },
+    { name: '500', value: '#ef6820' },
+    { name: '600', value: '#e04f16' },
+    { name: '700', value: '#b93815' },
+    { name: '800', value: '#932f19' },
+    { name: '900', value: '#772917' },
+    { name: '950', value: '#511c10' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Teal
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  {[
+    { name: '25', value: '#f6fefc' },
+    { name: '50', value: '#f0fdf9' },
+    { name: '100', value: '#ccfbef' },
+    { name: '200', value: '#99f6e0' },
+    { name: '300', value: '#5fe9d0' },
+    { name: '400', value: '#2ed3b7' },
+    { name: '500', value: '#15b79e' },
+    { name: '600', value: '#0e9384' },
+    { name: '700', value: '#107569' },
+    { name: '800', value: '#125d56' },
+    { name: '900', value: '#134e48' },
+    { name: '950', value: '#0a2926' },
+  ].map(({ name, value }) => (
+    <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: '64px', height: '64px', backgroundColor: value, borderRadius: '8px', border: name === '25' || name === '50' ? '1px solid #e9eaeb' : 'none' }} />
+      <span style={{ fontSize: '12px', color: '#535862' }}>{name}</span>
+      <code style={{ fontSize: '10px' }}>{value}</code>
+    </div>
+  ))}
+</div>
+
+## Usage
+
+Colors are available as Tailwind classes:
+
+```jsx
+// Background colors
+<div className="bg-brand-600" />
+<div className="bg-gray-100" />
+<div className="bg-error-500" />
+
+// Text colors
+<span className="text-gray-900" />
+<span className="text-brand-700" />
+
+// Border colors
+<div className="border-gray-200" />
+```
+
+### Semantic Aliases
+
+- `primary` maps to `brand` (e.g., `bg-primary-600`)
+- `destructive` maps to `error` (e.g., `text-destructive-700`)

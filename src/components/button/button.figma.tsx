@@ -6,7 +6,7 @@ import { Button } from './button'
  * Maps Figma component properties to React props
  * @see https://www.figma.com/code-connect-docs/react/
  */
-figma.connect(Button, 'https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=18-30003', {
+figma.connect(Button, 'https://www.figma.com/design/99BhJBqUTbouPjng6udcbz?node-id=18:30003', {
   props: {
     children: figma.string('Label'),
     size: figma.enum('Size', {
@@ -23,12 +23,12 @@ figma.connect(Button, 'https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node
       'Link color': 'link-color',
       'Link gray': 'link-gray',
     }),
-    isDisabled: figma.boolean('State', {
-      true: 'Disabled',
-      false: 'Default',
+    isDisabled: figma.enum('State', {
+      Disabled: true,
     }),
-    iconLeading: figma.boolean('Icon leading'),
-    iconTrailing: figma.boolean('Icon trailing'),
+    isLoading: figma.enum('State', {
+      Loading: true,
+    }),
   },
   example: (props) => <Button {...props} />,
 })

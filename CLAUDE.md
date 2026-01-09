@@ -18,8 +18,10 @@ Unified DS is a design system with 1:1 parity between Figma and React code. Comp
 npm run dev              # Start Storybook on port 6006
 npm run build            # Build Storybook
 npm run build:tokens     # Regenerate CSS from Figma tokens
-npm run figma:publish    # Publish Figma Code Connect
+npm run figma:publish    # Publish Figma Code Connect (requires FIGMA_ACCESS_TOKEN)
 ```
+
+**Note:** `figma:publish` requires `FIGMA_ACCESS_TOKEN` env var. Get the token from `.mcp.json` (figma-api-key).
 
 ## Architecture
 

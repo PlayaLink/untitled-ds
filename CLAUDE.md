@@ -19,9 +19,24 @@ npm run dev              # Start Storybook on port 6006
 npm run build            # Build Storybook
 npm run build:tokens     # Regenerate CSS from Figma tokens
 npm run figma:publish    # Publish Figma Code Connect
+npm run cli:sync         # Sync components to CLI registry
+npm run cli:build        # Sync + build CLI package
 ```
 
 **Note:** `figma:publish` requires `FIGMA_ACCESS_TOKEN` env var. Get the token from `.mcp.json` (figma-api-key).
+
+## CLI Distribution
+
+The `packages/cli/` directory contains a CLI tool that lets users import components into their projects:
+
+```bash
+npx untitled-ds add button       # Add a component
+npx untitled-ds add              # Interactive selection
+npx untitled-ds list             # List available components
+npx untitled-ds init             # Initialize a project
+```
+
+After changing components, run `npm run cli:sync` to update the registry.
 
 ## Architecture
 

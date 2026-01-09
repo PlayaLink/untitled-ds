@@ -1,5 +1,5 @@
 {
-  "name": "unified-ds",
+  "name": "untitled-design-system",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,7 +7,9 @@
     "dev": "storybook dev -p 6006",
     "build": "storybook build",
     "build:tokens": "node scripts/build-tokens.js",
-    "figma:publish": "figma connect publish"
+    "figma:publish": "figma connect publish",
+    "cli:sync": "node scripts/sync-registry.js",
+    "cli:build": "npm run cli:sync && npm run --prefix packages/cli build"
   },
   "dependencies": {
     "react": "^19.1.0",

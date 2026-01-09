@@ -428,6 +428,11 @@ module.exports = {
         '5xl': '1600px',
         '6xl': '1920px',
       },
+      // Shadow tokens from design system
+      boxShadow: {
+        xs: '0px 1px 2px 0px rgba(10, 13, 18, 0.05)',
+        skeumorphic: '0px 1px 2px 0px rgba(10, 13, 18, 0.05), inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05), inset 0px 0px 0px 1px rgba(10, 13, 18, 0.18)',
+      },
     },
   },
   plugins: [],

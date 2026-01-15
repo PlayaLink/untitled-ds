@@ -333,36 +333,6 @@ export const Figma: Story = {
 }
 ```
 
-### 2.3 Code Connect Template: button.figma.tsx
-
-```tsx
-import figma from '@figma/code-connect'
-import { Button } from './button'
-
-figma.connect(
-  Button,
-  'https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=REPLACE_WITH_NODE_ID',
-  {
-    props: {
-      variant: figma.enum('Variant', {
-        Primary: 'primary',
-        Secondary: 'secondary',
-      }),
-      size: figma.enum('Size', {
-        Small: 'sm',
-        Medium: 'md',
-        Large: 'lg',
-      }),
-      children: figma.string('Label'),
-    },
-    example: ({ variant, size, children }) => (
-      <Button variant={variant} size={size}>
-        {children}
-      </Button>
-    ),
-  }
-)
-```
 
 ---
 
@@ -451,10 +421,6 @@ npx untitledui@latest add [component] --path src/components
 - [ ] Add Figma tab as LAST story
 - [ ] Enable autodocs
 
-#### Step 5: Create Code Connect
-- [ ] Create `[component].figma.tsx`
-- [ ] Map Figma properties to props (case-sensitive!)
-- [ ] Add example rendering
 
 #### Step 6: Test
 ```bash
@@ -480,7 +446,6 @@ git commit -m "feat(components): add [component]
 - Import from Untitled UI
 - Strip to match Figma design
 - Add Storybook stories
-- Configure Code Connect"
 ```
 
 ---
@@ -558,7 +523,6 @@ After implementation, verify:
 3. ✅ Props controls work in Storybook UI
 4. ✅ Figma tab shows and links correctly
 5. ✅ `npm run figma:publish` succeeds
-6. ✅ Code snippet appears in Figma Dev Mode
 7. ✅ TypeScript has no errors
 8. ✅ Path aliases resolve (`@/utils/cx`)
 

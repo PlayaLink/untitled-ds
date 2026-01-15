@@ -1,24 +1,39 @@
 {
-  "name": "untitled-design-system",
+  "name": "@playalink/untitled-ds",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./styles/tokens": "./dist/styles/tokens.css",
+    "./styles/globals": "./dist/styles/globals.css",
+    "./tailwind.config": "./tailwind.config.cjs"
+  },
+  "files": [
+    "dist",
+    "tailwind.config.cjs"
+  ],
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build": "storybook build",
-    "build:tokens": "node scripts/build-tokens.js",
-    "figma:publish": "figma connect publish",
-    "cli:sync": "node scripts/sync-registry.js",
-    "cli:build": "npm run cli:sync && npm run --prefix packages/cli build"
+    "build:lib": "vite build",
+    "build:tokens": "node scripts/build-tokens.js"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
     "react-aria-components": "^1.9.0",
     "tailwind-merge": "^3.0.0"
   },
   "devDependencies": {
-    "@figma/code-connect": "^1.2.0",
     "@storybook/addon-essentials": "^8.5.0",
     "@storybook/react": "^8.5.0",
     "@storybook/react-vite": "^8.5.0",
@@ -26,9 +41,12 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "storybook": "^8.5.0",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.8.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "vite-plugin-dts": "^4.5.0"
   }
 }

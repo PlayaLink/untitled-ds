@@ -12,41 +12,65 @@ Untitled Design System is a design system with 1:1 parity between Figma and Reac
 
 **Figma Source:** https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/Unified-Design-System--Untitled-UI-?node-id=1-2831
 
+**NPM Package:** `@playalink/untitled-ds`
+
 ## Commands
 
 ```bash
 npm run dev              # Start Storybook on port 6006
 npm run build            # Build Storybook
+npm run build:lib        # Build library for NPM publishing
 npm run build:tokens     # Regenerate CSS from Figma tokens
-npm run figma:publish    # Publish Figma Code Connect
-npm run cli:sync         # Sync components to CLI registry
-npm run cli:build        # Sync + build CLI package
 ```
 
-**Note:** `figma:publish` requires `FIGMA_ACCESS_TOKEN` env var. Get the token from `.mcp.json` (figma-api-key).
+## NPM Package Distribution
 
-## CLI Distribution
+This design system is distributed as an NPM package. Components are imported as dependencies and cannot be modified by consumers.
 
-The `packages/cli/` directory contains a CLI tool that lets users import components into their projects:
+### Publishing
 
+To publish a new version:
+1. Update version in `package.json`
+2. Commit and push changes
+3. Create and push a git tag: `git tag v0.1.0 && git push origin v0.1.0`
+4. GitHub Actions will automatically build and publish to GitHub Packages
+
+### Consumer Usage
+
+**Installation:**
 ```bash
-npx untitled-ds add button       # Add a component
-npx untitled-ds add              # Interactive selection
-npx untitled-ds list             # List available components
-npx untitled-ds init             # Initialize a project
+npm install @playalink/untitled-ds
 ```
 
-After changing components, run `npm run cli:sync` to update the registry.
+**CSS Setup (in your global CSS file):**
+```css
+@import 'tailwindcss';
+@config '@playalink/untitled-ds/tailwind.config';
+@import '@playalink/untitled-ds/styles/tokens';
+@import '@playalink/untitled-ds/styles/globals';
+@source 'node_modules/@playalink/untitled-ds/dist/**/*.js';
+```
+
+**Component Usage:**
+```typescript
+import { Button, Badge, Tag, ButtonGroup } from '@playalink/untitled-ds'
+
+function App() {
+  return (
+    <Button color="primary" size="md">Click me</Button>
+  )
+}
+```
 
 ## Architecture
 
 ### Design Token Flow
 ```
 Figma Variables → Export Plugin → tokens/primitives.tokens.json → build-tokens.js → src/styles/tokens.css
-                                                                                   → tailwind.config.js (manual)
+                                                                                   → tailwind.config.cjs (manual)
 ```
 
-The `tailwind.config.js` contains the canonical design tokens (colors, spacing, typography, border-radius). When tokens change in Figma:
+The `tailwind.config.cjs` contains the canonical design tokens (colors, spacing, typography, border-radius). When tokens change in Figma:
 1. Export via Plugins → Development → Variables Export
 2. Save JSON to `tokens/primitives.tokens.json`
 3. Run `npm run build:tokens` to regenerate CSS variables
@@ -55,14 +79,13 @@ The `tailwind.config.js` contains the canonical design tokens (colors, spacing, 
 Each component lives in `src/components/<name>/` with:
 - `<name>.tsx` - React Aria component with doc header linking to Untitled UI docs and Figma source
 - `<name>.stories.tsx` - Storybook stories (final story must be "Figma" with link to source)
-- `<name>.figma.tsx` - Figma Code Connect file
 - `index.ts` - Barrel exports
 
 Use `cx()` from `@/utils/cx` for className merging (wraps tailwind-merge). Use `sortCx()` for organizing style objects with Tailwind IntelliSense.
 
 ### Styling
 - Tailwind 4 with `@import 'tailwindcss'` syntax in `src/styles/globals.css`
-- Config reference: `@config '../../tailwind.config.js'`
+- Config reference: `@config '../../tailwind.config.cjs'`
 - Semantic aliases: `primary` (brand), `destructive` (error)
 
 ## Figma to Code Workflow
@@ -74,7 +97,7 @@ When given a Figma component link:
 4. Simplify - remove variants/props not present in our Figma design
 5. Update imports to use `@/utils/cx` and `@/utils/is-react-component`
 6. Create Storybook stories with final "Figma" story linking back to source
-7. Set up Figma Code Connect using component SET node-id (colon format: `18:30003`)
+7. Export component from `src/index.ts`
 
 ## Storybook Stories
 

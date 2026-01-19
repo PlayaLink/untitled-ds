@@ -3,6 +3,7 @@ export { Button, type ButtonProps, type ButtonColor, type ButtonSize, styles as 
 export { CloseButton, type CloseButtonProps, type CloseButtonSize, styles as closeButtonStyles } from './components/close-button'
 export { ButtonGroup, ButtonGroupItem, type ButtonGroupProps, type ButtonGroupItemProps, type ButtonGroupSize, styles as buttonGroupStyles } from './components/button-group'
 export { Badge, type BadgeProps, type BadgeSize, type BadgeType, type BadgeColor, styles as badgeStyles } from './components/badge'
+export { Tag, type TagProps, type TagSize, styles as tagStyles } from './components/tag'
 
 // Utilities
 export { cx, sortCx } from './utils/cx'

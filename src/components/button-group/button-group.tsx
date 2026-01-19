@@ -1,95 +1,146 @@
 /**
  * ButtonGroup component
  * @docs https://www.untitledui.com/react/components/button-groups
- * @figma https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/?node-id=19-1307
+ * @figma https://www.figma.com/design/fDxXGrTItVnXVTWhtx7yuQ/?node-id=19483-6376
  */
 'use client'
 
-import type { FC, PropsWithChildren, ReactNode, RefAttributes } from 'react'
-import { createContext, isValidElement, useContext } from 'react'
-import {
-  ToggleButton as AriaToggleButton,
-  ToggleButtonGroup as AriaToggleButtonGroup,
-  type ToggleButtonGroupProps,
-  type ToggleButtonProps,
-} from 'react-aria-components'
-import { cx } from '@/utils/cx'
+import type { FC, ReactNode } from 'react'
+import { createContext, useContext, isValidElement } from 'react'
+import type { ToggleButtonProps } from 'react-aria-components'
+import { ToggleButton, ToggleButtonGroup as AriaToggleButtonGroup } from 'react-aria-components'
+import { cx, sortCx } from '@/utils/cx'
 import { isReactComponent } from '@/utils/is-react-component'
 
-const styles = {
-  group: 'relative z-0 inline-flex w-max -space-x-px rounded-lg shadow-xs',
+export const styles = sortCx({
+  group: [
+    'inline-flex w-fit overflow-hidden rounded-lg shadow-xs ring-1 ring-gray-300',
+  ].join(' '),
   item: {
-    root: [
-      'group/button-group inline-flex h-max cursor-pointer items-center justify-center bg-base-white font-semibold whitespace-nowrap text-gray-700 shadow-skeumorphic ring-1 ring-gray-300 outline-brand transition duration-100 ease-linear ring-inset',
-      'gap-1.5 px-4 py-2 text-sm first:rounded-l-lg last:rounded-r-lg',
+    base: [
+      'relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap bg-base-white px-4 py-2 text-sm font-semibold text-gray-700 transition duration-100 ease-linear',
+      'outline-none focus-visible:z-10 focus-visible:ring-4 focus-visible:ring-brand-100',
       'hover:bg-gray-50 hover:text-gray-800',
-      'focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2',
+      'selected:bg-gray-50 selected:text-gray-900',
       'disabled:cursor-not-allowed disabled:bg-base-white disabled:text-gray-400',
-      'selected:bg-gray-50 selected:text-gray-800',
+      // Divider between items (all items except last)
+      'border-r border-gray-300 last:border-r-0',
     ].join(' '),
-    iconLeading: 'pl-3.5',
     iconOnly: 'px-3',
+    dot: 'gap-2',
   },
-  icon: 'pointer-events-none size-5 text-gray-500 transition-colors group-hover/button-group:text-gray-600 group-disabled/button-group:text-gray-400',
+  icon: 'pointer-events-none size-5 shrink-0 text-gray-500',
+  iconSelected: 'text-gray-700',
+  dot: 'size-2.5 shrink-0 rounded-full',
+})
+
+// Context to pass group-level state to items
+const ButtonGroupContext = createContext<{
+  selectedValue?: string
+}>({})
+
+export interface ButtonGroupProps {
+  /** The currently selected value */
+  value?: string
+  /** Default selected value (uncontrolled) */
+  defaultValue?: string
+  /** Callback when selection changes */
+  onChange?: (value: string) => void
+  /** Whether selection is disabled */
+  isDisabled?: boolean
+  /** Additional className for the group */
+  className?: string
+  /** ButtonGroup items */
+  children?: ReactNode
 }
 
-const ButtonGroupContext = createContext<{ disabled?: boolean }>({})
+export function ButtonGroup({
+  value,
+  defaultValue,
+  onChange,
+  isDisabled,
+  className,
+  children,
+}: ButtonGroupProps) {
+  return (
+    <AriaToggleButtonGroup
+      selectionMode="single"
+      selectedKeys={value ? [value] : undefined}
+      defaultSelectedKeys={defaultValue ? [defaultValue] : undefined}
+      onSelectionChange={(keys) => {
+        const selected = Array.from(keys)[0] as string
+        onChange?.(selected)
+      }}
+      isDisabled={isDisabled}
+      className={cx(styles.group, className)}
+    >
+      <ButtonGroupContext.Provider value={{ selectedValue: value }}>
+        {children}
+      </ButtonGroupContext.Provider>
+    </AriaToggleButtonGroup>
+  )
+}
 
-export interface ButtonGroupItemProps extends ToggleButtonProps, RefAttributes<HTMLButtonElement> {
+export interface ButtonGroupItemProps extends Omit<ToggleButtonProps, 'className' | 'children'> {
+  /** Unique identifier for this item */
+  value: string
   /** Icon component or element to show before the text */
   iconLeading?: FC<{ className?: string }> | ReactNode
+  /** Dot color for status indicator (renders a colored dot before text) */
+  dotColor?: string
   /** Additional className */
   className?: string
+  /** Item content */
+  children?: ReactNode
 }
 
 export function ButtonGroupItem({
-  iconLeading: IconLeading,
+  value,
   children,
   className,
+  iconLeading: IconLeading,
+  dotColor,
+  isDisabled,
   ...props
-}: PropsWithChildren<ButtonGroupItemProps>) {
-  const context = useContext(ButtonGroupContext)
-
-  const hasIconLeading = Boolean(IconLeading)
-  const hasChildren = Boolean(children)
-  const isIconOnly = hasIconLeading && !hasChildren
+}: ButtonGroupItemProps) {
+  const isIconOnly = (IconLeading && !children) || false
 
   return (
-    <AriaToggleButton
+    <ToggleButton
+      id={value}
+      isDisabled={isDisabled}
+      className={({ isSelected }) =>
+        cx(
+          styles.item.base,
+          isIconOnly && styles.item.iconOnly,
+          dotColor && styles.item.dot,
+          className,
+        )
+      }
       {...props}
-      isDisabled={props.isDisabled || context.disabled}
-      className={cx(
-        styles.item.root,
-        hasIconLeading && hasChildren && styles.item.iconLeading,
-        isIconOnly && styles.item.iconOnly,
-        className,
-      )}
     >
-      {isReactComponent(IconLeading) && <IconLeading className={styles.icon} />}
-      {isValidElement(IconLeading) && IconLeading}
-      {children}
-    </AriaToggleButton>
+      {({ isSelected }) => (
+        <>
+          {/* Dot indicator */}
+          {dotColor && (
+            <span
+              className={styles.dot}
+              style={{ backgroundColor: dotColor }}
+            />
+          )}
+
+          {/* Leading icon */}
+          {isValidElement(IconLeading) && IconLeading}
+          {isReactComponent(IconLeading) && (
+            <IconLeading className={cx(styles.icon, isSelected && styles.iconSelected)} />
+          )}
+
+          {/* Text content */}
+          {children && <span>{children}</span>}
+        </>
+      )}
+    </ToggleButton>
   )
 }
 
-export interface ButtonGroupProps extends Omit<ToggleButtonGroupProps, 'orientation'>, RefAttributes<HTMLDivElement> {
-  /** Disables all items in the group */
-  isDisabled?: boolean
-  /** Additional className */
-  className?: string
-}
-
-export function ButtonGroup({ children, isDisabled, className, ...props }: ButtonGroupProps) {
-  return (
-    <ButtonGroupContext.Provider value={{ disabled: isDisabled }}>
-      <AriaToggleButtonGroup
-        selectionMode="single"
-        isDisabled={isDisabled}
-        className={cx(styles.group, className)}
-        {...props}
-      >
-        {children}
-      </AriaToggleButtonGroup>
-    </ButtonGroupContext.Provider>
-  )
-}
+export type ButtonGroupSize = 'sm' | 'md' | 'lg'

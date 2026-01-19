@@ -38,7 +38,7 @@ const meta: Meta<typeof Button> = {
     // Appearance props - maps to Figma's Size and Hierarchy
     size: {
       control: 'select',
-      options: ['sm', 'md', 'lg', 'xl', '2xl'],
+      options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl'],
       description: 'The size of the button',
       table: { category: 'Appearance' },
     },
@@ -118,7 +118,7 @@ type Story = StoryObj<typeof Button>
 export const Overview: Story = {
   render: () => {
     const colors: ButtonColor[] = ['primary', 'secondary', 'tertiary', 'link-color', 'link-gray']
-    const sizes: ButtonSize[] = ['sm', 'md', 'lg', 'xl', '2xl']
+    const sizes: ButtonSize[] = ['xs', 'sm', 'md', 'lg', 'xl', '2xl']
 
     return (
       <div className="flex flex-col gap-8 px-12 pb-12 pt-8">

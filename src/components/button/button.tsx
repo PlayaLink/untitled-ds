@@ -23,6 +23,10 @@ export const styles = sortCx({
     icon: 'pointer-events-none size-5 shrink-0',
   },
   sizes: {
+    xs: {
+      root: 'gap-0.5 rounded-md px-2 py-1.5 text-sm font-semibold data-icon-only:p-1',
+      linkRoot: 'gap-0.5',
+    },
     sm: {
       root: 'gap-1 rounded-lg px-3 py-2 text-sm font-semibold data-icon-only:p-2',
       linkRoot: 'gap-1',

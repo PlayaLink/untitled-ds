@@ -40,6 +40,16 @@ const meta: Meta<typeof Badge> = {
       description: 'Icon component or element before the label',
       table: { category: 'Icons' },
     },
+    href: {
+      control: 'text',
+      description: 'URL to navigate to (renders as link)',
+      table: { category: 'Interaction' },
+    },
+    onPress: {
+      control: false,
+      description: 'Click handler (renders as button)',
+      table: { category: 'Interaction' },
+    },
     children: {
       name: 'children (Label)',
       control: 'text',
@@ -145,6 +155,27 @@ export const Overview: Story = {
                 <span className="text-xs text-gray-400">{size}</span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Interactive (Links) */}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-gray-500">Interactive (Links)</span>
+          <div className="flex flex-wrap gap-2">
+            <Badge color="brand" href="#brand">Brand Link</Badge>
+            <Badge color="success" href="#success" iconLeading={DotIcon}>Active</Badge>
+            <Badge color="error" href="#error">Error Link</Badge>
+            <Badge type="badge-color" color="purple" href="#purple">Badge Link</Badge>
+          </div>
+        </div>
+
+        {/* Interactive (Buttons) */}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-gray-500">Interactive (Buttons)</span>
+          <div className="flex flex-wrap gap-2">
+            <Badge color="gray" onPress={() => alert('Clicked gray!')}>Click me</Badge>
+            <Badge color="warning" onPress={() => alert('Clicked warning!')} iconLeading={DotIcon}>Pending</Badge>
+            <Badge type="badge-color" color="blue" onPress={() => alert('Clicked blue!')}>Action</Badge>
           </div>
         </div>
       </div>

@@ -227,7 +227,6 @@ export const Overview: Story = {
 // =============================================================================
 
 export const Props: Story = {
-  tags: ['show-panel'],
   args: {
     children: 'Menu Item',
     showCheckbox: false,

@@ -7,6 +7,7 @@ export { Tag, type TagProps, type TagSize, styles as tagStyles } from './compone
 export { Select, type SelectProps, type SelectOption, type SelectSize, styles as selectStyles } from './components/select'
 export { MenuItem, MenuDivider, type MenuItemProps, styles as menuItemStyles } from './components/menu-item'
 export { Dropdown, type DropdownProps, type DropdownTriggerType, styles as dropdownStyles } from './components/dropdown'
+export { InputFigmaMatch, type InputFigmaMatchProps, type InputFigmaMatchSize, styles as inputFigmaMatchStyles } from './components/input-figma-match'
 
 // Utilities
 export { cx, sortCx } from './utils/cx'

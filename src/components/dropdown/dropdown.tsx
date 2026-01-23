@@ -16,6 +16,7 @@ import {
 } from 'react-aria-components'
 import { cx, sortCx } from '@/utils/cx'
 import { isReactComponent } from '@/utils/is-react-component'
+import { Icon } from '@/components/icon'
 
 export const styles = sortCx({
   // Trigger button styles
@@ -40,10 +41,10 @@ export const styles = sortCx({
       'disabled:cursor-not-allowed disabled:opacity-50',
     ].join(' '),
   },
-  // Icon sizes within triggers
+  // Icon styles within triggers
   icon: {
-    trigger: 'size-5 shrink-0',
-    chevron: 'size-5 shrink-0 text-gray-500 transition-transform duration-200 group-data-[open]:rotate-180',
+    trigger: 'shrink-0',
+    chevron: 'shrink-0 text-gray-500 transition-transform duration-200 group-data-[open]:rotate-180',
   },
   // Avatar styles
   avatar: {
@@ -63,46 +64,6 @@ export const styles = sortCx({
     base: 'p-1.5 outline-none',
   },
 })
-
-// Dots vertical icon (for icon trigger type)
-const DotsVerticalIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path
-      d="M10 10.8333C10.4602 10.8333 10.8333 10.4602 10.8333 10C10.8333 9.53976 10.4602 9.16667 10 9.16667C9.53976 9.16667 9.16667 9.53976 9.16667 10C9.16667 10.4602 9.53976 10.8333 10 10.8333Z"
-      stroke="currentColor"
-      strokeWidth="1.67"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M10 5C10.4602 5 10.8333 4.6269 10.8333 4.16667C10.8333 3.70643 10.4602 3.33333 10 3.33333C9.53976 3.33333 9.16667 3.70643 9.16667 4.16667C9.16667 4.6269 9.53976 5 10 5Z"
-      stroke="currentColor"
-      strokeWidth="1.67"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M10 16.6667C10.4602 16.6667 10.8333 16.2936 10.8333 15.8333C10.8333 15.3731 10.4602 15 10 15C9.53976 15 9.16667 15.3731 9.16667 15.8333C9.16667 16.2936 9.53976 16.6667 10 16.6667Z"
-      stroke="currentColor"
-      strokeWidth="1.67"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
-
-// Chevron down icon (for button trigger type)
-const ChevronDownIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path
-      d="M5 7.5L10 12.5L15 7.5"
-      stroke="currentColor"
-      strokeWidth="1.67"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
 
 export type DropdownTriggerType = 'icon' | 'button' | 'avatar'
 
@@ -156,13 +117,13 @@ export function Dropdown({
             return TriggerIcon
           }
         }
-        return <DotsVerticalIcon className={styles.icon.trigger} />
+        return <Icon name="dots-vertical" size="lg" className={styles.icon.trigger} />
       }
       case 'button':
         return (
           <>
             <span>{triggerLabel}</span>
-            <ChevronDownIcon className={styles.icon.chevron} />
+            <Icon name="chevron-down" size="lg" className={styles.icon.chevron} />
           </>
         )
       case 'avatar':

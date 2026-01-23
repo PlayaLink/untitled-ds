@@ -19,6 +19,7 @@ import {
 } from 'react-aria-components'
 import { cx, sortCx } from '@/utils/cx'
 import { isReactComponent } from '@/utils/is-react-component'
+import { Icon, type IconSize } from '@/components/icon'
 
 export type SelectSize = 'sm' | 'md'
 
@@ -69,17 +70,8 @@ export const styles = sortCx({
     sm: 'size-5 shrink-0 rounded-full object-cover',
     md: 'size-6 shrink-0 rounded-full object-cover',
   },
-  // Dot indicator
-  dot: {
-    sm: 'size-2 shrink-0',
-    md: 'size-2.5 shrink-0',
-  },
   // Chevron icon
-  chevron: {
-    base: 'shrink-0 text-gray-500 transition-transform duration-200 group-data-[open]:rotate-180',
-    sm: 'size-5',
-    md: 'size-5',
-  },
+  chevron: 'shrink-0 text-gray-500 transition-transform duration-200 group-data-[open]:rotate-180',
   // Popover dropdown
   popover: {
     base: [
@@ -108,45 +100,18 @@ export const styles = sortCx({
     },
   },
   // Check icon for selected item
-  checkIcon: 'ml-auto size-5 shrink-0 text-brand-600',
+  checkIcon: 'ml-auto shrink-0 text-brand-600',
   // Label
   label: {
     base: 'mb-1.5 block text-sm font-medium text-gray-700',
   },
 })
 
-// Chevron Down Icon
-const ChevronDownIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path
-      d="M5 7.5L10 12.5L15 7.5"
-      stroke="currentColor"
-      strokeWidth="1.67"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
-
-// Check Icon
-const CheckIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <path
-      d="M16.6666 5L7.49998 14.1667L3.33331 10"
-      stroke="currentColor"
-      strokeWidth="1.67"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
-
-// Dot Icon
-const DotIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 8 8" fill="currentColor" aria-hidden="true">
-    <circle cx="4" cy="4" r="4" />
-  </svg>
-)
+// Map select size to icon sizes
+const dotIconSizeMap: Record<SelectSize, IconSize> = {
+  sm: '2xs',  // 8px
+  md: 'xs',   // 10px
+}
 
 export interface SelectProps<T extends object = SelectOption> extends Omit<AriaSelectProps<T>, 'children' | 'className'> {
   /** The size of the select */
@@ -187,16 +152,20 @@ export function Select<T extends object = SelectOption>({
     return null
   }
 
-  const renderOptionContent = (option: SelectOption, iconSize: SelectSize) => {
+  const renderOptionContent = (option: SelectOption, selectSize: SelectSize) => {
     return (
       <>
         {option.avatar && (
-          <img src={option.avatar} alt="" className={styles.avatar[iconSize]} />
+          <img src={option.avatar} alt="" className={styles.avatar[selectSize]} />
         )}
         {option.dot && (
-          <DotIcon className={cx(styles.dot[iconSize], option.dotColor || 'text-gray-500')} />
+          <Icon
+            name="circle"
+            size={dotIconSizeMap[selectSize]}
+            className={option.dotColor || 'text-gray-500'}
+          />
         )}
-        {renderIcon(option.iconLeading, iconSize)}
+        {renderIcon(option.iconLeading, selectSize)}
         <span className="truncate">{option.label}</span>
       </>
     )
@@ -230,7 +199,7 @@ export function Select<T extends object = SelectOption>({
                 return null
               }}
             </AriaSelectValue>
-            <ChevronDownIcon className={cx(styles.chevron.base, styles.chevron[size])} />
+            <Icon name="chevron-down" size="lg" className={styles.chevron} />
           </AriaButton>
           <AriaPopover className={cx(styles.popover.base, popoverClassName)}>
             <AriaListBox className={styles.listBox.base} items={options}>
@@ -245,7 +214,7 @@ export function Select<T extends object = SelectOption>({
                   {({ isSelected }) => (
                     <>
                       {renderOptionContent(option, size)}
-                      {isSelected && <CheckIcon className={styles.checkIcon} />}
+                      {isSelected && <Icon name="check" size="lg" className={styles.checkIcon} />}
                     </>
                   )}
                 </AriaListBoxItem>

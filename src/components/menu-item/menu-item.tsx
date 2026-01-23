@@ -11,6 +11,7 @@ import type { MenuItemProps as AriaMenuItemProps } from 'react-aria-components'
 import { MenuItem as AriaMenuItem } from 'react-aria-components'
 import { cx, sortCx } from '@/utils/cx'
 import { isReactComponent } from '@/utils/is-react-component'
+import { Icon } from '@/components/icon'
 
 export const styles = sortCx({
   common: {
@@ -30,27 +31,6 @@ export const styles = sortCx({
   },
 })
 
-// Checkbox icon (unchecked)
-const CheckboxIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <rect x="0.5" y="0.5" width="15" height="15" rx="3.5" stroke="currentColor" strokeWidth="1" className="text-gray-300" />
-  </svg>
-)
-
-// Checkbox icon (checked)
-const CheckboxCheckedIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="currentColor" stroke="currentColor" strokeWidth="1" className="text-brand-600" />
-    <path
-      d="M11.3333 5.5L6.74998 10.0833L4.66665 8"
-      stroke="white"
-      strokeWidth="1.67"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
-
 export interface MenuItemProps extends Omit<AriaMenuItemProps, 'className' | 'children'> {
   /** Icon component or element to show before the text */
   icon?: FC<{ className?: string }> | ReactNode
@@ -67,7 +47,7 @@ export interface MenuItemProps extends Omit<AriaMenuItemProps, 'className' | 'ch
 }
 
 export function MenuItem({
-  icon: Icon,
+  icon: IconProp,
   showCheckbox,
   isChecked,
   children,
@@ -78,21 +58,21 @@ export function MenuItem({
   const renderIcon = () => {
     if (showCheckbox) {
       return isChecked ? (
-        <CheckboxCheckedIcon className={styles.common.checkbox} />
+        <Icon name="square-check" size="md" className="text-brand-600" />
       ) : (
-        <CheckboxIcon className={styles.common.checkbox} />
+        <Icon name="square" size="md" className="text-gray-300" />
       )
     }
 
-    if (!Icon) return null
+    if (!IconProp) return null
 
-    if (isReactComponent(Icon)) {
-      const IconComponent = Icon
+    if (isReactComponent(IconProp)) {
+      const IconComponent = IconProp
       return <IconComponent className={styles.common.icon} />
     }
 
-    if (isValidElement(Icon)) {
-      return Icon
+    if (isValidElement(IconProp)) {
+      return IconProp
     }
 
     return null
@@ -101,7 +81,7 @@ export function MenuItem({
   return (
     <AriaMenuItem className={cx(styles.common.root, className)} {...props}>
       <div className={styles.common.content}>
-        {(showCheckbox || Icon) && renderIcon()}
+        {(showCheckbox || IconProp) && renderIcon()}
         <span className={styles.common.text}>{children}</span>
       </div>
       {shortcut && <span className={styles.common.shortcut}>{shortcut}</span>}

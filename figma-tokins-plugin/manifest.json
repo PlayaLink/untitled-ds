@@ -5,7 +5,6 @@
   "main": "code.js",
   "ui": "export.html",
   "editorType": ["figma"],
-  "containsWidget": true,
   "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": ["none"]

@@ -124,32 +124,49 @@ function traverseToken({
   }
 }
 
-async function exportToJSON() {
+async function exportToJSON(options = { variables: true, effects: true }) {
   try {
-    const collections = await figma.variables.getLocalVariableCollectionsAsync();
+    const files = [];
+    const messages = [];
 
-    if (!collections || collections.length === 0) {
+    // Export variables
+    if (options.variables) {
+      const collections = await figma.variables.getLocalVariableCollectionsAsync();
+      let totalVariables = 0;
+
+      if (collections && collections.length > 0) {
+        for (const collection of collections) {
+          const collectionFiles = await processCollection(collection);
+          files.push(...collectionFiles);
+          totalVariables += collection.variableIds.length;
+        }
+        messages.push(`${totalVariables} variables from ${collections.length} collection(s)`);
+      }
+    }
+
+    // Export effect styles (shadows, blurs)
+    if (options.effects) {
+      const effectStyles = await figma.getLocalEffectStylesAsync();
+      if (effectStyles && effectStyles.length > 0) {
+        const effectsFile = exportEffectStyles(effectStyles);
+        files.push(effectsFile);
+        messages.push(`${effectStyles.length} effect styles`);
+      }
+    }
+
+    if (files.length === 0) {
       figma.ui.postMessage({
         type: "EXPORT_RESULT",
         files: [],
-        message: "No local variable collections found. Variables from linked libraries cannot be exported - you need to open the library file directly."
+        message: "No tokens found. You may need to open the library file directly."
       });
       return;
-    }
-
-    const files = [];
-    let totalVariables = 0;
-
-    for (const collection of collections) {
-      const collectionFiles = await processCollection(collection);
-      files.push(...collectionFiles);
-      totalVariables += collection.variableIds.length;
     }
 
     figma.ui.postMessage({
       type: "EXPORT_RESULT",
       files,
-      message: `Exported ${totalVariables} variables from ${collections.length} collection(s).`
+      message: `Exported ${messages.join(" and ")}.`
     });
   } catch (error) {
     figma.ui.postMessage({
@@ -158,6 +175,76 @@ async function exportToJSON() {
       message: `Error: ${error.message}`
     });
   }
+}
+
+function exportEffectStyles(effectStyles) {
+  const body = {
+    shadows: {},
+    blurs: {}
+  };
+
+  for (const style of effectStyles) {
+    const name = style.name.replace(/\//g, "-").toLowerCase();
+    const effects = style.effects;
+
+    if (!effects || effects.length === 0) continue;
+
+    // Check the type of the first effect to categorize
+    const firstEffect = effects[0];
+
+    if (firstEffect.type === "DROP_SHADOW" || firstEffect.type === "INNER_SHADOW") {
+      // Convert shadow effects to CSS box-shadow
+      const shadowValues = effects
+        .filter(e => e.type === "DROP_SHADOW" || e.type === "INNER_SHADOW")
+        .filter(e => e.visible !== false)
+        .map(effect => {
+          const inset = effect.type === "INNER_SHADOW" ? "inset " : "";
+          const x = Math.round(effect.offset.x) + "px";
+          const y = Math.round(effect.offset.y) + "px";
+          const blur = Math.round(effect.radius) + "px";
+          const spread = Math.round(effect.spread || 0) + "px";
+          const color = effectColorToRgba(effect.color);
+          return `${inset}${x} ${y} ${blur} ${spread} ${color}`.trim();
+        });
+
+      if (shadowValues.length > 0) {
+        body.shadows[name] = {
+          $type: "shadow",
+          $value: shadowValues.join(", ")
+        };
+      }
+    } else if (firstEffect.type === "LAYER_BLUR" || firstEffect.type === "BACKGROUND_BLUR") {
+      // Convert blur effects to CSS
+      const blurEffect = effects.find(e =>
+        (e.type === "LAYER_BLUR" || e.type === "BACKGROUND_BLUR") && e.visible !== false
+      );
+
+      if (blurEffect) {
+        const blurType = blurEffect.type === "BACKGROUND_BLUR" ? "backdrop-blur" : "blur";
+        body.blurs[name] = {
+          $type: blurType,
+          $value: `${Math.round(blurEffect.radius)}px`
+        };
+      }
+    }
+  }
+
+  return {
+    fileName: "Effects.tokens.json",
+    body
+  };
+}
+
+function effectColorToRgba(color) {
+  const r = Math.round(color.r * 255);
+  const g = Math.round(color.g * 255);
+  const b = Math.round(color.b * 255);
+  const a = color.a !== undefined ? color.a : 1;
+
+  if (a === 1) {
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+  return `rgba(${r}, ${g}, ${b}, ${a.toFixed(4)})`;
 }
 
 async function processCollection({ name, modes, variableIds }) {
@@ -207,7 +294,11 @@ figma.ui.onmessage = async (e) => {
     const { fileName, body } = e;
     importJSONFile({ fileName, body });
   } else if (e.type === "EXPORT") {
-    await exportToJSON();
+    await exportToJSON({ variables: true, effects: true });
+  } else if (e.type === "EXPORT_VARIABLES") {
+    await exportToJSON({ variables: true, effects: false });
+  } else if (e.type === "EXPORT_EFFECTS") {
+    await exportToJSON({ variables: false, effects: true });
   }
 };
 
@@ -217,8 +308,8 @@ figma.showUI(__html__, {
   themeColors: true,
 });
 
-// Auto-export on load
-exportToJSON();
+// Auto-export all on load
+exportToJSON({ variables: true, effects: true });
 
 function rgbToHex({ r, g, b, a }) {
   if (a !== 1) {

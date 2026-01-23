@@ -1,19 +1,40 @@
 // src/components/icon/Icon.tsx
-import type { ComponentProps } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+// Regular (outline) icons - use these for UI icons where available
 import {
-  faCircleQuestion,
+  faCircleQuestion as faCircleQuestionRegular,
+  faEnvelope as faEnvelopeRegular,
+  faCircle as faCircleRegular,
+  faSquare as faSquareRegular,
+  faSquareCheck as faSquareCheckRegular,
+  faUser as faUserRegular,
+  faTrashCan as faTrashCanRegular,
+  faCopy as faCopyRegular,
+  faPenToSquare as faPenToSquareRegular,
+} from '@fortawesome/free-regular-svg-icons'
+// Solid icons - for icons without regular alternatives
+import {
   faCircleInfo,
-  faEnvelope,
   faMagnifyingGlass,
   faDollarSign,
+  faChevronDown,
+  faCheck,
+  faXmark,
+  faEllipsisVertical,
+  faCircle,
+  faPlus,
+  faArrowRight,
+  faGear,
+  faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faCcVisa,
   faCcMastercard,
   faCcAmex,
   faCcDiscover,
+  faFigma,
+  faGithub,
 } from '@fortawesome/free-brands-svg-icons'
 import { cx } from '@/utils/cx'
 
@@ -22,17 +43,36 @@ import { cx } from '@/utils/cx'
 // =============================================================================
 
 const iconMap = {
-  // UI Icons
-  'help-circle': faCircleQuestion,
-  'info-circle': faCircleInfo,
-  'mail': faEnvelope,
-  'search': faMagnifyingGlass,
-  'dollar-sign': faDollarSign,
+  // UI Icons (regular/outline where available, solid otherwise)
+  'help-circle': faCircleQuestionRegular,
+  'info-circle': faCircleInfo, // no regular version available
+  'mail': faEnvelopeRegular,
+  'search': faMagnifyingGlass, // no regular version
+  'dollar-sign': faDollarSign, // no regular version
+  'chevron-down': faChevronDown, // no regular version
+  'check': faCheck, // no regular version
+  'x-close': faXmark, // no regular version
+  'dots-vertical': faEllipsisVertical, // no regular version
+  'circle': faCircleRegular,
+  'circle-solid': faCircle, // keep solid for filled dots
+  'square': faSquareRegular,
+  'square-check': faSquareCheckRegular,
+  'plus': faPlus, // no regular version
+  'arrow-right': faArrowRight, // no regular version
+  'user': faUserRegular,
+  'settings': faGear, // no regular version
+  'trash': faTrashCanRegular,
+  'edit': faPenToSquareRegular,
+  'copy': faCopyRegular,
+  'log-out': faRightFromBracket, // no regular version
   // Payment Icons
   'visa': faCcVisa,
   'mastercard': faCcMastercard,
   'amex': faCcAmex,
   'discover': faCcDiscover,
+  // Brand Icons
+  'figma': faFigma,
+  'github': faGithub,
 } as const satisfies Record<string, IconDefinition>
 
 export type IconName = keyof typeof iconMap
@@ -41,14 +81,28 @@ export type IconName = keyof typeof iconMap
 // Icon Sizes
 // =============================================================================
 
-const iconSizes = {
-  xs: 14,
-  sm: 16,
-  md: 18,
-  lg: 20,
+/**
+ * Icon sizes mapped to Tailwind size classes.
+ *
+ * Design guidelines (from Figma):
+ * - Default icon size: 24px (xl)
+ * - Clean scaling range: 16px - 32px
+ * - Max size: 32px (2xl) - don't scale above this
+ *
+ * Sizes 2xs (8px) and xs (10px) are included for small indicators
+ * like dots, though they fall below the 16px design minimum.
+ */
+const iconSizeClasses = {
+  '2xs': 'size-2',     // 8px - tiny dots
+  'xs': 'size-2.5',    // 10px - small indicators
+  'sm': 'size-3',      // 12px - small icons
+  'md': 'size-4',      // 16px - default
+  'lg': 'size-5',      // 20px - standard UI icons
+  'xl': 'size-6',      // 24px - large icons (Figma default)
+  '2xl': 'size-8',     // 32px - max size per Figma guidelines
 } as const
 
-export type IconSize = keyof typeof iconSizes
+export type IconSize = keyof typeof iconSizeClasses
 
 // =============================================================================
 // Icon Component
@@ -60,15 +114,14 @@ export interface IconProps {
   className?: string
 }
 
-export function Icon({ name, size = 'md', className }: IconProps) {
+export function Icon({ name, size = 'lg', className }: IconProps) {
   const icon = iconMap[name]
-  const pixelSize = iconSizes[size]
+  const sizeClass = iconSizeClasses[size]
 
   return (
     <FontAwesomeIcon
       icon={icon}
-      style={{ width: pixelSize, height: pixelSize }}
-      className={cx('shrink-0', className)}
+      className={cx('shrink-0', sizeClass, className)}
       aria-hidden="true"
     />
   )

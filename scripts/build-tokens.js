@@ -632,11 +632,13 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
     } else if (key.startsWith('border-')) {
       const name = key.replace('border-', '').replace(/_/g, '-');
       semanticCategories.border[name] = varRef;
-    } else if (key.startsWith('fg-')) {
-      const name = key.replace('fg-', '').replace(/_/g, '-');
+    } else if (key.startsWith('foreground-fg-')) {
+      // Keys are like "foreground-fg-quaternary" -> extract "quaternary" for "fg-quaternary" class
+      const name = key.replace('foreground-fg-', '').replace(/_/g, '-');
       semanticCategories.fg[name] = varRef;
-    } else if (key.startsWith('bg-')) {
-      const name = key.replace('bg-', '').replace(/_/g, '-');
+    } else if (key.startsWith('background-bg-')) {
+      // Keys are like "background-bg-primary" -> extract "primary" for "bg-primary" class
+      const name = key.replace('background-bg-', '').replace(/_/g, '-');
       semanticCategories.bg[name] = varRef;
     }
   }
@@ -810,7 +812,7 @@ async function build() {
   console.log('\nDone! Your design tokens are ready.');
   console.log('\nNext steps:');
   console.log('1. Import tokens.css in your app: @import "./styles/tokens.css"');
-  console.log('2. The tailwind.config.js will use the generated tailwind-tokens.cjs');
+  console.log('2. The tailwind.config.cjs uses the generated tailwind-tokens.cjs');
   console.log('3. Toggle dark mode with: document.documentElement.dataset.theme = "dark"');
 }
 

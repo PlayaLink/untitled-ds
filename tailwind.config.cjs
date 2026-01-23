@@ -1,22 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
-// Generated design tokens from Figma
+// Generated design tokens from Figma (see scripts/build-tokens.js)
 const tokens = require('./src/styles/tailwind-tokens.cjs');
-
-// Manual typography tokens (not yet exported from Figma)
-const fontSize = {
-  xs: ['12px', { lineHeight: '18px' }],
-  sm: ['14px', { lineHeight: '20px' }],
-  md: ['16px', { lineHeight: '24px' }],
-  lg: ['18px', { lineHeight: '28px' }],
-  xl: ['20px', { lineHeight: '30px' }],
-  'display-xs': ['24px', { lineHeight: '32px' }],
-  'display-sm': ['30px', { lineHeight: '38px' }],
-  'display-md': ['36px', { lineHeight: '44px' }],
-  'display-lg': ['48px', { lineHeight: '60px' }],
-  'display-xl': ['60px', { lineHeight: '72px' }],
-  'display-2xl': ['72px', { lineHeight: '90px' }],
-};
 
 module.exports = {
   content: [
@@ -25,25 +10,12 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    colors: {
-      ...tokens.colors,
-      // Semantic color aliases
-      primary: tokens.colors.brand,
-      destructive: tokens.colors.error,
-    },
+    colors: tokens.colors,
     spacing: tokens.spacing,
     borderRadius: tokens.borderRadius,
-    fontSize,
-    fontFamily: {
-      display: ['Inter', 'system-ui', 'sans-serif'],
-      body: ['Inter', 'system-ui', 'sans-serif'],
-    },
-    fontWeight: {
-      regular: '400',
-      medium: '500',
-      semibold: '600',
-      bold: '700',
-    },
+    fontSize: tokens.fontSize,
+    fontFamily: tokens.fontFamily,
+    fontWeight: tokens.fontWeight,
     extend: {
       // Container max widths from design system
       maxWidth: {
@@ -52,10 +24,31 @@ module.exports = {
       },
       // Width utilities from design system (generated)
       width: tokens.width,
-      // Shadow tokens from design system (manual until exported)
+      // Shadow tokens from Figma (Effects.tokens.json)
       boxShadow: {
         xs: '0px 1px 2px 0px rgba(10, 13, 18, 0.05)',
-        skeumorphic: '0px 1px 2px 0px rgba(10, 13, 18, 0.05), inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05), inset 0px 0px 0px 1px rgba(10, 13, 18, 0.18)',
+        'xs-skeuomorphic': '0px 1px 2px 0px rgba(10, 13, 18, 0.05), inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05), inset 0px 0px 0px 1px rgba(10, 13, 18, 0.18)',
+        sm: '0px 1px 2px -1px rgba(10, 13, 18, 0.1), 0px 1px 3px 0px rgba(10, 13, 18, 0.1)',
+        md: '0px 2px 4px -2px rgba(10, 13, 18, 0.06), 0px 4px 6px -1px rgba(10, 13, 18, 0.1)',
+        lg: '0px 2px 2px -1px rgba(10, 13, 18, 0.04), 0px 4px 6px -2px rgba(10, 13, 18, 0.03), 0px 12px 16px -4px rgba(10, 13, 18, 0.08)',
+        xl: '0px 3px 3px -1px rgba(10, 13, 18, 0.04), 0px 8px 8px -4px rgba(10, 13, 18, 0.03), 0px 20px 24px -4px rgba(10, 13, 18, 0.08)',
+        '2xl': '0px 4px 4px -2px rgba(10, 13, 18, 0.04), 0px 24px 48px -12px rgba(10, 13, 18, 0.18)',
+        '3xl': '0px 5px 5px -2px rgba(10, 13, 18, 0.04), 0px 32px 64px -12px rgba(10, 13, 18, 0.14)',
+        // Focus rings
+        'focus-ring': '0px 0px 0px 4px rgb(158, 119, 237), 0px 0px 0px 2px rgb(255, 255, 255)',
+        'focus-ring-xs': '0px 0px 0px 4px rgb(158, 119, 237), 0px 0px 0px 2px rgb(255, 255, 255), 0px 1px 2px 0px rgba(10, 13, 18, 0.05)',
+        'focus-ring-xs-skeuomorphic': '0px 0px 0px 4px rgb(158, 119, 237), 0px 0px 0px 2px rgb(255, 255, 255), 0px 1px 2px 0px rgba(10, 13, 18, 0.05), inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05), inset 0px 0px 0px 1px rgba(10, 13, 18, 0.18)',
+        'focus-ring-sm': '0px 0px 0px 4px rgb(158, 119, 237), 0px 0px 0px 2px rgb(255, 255, 255), 0px 1px 2px 0px rgba(10, 13, 18, 0.1), 0px 1px 3px 0px rgba(10, 13, 18, 0.1)',
+        'focus-ring-error': '0px 0px 0px 4px rgb(240, 68, 56), 0px 0px 0px 2px rgb(255, 255, 255)',
+        'focus-ring-error-xs': '0px 0px 0px 4px rgb(240, 68, 56), 0px 0px 0px 2px rgb(255, 255, 255), 0px 1px 2px 0px rgba(10, 13, 18, 0.05)',
+        'focus-ring-error-xs-skeuomorphic': '0px 0px 0px 4px rgb(240, 68, 56), 0px 0px 0px 2px rgb(255, 255, 255), 0px 1px 2px 0px rgba(10, 13, 18, 0.05), inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05), inset 0px 0px 0px 1px rgba(10, 13, 18, 0.18)',
+      },
+      // Backdrop blur tokens from Figma
+      backdropBlur: {
+        sm: '8px',
+        md: '16px',
+        lg: '24px',
+        xl: '40px',
       },
     },
   },

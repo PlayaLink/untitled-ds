@@ -26,10 +26,16 @@
     gap: var(--spacing);
   }
 
+  .button-row {
+    display: flex;
+    gap: var(--spacing);
+  }
+
   button {
     appearance: none;
     border-radius: 4px;
     padding: var(--spacing);
+    flex: 1;
   }
 
   textarea {
@@ -62,24 +68,62 @@
       Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
       sans-serif;
     font-weight: bold;
+    cursor: pointer;
   }
 
-  #export {
+  button:hover {
+    opacity: 0.9;
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  #export-variables {
     background-color: var(--figma-color-bg-component);
+  }
+
+  #export-effects {
+    background-color: var(--figma-color-bg-component);
+  }
+
+  #download {
+    background-color: var(--figma-color-bg-success);
+  }
+
+  .status {
+    font-size: 0.85rem;
+    color: var(--figma-color-text-secondary);
+    padding: 0.4rem 0;
   }
 </style>
 <main>
-  <button id="export" type="button">Export Variables</button>
+  <div class="button-row">
+    <button id="export-variables" type="button">Export Variables</button>
+    <button id="export-effects" type="button">Export Effects</button>
+  </div>
+  <div class="button-row">
+    <button id="export-all" type="button">Export All</button>
+    <button id="download" type="button" disabled>Download JSON</button>
+  </div>
+  <div class="status" id="status"></div>
   <textarea
-    placeholder="Exported variables will render here..."
+    placeholder="Exported tokens will render here..."
     readonly
   ></textarea>
 </main>
 <script>
+  let currentFiles = [];
+
   window.onmessage = ({ data: { pluginMessage } }) => {
     if (pluginMessage.type === "EXPORT_RESULT") {
       const textarea = document.querySelector("textarea");
+      const downloadBtn = document.getElementById("download");
+      const status = document.getElementById("status");
       const { files, message } = pluginMessage;
+
+      currentFiles = files || [];
 
       if (files && files.length > 0) {
         const output = files
@@ -88,14 +132,50 @@
               `/* ${fileName} */\n\n${JSON.stringify(body, null, 2)}`
           )
           .join("\n\n\n");
-        textarea.value = message ? `/* ${message} */\n\n${output}` : output;
+        textarea.value = output;
+        status.textContent = message || "";
+        downloadBtn.disabled = false;
       } else {
-        textarea.value = message || "No variables found to export.";
+        textarea.value = message || "No tokens found to export.";
+        status.textContent = "";
+        downloadBtn.disabled = true;
       }
     }
   };
-  document.getElementById("export").addEventListener("click", () => {
-    document.querySelector("textarea").value = "Exporting...";
+
+  document.getElementById("export-variables").addEventListener("click", () => {
+    document.querySelector("textarea").value = "Exporting variables...";
+    document.getElementById("status").textContent = "";
+    parent.postMessage({ pluginMessage: { type: "EXPORT_VARIABLES" } }, "*");
+  });
+
+  document.getElementById("export-effects").addEventListener("click", () => {
+    document.querySelector("textarea").value = "Exporting effects...";
+    document.getElementById("status").textContent = "";
+    parent.postMessage({ pluginMessage: { type: "EXPORT_EFFECTS" } }, "*");
+  });
+
+  document.getElementById("export-all").addEventListener("click", () => {
+    document.querySelector("textarea").value = "Exporting all tokens...";
+    document.getElementById("status").textContent = "";
     parent.postMessage({ pluginMessage: { type: "EXPORT" } }, "*");
+  });
+
+  document.getElementById("download").addEventListener("click", () => {
+    if (currentFiles.length === 0) return;
+
+    currentFiles.forEach(({ fileName, body }) => {
+      const blob = new Blob([JSON.stringify(body, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
   });
 </script>

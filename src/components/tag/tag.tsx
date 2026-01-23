@@ -11,6 +11,7 @@ import type { ButtonProps as AriaButtonProps } from 'react-aria-components'
 import { Button as AriaButton, Checkbox as AriaCheckbox } from 'react-aria-components'
 import { cx, sortCx } from '@/utils/cx'
 import { isReactComponent } from '@/utils/is-react-component'
+import { Icon, type IconSize } from '@/components/icon'
 
 export type TagSize = 'sm' | 'md' | 'lg'
 
@@ -59,38 +60,12 @@ export const styles = sortCx({
   },
 })
 
-// X Close Icon
-const XCloseIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <path
-      d="M9 3L3 9M3 3L9 9"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
-
-// Checkbox Check Icon
-const CheckIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <path
-      d="M10 3L4.5 8.5L2 6"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
-
-// Dot Icon (for status indicators)
-const DotIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 8 8" fill="currentColor" aria-hidden="true">
-    <circle cx="4" cy="4" r="3" />
-  </svg>
-)
+// Map tag size to icon sizes
+const iconSizeMap: Record<TagSize, IconSize> = {
+  sm: 'sm',   // 12px
+  md: 'md',   // 16px
+  lg: 'lg',   // 20px
+}
 
 export interface TagProps extends Omit<AriaButtonProps, 'className' | 'children' | 'type'> {
   /** The size of the tag */
@@ -149,7 +124,7 @@ export function Tag({
       return <img src={avatar} alt={avatarAlt} className={styles.avatar[size]} />
     }
     if (dot) {
-      return <DotIcon className={cx(styles.size[size].icon, dotColor)} />
+      return <Icon name="circle" size={iconSizeMap[size]} className={dotColor} />
     }
     if (isReactComponent(IconLeading)) {
       return <IconLeading className={cx(styles.size[size].icon, styles.icon)} />
@@ -172,7 +147,7 @@ export function Tag({
             checked ? styles.checkbox.checked : styles.checkbox.unchecked,
           )}
         >
-          {checked && <CheckIcon className="size-2.5 text-base-white" />}
+          {checked && <Icon name="check" size="xs" className="text-base-white" />}
         </AriaCheckbox>
       )}
       {renderIcon()}
@@ -188,7 +163,7 @@ export function Tag({
           className={cx(styles.closeButton, styles.size[size].closeButton)}
           aria-label="Remove tag"
         >
-          <XCloseIcon className="size-3" />
+          <Icon name="x-close" size="sm" />
         </button>
       )}
     </>

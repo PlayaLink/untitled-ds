@@ -170,7 +170,7 @@ export const Overview: Story = {
             />
             <InputGroup
               label="Price"
-              prefix="USD"
+              leadingAddon={<InputGroup.Prefix className="whitespace-nowrap">USD $</InputGroup.Prefix>}
               trailingAddon={<InputGroup.Prefix>.00</InputGroup.Prefix>}
               placeholder="100"
             />

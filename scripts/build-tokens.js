@@ -720,6 +720,20 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
   for (const [key, value] of Object.entries(semanticCategories.fg)) {
     textColor[`fg-${key}`] = value;
   }
+  // Add component text colors (tokens ending with -text or -supporting-text)
+  // e.g., components-tooltips-tooltip-supporting-text -> text-tooltip-supporting-text
+  for (const [key, value] of Object.entries(lightSemanticColors)) {
+    if (key.startsWith('components-') && key.endsWith('-text')) {
+      // Extract the meaningful part: "components-tooltips-tooltip-supporting-text" -> "tooltip-supporting-text"
+      const parts = key.split('-');
+      // Find the last occurrence of a component-specific name (skip "components" and category like "tooltips")
+      const componentIndex = parts.findIndex((p, i) => i > 1 && parts.slice(i).join('-').endsWith('-text'));
+      if (componentIndex > 0) {
+        const shortKey = parts.slice(componentIndex).join('-');
+        textColor[shortKey] = `var(--color-${key})`;
+      }
+    }
+  }
 
   // Map semantic background colors to backgroundColor
   for (const [key, value] of Object.entries(semanticCategories.bg)) {

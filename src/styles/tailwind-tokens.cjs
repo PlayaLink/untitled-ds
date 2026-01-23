@@ -614,7 +614,8 @@ module.exports = {
   'fg-warning-primary': 'var(--color-fg-warning-primary)',
   'fg-warning-secondary': 'var(--color-fg-warning-secondary)',
   'fg-success-primary': 'var(--color-fg-success-primary)',
-  'fg-success-secondary': 'var(--color-fg-success-secondary)'
+  'fg-success-secondary': 'var(--color-fg-success-secondary)',
+  'tooltip-supporting-text': 'var(--color-components-tooltips-tooltip-supporting-text)'
 },
 
   backgroundColor: {

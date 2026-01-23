@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Checkbox, type CheckboxSize } from './checkbox'
+import { Checkbox, CheckboxBase, type CheckboxSize, type CheckboxType } from './checkbox'
 import { Button } from '@/components/button'
 import { createIcon } from '@/components/icon'
 
@@ -80,9 +80,23 @@ type Story = StoryObj<typeof Checkbox>
 export const Overview: Story = {
   render: () => {
     const sizes: CheckboxSize[] = ['sm', 'md']
+    const types: CheckboxType[] = ['checkbox', 'radio']
 
     return (
       <div className="flex flex-col gap-8 px-12 pb-12 pt-8">
+        {/* Type */}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-gray-500">Type (CheckboxBase)</span>
+          <div className="flex items-center gap-8">
+            {types.map((type) => (
+              <div key={type} className="flex flex-col items-center gap-2">
+                <CheckboxBase type={type} isSelected />
+                <span className="text-xs text-gray-400">{type}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Size */}
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium text-gray-500">Size</span>
@@ -131,6 +145,30 @@ export const Overview: Story = {
               <Checkbox isDisabled isIndeterminate />
               <span className="text-xs text-gray-400">Indeterminate</span>
             </div>
+          </div>
+        </div>
+
+        {/* CheckboxBase Type Comparison */}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-gray-500">CheckboxBase Type Comparison</span>
+          <div className="grid grid-cols-2 gap-4">
+            {types.map((type) => (
+              <div key={type} className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4">
+                <span className="text-xs font-medium text-gray-500">{type}</span>
+                <div className="flex items-center gap-6">
+                  {sizes.map((size) => (
+                    <div key={size} className="flex flex-col items-center gap-2">
+                      <div className="flex items-center gap-3">
+                        <CheckboxBase type={type} size={size} isSelected={false} />
+                        <CheckboxBase type={type} size={size} isSelected />
+                        {type === 'checkbox' && <CheckboxBase type={type} size={size} isIndeterminate />}
+                      </div>
+                      <span className="text-xs text-gray-400">{size}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

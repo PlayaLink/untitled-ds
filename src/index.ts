@@ -15,7 +15,7 @@ export { PaymentInput, formatCardNumber, type PaymentInputProps } from './compon
 export { Label, type LabelProps } from './components/input'
 export { HintText, type HintTextProps } from './components/input'
 export { Toggle, ToggleBase, type ToggleProps, type ToggleSize, type ToggleType, styles as toggleStyles } from './components/toggle'
-export { Checkbox, CheckboxBase, type CheckboxProps, type CheckboxSize, styles as checkboxStyles } from './components/checkbox'
+export { Checkbox, CheckboxBase, type CheckboxProps, type CheckboxSize, type CheckboxType, styles as checkboxStyles } from './components/checkbox'
 
 // Utilities
 export { cx, sortCx } from './utils/cx'

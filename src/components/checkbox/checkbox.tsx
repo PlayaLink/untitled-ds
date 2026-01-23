@@ -14,7 +14,7 @@ export const styles = sortCx({
     wrapper: 'group flex items-start gap-2 cursor-pointer',
     wrapperDisabled: 'cursor-not-allowed',
     box: [
-      'flex items-center justify-center shrink-0 rounded border border-primary bg-primary',
+      'flex items-center justify-center shrink-0 border border-primary bg-primary',
       'transition-colors duration-150 ease-linear',
     ].join(' '),
     boxHover: 'group-hover:bg-primary-hover group-hover:border-primary-hover',
@@ -23,13 +23,24 @@ export const styles = sortCx({
     boxDisabled: 'bg-disabled border-disabled cursor-not-allowed',
     boxDisabledSelected: 'bg-disabled border-disabled',
     boxFocused: 'outline-2 outline-offset-2 outline-focus-ring',
-    checkIcon: 'text-fg-white',
-    checkIconDisabled: 'text-fg-disabled_subtle',
+    icon: 'text-fg-white',
+    iconDisabled: 'text-fg-disabled_subtle',
+  },
+  types: {
+    checkbox: {
+      sm: { box: 'rounded' },
+      md: { box: 'rounded-md' },
+    },
+    radio: {
+      sm: { box: 'rounded-full' },
+      md: { box: 'rounded-full' },
+    },
   },
   sizes: {
     sm: {
-      box: 'w-4 h-4 rounded',
-      checkIcon: 'w-3 h-3',
+      box: 'w-4 h-4',
+      icon: 'w-3 h-3',
+      radioDot: 'w-1.5 h-1.5',
       text: {
         root: 'gap-2',
         label: 'text-sm font-medium',
@@ -37,8 +48,9 @@ export const styles = sortCx({
       },
     },
     md: {
-      box: 'w-5 h-5 rounded-md',
-      checkIcon: 'w-3.5 h-3.5',
+      box: 'w-5 h-5',
+      icon: 'w-3.5 h-3.5',
+      radioDot: 'w-2 h-2',
       text: {
         root: 'gap-3',
         label: 'text-md font-medium',
@@ -49,6 +61,7 @@ export const styles = sortCx({
 })
 
 export type CheckboxSize = keyof typeof styles.sizes
+export type CheckboxType = keyof typeof styles.types
 
 const CheckIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -68,7 +81,12 @@ const MinusIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
+const RadioDot = ({ className }: { className?: string }) => (
+  <div className={cx('rounded-full bg-current', className)} />
+)
+
 interface CheckboxBaseProps {
+  type?: CheckboxType
   size?: CheckboxSize
   className?: string
   isHovered?: boolean
@@ -80,6 +98,7 @@ interface CheckboxBaseProps {
 
 export const CheckboxBase = ({
   className,
+  type = 'checkbox',
   isHovered,
   isDisabled,
   isFocusVisible,
@@ -88,6 +107,7 @@ export const CheckboxBase = ({
   size = 'sm',
 }: CheckboxBaseProps) => {
   const sizeStyles = styles.sizes[size]
+  const typeStyles = styles.types[type][size]
   const isChecked = isSelected || isIndeterminate
 
   return (
@@ -95,6 +115,7 @@ export const CheckboxBase = ({
       className={cx(
         styles.common.box,
         sizeStyles.box,
+        typeStyles.box,
         !isDisabled && !isChecked && isHovered && styles.common.boxHover,
         isChecked && !isDisabled && styles.common.boxSelected,
         isChecked && !isDisabled && isHovered && styles.common.boxSelectedHover,
@@ -106,20 +127,28 @@ export const CheckboxBase = ({
     >
       {isChecked && (
         <>
-          {isIndeterminate ? (
+          {type === 'radio' ? (
+            <RadioDot
+              className={cx(
+                styles.common.icon,
+                sizeStyles.radioDot,
+                isDisabled && styles.common.iconDisabled,
+              )}
+            />
+          ) : isIndeterminate ? (
             <MinusIcon
               className={cx(
-                styles.common.checkIcon,
-                sizeStyles.checkIcon,
-                isDisabled && styles.common.checkIconDisabled,
+                styles.common.icon,
+                sizeStyles.icon,
+                isDisabled && styles.common.iconDisabled,
               )}
             />
           ) : (
             <CheckIcon
               className={cx(
-                styles.common.checkIcon,
-                sizeStyles.checkIcon,
-                isDisabled && styles.common.checkIconDisabled,
+                styles.common.icon,
+                sizeStyles.icon,
+                isDisabled && styles.common.iconDisabled,
               )}
             />
           )}

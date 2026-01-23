@@ -1,4 +1,5 @@
 {
+  "primitives": {
     "Colors": {
       "Base": {
         "white": {
@@ -1695,12 +1696,8 @@
         "$value": 1920
       }
     }
-  }
-  
-  
-  /* 1. Color modes.Light mode.tokens.json */
-  
-  {
+  },
+  "lightMode": {
     "Colors": {
       "Text": {
         "text-primary (900)": {
@@ -3001,12 +2998,8 @@
         }
       }
     }
-  }
-  
-  
-  /* 1. Color modes.Dark mode.tokens.json */
-  
-  {
+  },
+  "darkMode": {
     "Colors": {
       "Text": {
         "text-primary (900)": {
@@ -4307,12 +4300,8 @@
         }
       }
     }
-  }
-  
-  
-  /* 5. Containers.Value.tokens.json */
-  
-  {
+  },
+  "containers": {
     "container-padding-mobile": {
       "$type": "number",
       "$value": "{Spacing.4 (16px)}"
@@ -4325,12 +4314,8 @@
       "$type": "number",
       "$value": "{Spacing.320 (1,280px)}"
     }
-  }
-  
-  
-  /* 4. Widths.Mode 1.tokens.json */
-  
-  {
+  },
+  "widths": {
     "width-xxs": {
       "$type": "number",
       "$value": "{Spacing.80 (320px)}"
@@ -4379,12 +4364,8 @@
       "$type": "number",
       "$value": "{Spacing.180 (720px)}"
     }
-  }
-  
-  
-  /* 3. Spacing.Mode 1.tokens.json */
-  
-  {
+  },
+  "spacing": {
     "spacing-none": {
       "$type": "number",
       "$value": "{Spacing.0 (0px)}"
@@ -4453,12 +4434,8 @@
       "$type": "number",
       "$value": "{Spacing.40 (160px)}"
     }
-  }
-  
-  
-  /* 2. Radius.Mode 1.tokens.json */
-  
-  {
+  },
+  "radius": {
     "radius-none": {
       "$type": "number",
       "$value": 0
@@ -4503,12 +4480,8 @@
       "$type": "number",
       "$value": 9999
     }
-  }
-  
-  
-  /* 6. Typography.Value.tokens.json */
-  
-  {
+  },
+  "typography": {
     "Font family": {
       "font-family-display": {
         "$type": "string",
@@ -4646,3 +4619,4 @@
       }
     }
   }
+}

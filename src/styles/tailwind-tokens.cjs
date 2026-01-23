@@ -734,6 +734,15 @@ module.exports = {
 },
 
   width: {
+  auto: 'auto',
+  full: '100%',
+  screen: '100vw',
+  svw: '100svw',
+  lvw: '100lvw',
+  dvw: '100dvw',
+  min: 'min-content',
+  max: 'max-content',
+  fit: 'fit-content',
   xxs: '320px',
   xs: '384px',
   sm: '480px',
@@ -748,11 +757,54 @@ module.exports = {
   'paragraph-max-width': '720px'
 },
 
+  // CSS intrinsic sizing values for height - Tailwind defaults that must be preserved
+  height: {
+    auto: 'auto',
+    full: '100%',
+    screen: '100vh',
+    svh: '100svh',
+    lvh: '100lvh',
+    dvh: '100dvh',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  },
+
+  // CSS intrinsic sizing values for min/max dimensions
+  minWidth: {
+    full: '100%',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  },
+
   maxWidth: {
   'container-padding-mobile': '16px',
   'container-padding-desktop': '32px',
   'container-max-width-desktop': '1280px'
 },
+
+  minHeight: {
+    full: '100%',
+    screen: '100vh',
+    svh: '100svh',
+    lvh: '100lvh',
+    dvh: '100dvh',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  },
+
+  maxHeight: {
+    full: '100%',
+    screen: '100vh',
+    svh: '100svh',
+    lvh: '100lvh',
+    dvh: '100dvh',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  },
 
   fontSize: {
   xs: [

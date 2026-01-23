@@ -31,63 +31,52 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 }
 
 /**
- * Parse the Figma export file which contains multiple JSON objects
- * separated by comments like: /* 0. Primitives.Value.tokens.json *\/
+ * Parse the Figma tokens file.
+ * The file should be valid JSON with named sections:
+ * { primitives, lightMode, darkMode, containers, widths, spacing, radius, typography }
  */
 function parseTokenFile(content) {
-  const sections = {};
+  try {
+    return JSON.parse(content);
+  } catch (e) {
+    console.error('Failed to parse tokens file:', e.message);
+    console.error('Make sure tokens/all-figma.tokens.json is valid JSON.');
+    console.error('Run: node scripts/clean-tokens.cjs to fix concatenated Figma exports.');
+    return {};
+  }
+}
 
-  // Split by comment markers and extract JSON objects
-  const parts = content.split(/\/\*\s*\d+\.\s*([^*]+)\s*\*\//);
+/**
+ * Validate CSS output for common syntax issues.
+ * Catches malformed variable references and parenthetical notation.
+ */
+function validateCssOutput(css) {
+  const issues = [];
+  const lines = css.split('\n');
 
-  // First part before any comment is the primitives
-  let currentIndex = 0;
-
-  // Process first JSON block (before first comment)
-  const firstJson = parts[0].trim();
-  if (firstJson.startsWith('{')) {
-    try {
-      sections.primitives = JSON.parse(firstJson);
-    } catch (e) {
-      console.error('Failed to parse primitives section:', e.message);
+  lines.forEach((line, index) => {
+    // Check for malformed var() references with unexpected parentheses
+    // Valid: var(--color-brand-600), rgba(255, 255, 255, 0.5)
+    // Invalid: var(--color-fg-brand-primary (600))
+    const varMatch = line.match(/var\(--[^)]+\s+\([^)]+\)/);
+    if (varMatch) {
+      issues.push(`Line ${index + 1}: Malformed var() reference: ${varMatch[0]}`);
     }
+
+    // Check for parenthetical notation in variable names
+    const propMatch = line.match(/--[\w-]+\s*\([^:]+\)\s*:/);
+    if (propMatch) {
+      issues.push(`Line ${index + 1}: Parenthetical notation in property name: ${propMatch[0]}`);
+    }
+  });
+
+  if (issues.length > 0) {
+    console.warn('\n⚠️  CSS validation found issues:');
+    issues.forEach(issue => console.warn(`   ${issue}`));
+    console.warn('');
   }
 
-  // Process remaining sections
-  for (let i = 1; i < parts.length; i += 2) {
-    const sectionName = parts[i]?.trim().replace('.tokens.json', '').toLowerCase();
-    const jsonContent = parts[i + 1]?.trim();
-
-    if (!sectionName || !jsonContent) continue;
-
-    // Find the JSON object in this section
-    const jsonMatch = jsonContent.match(/^\s*\{[\s\S]*?\}(?=\s*$|\s*\/\*)/);
-    if (jsonMatch) {
-      try {
-        const parsed = JSON.parse(jsonMatch[0]);
-
-        if (sectionName.includes('light mode')) {
-          sections.lightMode = parsed;
-        } else if (sectionName.includes('dark mode')) {
-          sections.darkMode = parsed;
-        } else if (sectionName.includes('radius')) {
-          sections.radius = parsed;
-        } else if (sectionName.includes('spacing')) {
-          sections.spacing = parsed;
-        } else if (sectionName.includes('widths')) {
-          sections.widths = parsed;
-        } else if (sectionName.includes('containers')) {
-          sections.containers = parsed;
-        } else if (sectionName.includes('typography')) {
-          sections.typography = parsed;
-        }
-      } catch (e) {
-        console.error(`Failed to parse section "${sectionName}":`, e.message);
-      }
-    }
-  }
-
-  return sections;
+  return issues.length === 0;
 }
 
 /**
@@ -208,21 +197,35 @@ function resolveTokenReference(value, primitives, useCssVar = true) {
 
     // Handle nested references like "Colors.Foreground.fg-brand-primary (600)"
     if (parts.length === 2) {
-      const [group, shade] = parts;
+      const [group, rawShade] = parts;
       const normalizedGroup = normalizeColorKey(group);
 
-      // For semantic references, return CSS variable
-      if (useCssVar && ['text', 'border', 'foreground', 'background'].some(s => normalizedGroup.includes(s))) {
-        const varName = sanitizeKey(shade);
-        return `var(--color-${varName})`;
+      // Strip parenthetical notation from shade (e.g., "fg-brand-primary (600)" -> "fg-brand-primary")
+      // This is critical for generating valid CSS variable names
+      const shade = rawShade.replace(/\s*\([^)]*\)\s*$/, '');
+      const sanitizedShade = sanitizeKey(shade);
+
+      // For semantic references (Foreground, Background, Text, Border categories)
+      // These reference other semantic tokens, not primitives
+      if (['text', 'border', 'foreground', 'background'].some(s => normalizedGroup.includes(s))) {
+        // Return CSS variable reference
+        if (useCssVar) {
+          return `var(--color-${sanitizedShade})`;
+        }
+        // When not using CSS vars, we need to resolve to the actual value
+        // Look up the referenced semantic token from the light mode colors
+        // For now, return the CSS variable reference since semantic tokens
+        // are defined in the same build process
+        return `var(--color-${sanitizedShade})`;
       }
 
       // For primitive references, return CSS variable to primitive
       if (normalizedGroup === 'base') {
-        return `var(--color-base-${sanitizeKey(shade)})`;
+        return `var(--color-base-${sanitizedShade})`;
       }
 
       // For color scales (Gray, Brand, etc.)
+      // The shade here is already a simple value like "600", "900"
       return `var(--color-${normalizedGroup}-${shade})`;
     }
   }
@@ -751,7 +754,18 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
   }
 
   // Build width object
-  const width = {};
+  const width = {
+    // CSS intrinsic sizing values - Tailwind defaults that must be preserved
+    auto: 'auto',
+    full: '100%',
+    screen: '100vw',
+    svw: '100svw',
+    lvw: '100lvw',
+    dvw: '100dvw',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  };
   for (const [key, value] of Object.entries(widths)) {
     // Convert spacing references to actual values
     const refMatch = typeof value === 'string' && value.match(/var\(--spacing-([\d_]+)\)/);
@@ -819,7 +833,50 @@ module.exports = {
 
   width: ${formatJsObject(width)},
 
+  // CSS intrinsic sizing values for height - Tailwind defaults that must be preserved
+  height: {
+    auto: 'auto',
+    full: '100%',
+    screen: '100vh',
+    svh: '100svh',
+    lvh: '100lvh',
+    dvh: '100dvh',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  },
+
+  // CSS intrinsic sizing values for min/max dimensions
+  minWidth: {
+    full: '100%',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  },
+
   maxWidth: ${formatJsObject(maxWidth)},
+
+  minHeight: {
+    full: '100%',
+    screen: '100vh',
+    svh: '100svh',
+    lvh: '100lvh',
+    dvh: '100dvh',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  },
+
+  maxHeight: {
+    full: '100%',
+    screen: '100vh',
+    svh: '100svh',
+    lvh: '100lvh',
+    dvh: '100dvh',
+    min: 'min-content',
+    max: 'max-content',
+    fit: 'fit-content',
+  },
 
   fontSize: ${formatJsObject(fontSize)},
 
@@ -886,6 +943,13 @@ async function build() {
 
   // Generate CSS
   const css = generateCSS(primitiveColors, primitiveSpacing, lightSemanticColors, darkSemanticColors, radius, widths, typography, semanticSpacing, containers);
+
+  // Validate CSS output
+  const isValid = validateCssOutput(css);
+  if (!isValid) {
+    console.warn('CSS generated with warnings. Review the issues above.');
+  }
+
   const cssPath = path.join(OUTPUT_DIR, 'tokens.css');
   fs.writeFileSync(cssPath, css);
   console.log(`\nGenerated: ${cssPath}`);

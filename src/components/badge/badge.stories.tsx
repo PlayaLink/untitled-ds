@@ -227,7 +227,7 @@ export const SourceCodeAndDesign: Story = {
       </div>
       <div className="flex gap-4">
         <Button
-          href="https://github.com/playalink/untitled-design-system/tree/main/src/components/badge"
+          href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/badge"
           iconLeading={GitHubIcon}
           color="secondary"
         >

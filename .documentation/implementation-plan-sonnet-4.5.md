@@ -36,7 +36,7 @@ Build a streamlined design system with perfect Figma ↔ Code parity:
 
 ```json
 {
-  "name": "untitled-design-system",
+  "name": "untitled-ds",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -222,7 +222,7 @@ addons.setConfig({
   theme: create({
     base: 'light',
     brandTitle: 'Untitled Design System',
-    brandUrl: 'https://github.com/your-username/untitled-design-system',
+    brandUrl: 'https://github.com/your-username/untitled-ds',
   }),
 })
 ```
@@ -624,7 +624,7 @@ git commit -m "feat(components): add [component-name] component
 ## Project Structure After Implementation
 
 ```
-untitled-design-system/
+untitled-ds/
 ├── .storybook/                       # NEW
 │   ├── main.ts
 │   ├── preview.tsx

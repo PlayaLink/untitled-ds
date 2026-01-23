@@ -227,7 +227,7 @@ export const SourceCodeAndDesign: Story = {
       </div>
       <div className="flex gap-4">
         <a
-          href="https://github.com/playalink/untitled-design-system/tree/main/src/components/input"
+          href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/input"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"

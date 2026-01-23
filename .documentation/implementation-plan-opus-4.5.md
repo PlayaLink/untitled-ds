@@ -62,7 +62,7 @@ The Sonnet 4.5 plan was well-structured but had several issues:
 
 ```json
 {
-  "name": "untitled-design-system",
+  "name": "untitled-ds",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -453,7 +453,7 @@ git commit -m "feat(components): add [component]
 ## Project Structure After Setup
 
 ```
-untitled-design-system/
+untitled-ds/
 ├── .storybook/
 │   ├── main.ts                    # NEW
 │   └── preview.ts                 # NEW

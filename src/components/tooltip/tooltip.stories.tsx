@@ -327,6 +327,7 @@ export const Props: Story = {
     closeDelay: 0,
     offset: 6,
     isDisabled: false,
+    isOpen: true,
   },
   render: (args) => (
     <Tooltip {...args}>

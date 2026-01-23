@@ -22,7 +22,7 @@ import { cx, sortCx } from '@/utils/cx'
 export const styles = sortCx({
   // Container styles
   container: {
-    base: 'z-50 flex max-w-xs origin-(--trigger-anchor-point) flex-col items-start gap-1 rounded-lg bg-primary-solid px-3 shadow-lg will-change-transform',
+    base: 'z-50 flex w-max origin-(--trigger-anchor-point) flex-col gap-1 rounded-lg bg-primary-solid px-3 shadow-lg will-change-transform',
     withDescription: 'py-3',
     withoutDescription: 'py-2',
   },
@@ -49,7 +49,7 @@ export const styles = sortCx({
   },
   // Text styles
   text: {
-    title: 'text-xs font-semibold text-white',
+    title: 'text-xs font-semibold text-white whitespace-nowrap',
     description: 'text-xs font-medium text-tooltip-supporting-text',
   },
   // Arrow styles

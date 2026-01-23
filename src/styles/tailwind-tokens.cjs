@@ -730,7 +730,8 @@ module.exports = {
   '2xl': '16px',
   '3xl': '20px',
   '4xl': '24px',
-  full: '9999px'
+  full: '9999px',
+  DEFAULT: '4px'
 },
 
   width: {

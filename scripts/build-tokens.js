@@ -752,6 +752,10 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
   for (const [key, value] of Object.entries(radius)) {
     borderRadius[key] = value;
   }
+  // Add DEFAULT for Tailwind's `rounded` class (maps to xs = 4px)
+  if (borderRadius.xs) {
+    borderRadius.DEFAULT = borderRadius.xs;
+  }
 
   // Build width object
   const width = {

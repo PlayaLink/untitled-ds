@@ -18,8 +18,8 @@ export const styles = sortCx({
       'transition-colors duration-150 ease-linear',
     ].join(' '),
     boxHover: 'group-hover:bg-primary-hover group-hover:border-primary-hover',
-    boxSelected: 'bg-brand-solid border-brand-solid',
-    boxSelectedHover: 'group-hover:bg-brand-solid-hover group-hover:border-brand-solid-hover',
+    boxSelected: 'bg-brand-solid border-brand',
+    boxSelectedHover: 'group-hover:bg-brand-solid-hover group-hover:border-brand',
     boxDisabled: 'bg-disabled border-disabled cursor-not-allowed',
     boxDisabledSelected: 'bg-disabled border-disabled',
     boxFocused: 'outline-2 outline-offset-2 outline-focus-ring',
@@ -29,7 +29,7 @@ export const styles = sortCx({
   types: {
     checkbox: {
       sm: { box: 'rounded' },
-      md: { box: 'rounded-md' },
+      md: { box: 'rounded-sm' },
     },
     radio: {
       sm: { box: 'rounded-full' },

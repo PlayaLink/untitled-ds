@@ -30,13 +30,17 @@ module.exports = {
       ...tokens.borderColor,
     }),
     extend: {
-      // Container max widths from design system
+      // Width/height utilities from design system (includes intrinsic sizing)
+      width: tokens.width,
+      height: tokens.height,
+      minWidth: tokens.minWidth,
+      minHeight: tokens.minHeight,
       maxWidth: {
+        ...tokens.maxWidth,
         'container-mobile': '100%',
         'container-desktop': '1280px',
       },
-      // Width utilities from design system (generated)
-      width: tokens.width,
+      maxHeight: tokens.maxHeight,
       // Shadow tokens from Figma (Effects.tokens.json)
       boxShadow: {
         xs: '0px 1px 2px 0px rgba(10, 13, 18, 0.05)',

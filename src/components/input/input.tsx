@@ -10,7 +10,6 @@ import { Icon as IconComponent } from "@/components/icon";
 import { Group as AriaGroup, Input as AriaInput, TextField as AriaTextField } from "react-aria-components";
 import { HintText } from "./hint-text";
 import { Label } from "./label";
-import { Tooltip, TooltipTrigger } from "@/components/tooltip";
 import { cx, sortCx } from "@/utils/cx";
 
 export interface InputBaseProps extends TextFieldProps {
@@ -135,21 +134,7 @@ export const InputBase = ({
                 )}
             />
 
-            {/* Tooltip and help icon */}
-            {tooltip && !isInvalid && (
-                <Tooltip title={tooltip} placement="top">
-                    <TooltipTrigger
-                        className={cx(
-                            "absolute cursor-pointer text-fg-quaternary transition duration-200 hover:text-fg-quaternary-hover focus:text-fg-quaternary-hover",
-                            sizes[inputSize].iconTrailing,
-                            context?.tooltipClassName,
-                            tooltipClassName,
-                        )}
-                    >
-                        <IconComponent name="help-circle" size="sm" />
-                    </TooltipTrigger>
-                </Tooltip>
-            )}
+            {/* TODO: Add tooltip support */}
 
             {/* Invalid icon */}
             {isInvalid && (

@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type HTMLAttributes, type ReactNode, isValidElement, cloneElement, type ReactElement } from "react";
 import { HintText } from "./hint-text";
 import type { InputBaseProps } from "./input";
 import { InputBase, TextField } from "./input";
@@ -14,20 +14,19 @@ interface InputPrefixProps extends HTMLAttributes<HTMLDivElement> {
     isDisabled?: boolean;
 }
 
-export const InputPrefix = ({ isDisabled, children, ...props }: InputPrefixProps) => (
+export const InputPrefix = ({ position, size = "sm", isDisabled, children, ...props }: InputPrefixProps) => (
     <span
         {...props}
         className={cx(
-            "flex text-md text-tertiary shadow-xs ring-1 ring-border-primary ring-inset",
-            // Styles when the prefix is within an `InputGroup`
-            "in-data-input-wrapper:in-data-leading:-mr-px in-data-input-wrapper:in-data-leading:rounded-l-lg",
-            "in-data-input-wrapper:in-data-trailing:-ml-px in-data-input-wrapper:in-data-trailing:rounded-r-lg",
-            // Size styles based on size when within an `InputGroup`
-            "in-data-input-wrapper:in-data-[input-size=md]:py-2.5 in-data-input-wrapper:in-data-[input-size=md]:pr-3 in-data-input-wrapper:in-data-[input-size=md]:pl-3.5 in-data-input-wrapper:in-data-[input-size=sm]:px-3 in-data-input-wrapper:in-data-[input-size=sm]:py-2",
+            "flex items-center bg-primary text-md text-tertiary shadow-xs ring-1 ring-border-primary ring-inset",
+            // Position styles
+            position === "leading" && "-mr-px rounded-l-lg",
+            position === "trailing" && "-ml-px rounded-r-lg",
+            // Size styles
+            size === "sm" && "px-3 py-2",
+            size === "md" && "py-2.5 pr-3 pl-3.5",
             // Disabled styles
-            isDisabled && "border-disabled bg-disabled_subtle text-tertiary",
-            "in-data-input-wrapper:group-disabled:bg-disabled_subtle in-data-input-wrapper:group-disabled:text-disabled in-data-input-wrapper:group-disabled:ring-border-disabled",
-
+            isDisabled && "bg-disabled_subtle text-disabled ring-border-disabled",
             props.className,
         )}
     >
@@ -48,6 +47,23 @@ interface InputGroupProps extends Omit<InputBaseProps, "type" | "icon" | "toolti
     /** The children of the input group (i.e `<InputBase />`). If not provided, InputBase is rendered internally. */
     children?: ReactNode;
 }
+
+// Helper to clone addon elements and inject position, size, and isDisabled props
+const cloneAddon = (
+    addon: ReactNode,
+    position: "leading" | "trailing",
+    size: "sm" | "md",
+    isDisabled: boolean
+): ReactNode => {
+    if (isValidElement(addon)) {
+        return cloneElement(addon as ReactElement<InputPrefixProps>, {
+            position,
+            size,
+            isDisabled,
+        });
+    }
+    return addon;
+};
 
 export const InputGroup = ({ size = "sm", prefix, leadingAddon, trailingAddon, label, hint, children, ...props }: InputGroupProps) => {
     const hasLeading = !!leadingAddon;
@@ -106,7 +122,7 @@ export const InputGroup = ({ size = "sm", prefix, leadingAddon, trailingAddon, l
                             isInvalid && "has-[&>select]:ring-border-error_subtle has-[&>select]:has-[input:focus]:ring-border-error",
                         )}
                     >
-                        {leadingAddon && <section data-leading={hasLeading || undefined}>{leadingAddon}</section>}
+                        {leadingAddon && cloneAddon(leadingAddon, "leading", size, isDisabled)}
 
                         {prefix && (
                             <span className={cx("my-auto grow pr-2", paddings[size].leadingText)}>
@@ -123,7 +139,7 @@ export const InputGroup = ({ size = "sm", prefix, leadingAddon, trailingAddon, l
                             />
                         )}
 
-                        {trailingAddon && <section data-trailing={hasTrailing || undefined}>{trailingAddon}</section>}
+                        {trailingAddon && cloneAddon(trailingAddon, "trailing", size, isDisabled)}
                     </div>
 
                     {hint && <HintText isInvalid={isInvalid}>{hint}</HintText>}

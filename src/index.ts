@@ -8,11 +8,14 @@ export { Tag, type TagProps, type TagSize, styles as tagStyles } from './compone
 export { Select, type SelectProps, type SelectOption, type SelectSize, styles as selectStyles } from './components/select'
 export { MenuItem, MenuDivider, type MenuItemProps, styles as menuItemStyles } from './components/menu-item'
 export { Dropdown, type DropdownProps, type DropdownTriggerType, styles as dropdownStyles } from './components/dropdown'
+export { Tooltip, TooltipTrigger, type TooltipProps, type TooltipTriggerProps, styles as tooltipStyles } from './components/tooltip'
 export { Input, InputBase, TextField, type InputProps, type InputBaseProps } from './components/input'
 export { InputGroup, InputPrefix, type InputGroupProps } from './components/input'
 export { PaymentInput, formatCardNumber, type PaymentInputProps } from './components/input'
 export { Label, type LabelProps } from './components/input'
 export { HintText, type HintTextProps } from './components/input'
+export { Toggle, ToggleBase, type ToggleProps, type ToggleSize, type ToggleType, styles as toggleStyles } from './components/toggle'
+export { Checkbox, CheckboxBase, type CheckboxProps, type CheckboxSize, styles as checkboxStyles } from './components/checkbox'
 
 // Utilities
 export { cx, sortCx } from './utils/cx'

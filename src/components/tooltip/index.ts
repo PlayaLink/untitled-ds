@@ -1,2 +1,1 @@
-// Re-export tooltip components
-export { Tooltip, TooltipTrigger } from "../../src/components/base/tooltip/tooltip";
+export { Tooltip, TooltipTrigger, styles, type TooltipProps, type TooltipTriggerProps } from './tooltip'

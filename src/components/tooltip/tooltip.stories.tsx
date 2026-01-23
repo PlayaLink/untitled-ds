@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { createIcon } from '@/components/icon'
 import { Tooltip, TooltipTrigger } from './tooltip'
 
+const HelpIcon = createIcon('help-circle')
+
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Tooltip',
   component: Tooltip,
@@ -109,32 +111,30 @@ type Story = StoryObj<typeof Tooltip>
 // OVERVIEW (default - all variants by property)
 // =============================================================================
 
-const HelpIcon = createIcon('help-circle')
-
 export const Overview: Story = {
   render: () => {
     return (
       <div className="flex w-[720px] flex-col gap-12 px-12 pb-12 pt-8">
-        {/* Placement */}
+        {/* Interactive demo - hover to see tooltips */}
         <div className="flex flex-col gap-6">
-          <span className="text-sm font-medium text-gray-500">Placement</span>
+          <span className="text-sm font-medium text-gray-500">Placement (hover to see tooltips)</span>
           <div className="grid grid-cols-3 gap-8">
             {/* Top placements */}
-            <Tooltip title="Top start" placement="top start" defaultOpen>
+            <Tooltip title="Top start" placement="top start">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Top start
                 </span>
               </TooltipTrigger>
             </Tooltip>
-            <Tooltip title="Top (default)" placement="top" defaultOpen>
+            <Tooltip title="Top (default)" placement="top">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Top
                 </span>
               </TooltipTrigger>
             </Tooltip>
-            <Tooltip title="Top end" placement="top end" defaultOpen>
+            <Tooltip title="Top end" placement="top end">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Top end
@@ -143,7 +143,7 @@ export const Overview: Story = {
             </Tooltip>
 
             {/* Left/Right placements */}
-            <Tooltip title="Left" placement="left" defaultOpen>
+            <Tooltip title="Left" placement="left">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Left
@@ -151,7 +151,7 @@ export const Overview: Story = {
               </TooltipTrigger>
             </Tooltip>
             <div /> {/* Empty center cell */}
-            <Tooltip title="Right" placement="right" defaultOpen>
+            <Tooltip title="Right" placement="right">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Right
@@ -160,21 +160,21 @@ export const Overview: Story = {
             </Tooltip>
 
             {/* Bottom placements */}
-            <Tooltip title="Bottom start" placement="bottom start" defaultOpen>
+            <Tooltip title="Bottom start" placement="bottom start">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Bottom start
                 </span>
               </TooltipTrigger>
             </Tooltip>
-            <Tooltip title="Bottom" placement="bottom" defaultOpen>
+            <Tooltip title="Bottom" placement="bottom">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Bottom
                 </span>
               </TooltipTrigger>
             </Tooltip>
-            <Tooltip title="Bottom end" placement="bottom end" defaultOpen>
+            <Tooltip title="Bottom end" placement="bottom end">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Bottom end
@@ -188,14 +188,14 @@ export const Overview: Story = {
         <div className="flex flex-col gap-6">
           <span className="text-sm font-medium text-gray-500">Arrow</span>
           <div className="flex flex-wrap gap-8">
-            <Tooltip title="Without arrow" placement="top" defaultOpen>
+            <Tooltip title="Without arrow" placement="top">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   No arrow
                 </span>
               </TooltipTrigger>
             </Tooltip>
-            <Tooltip title="With arrow" placement="top" arrow defaultOpen>
+            <Tooltip title="With arrow" placement="top" arrow>
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   With arrow
@@ -209,7 +209,7 @@ export const Overview: Story = {
         <div className="flex flex-col gap-6">
           <span className="text-sm font-medium text-gray-500">Supporting Text</span>
           <div className="flex flex-wrap gap-8">
-            <Tooltip title="Title only" placement="top" defaultOpen>
+            <Tooltip title="Title only" placement="top">
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
                   Title only
@@ -220,7 +220,6 @@ export const Overview: Story = {
               title="With description"
               description="This is supporting text that provides more context."
               placement="top"
-              defaultOpen
             >
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
@@ -240,7 +239,6 @@ export const Overview: Story = {
               description="Supporting text here"
               placement="top"
               arrow
-              defaultOpen
             >
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
@@ -253,7 +251,6 @@ export const Overview: Story = {
               description="Supporting text here"
               placement="bottom"
               arrow
-              defaultOpen
             >
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
@@ -266,7 +263,6 @@ export const Overview: Story = {
               description="Supporting text here"
               placement="left"
               arrow
-              defaultOpen
             >
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">
@@ -279,7 +275,6 @@ export const Overview: Story = {
               description="Supporting text here"
               placement="right"
               arrow
-              defaultOpen
             >
               <TooltipTrigger>
                 <span className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-2 text-sm">

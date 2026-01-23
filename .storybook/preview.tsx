@@ -1,5 +1,4 @@
 import type { Preview } from '@storybook/react'
-import { useEffect } from 'react'
 import '../src/styles/globals.css'
 
 const preview: Preview = {
@@ -25,12 +24,9 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       const theme = context.globals.theme || 'light';
-
-      useEffect(() => {
-        document.documentElement.setAttribute('data-theme', theme);
-      }, [theme]);
-
-      return Story();
+      // Set theme synchronously before render
+      document.documentElement.setAttribute('data-theme', theme);
+      return <Story />;
     },
   ],
 }

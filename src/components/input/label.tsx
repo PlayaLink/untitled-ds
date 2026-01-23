@@ -1,8 +1,6 @@
 import type { ReactNode, Ref } from "react";
 import type { LabelProps as AriaLabelProps } from "react-aria-components";
 import { Label as AriaLabel } from "react-aria-components";
-import { Icon } from "@/components/icon";
-import { Tooltip, TooltipTrigger } from "@/components/tooltip";
 import { cx } from "@/utils/cx";
 
 interface LabelProps extends AriaLabelProps {
@@ -28,19 +26,7 @@ export const Label = ({ isRequired, tooltip, tooltipDescription, className, ...p
 
             <span className={cx("hidden text-brand-tertiary", isRequired && "block", typeof isRequired === "undefined" && "group-required:block")}>*</span>
 
-            {tooltip && (
-                <Tooltip title={tooltip} description={tooltipDescription} placement="top">
-                    <TooltipTrigger
-                        // `TooltipTrigger` inherits the disabled state from the parent form field
-                        // but we don't that. We want the tooltip be enabled even if the parent
-                        // field is disabled.
-                        isDisabled={false}
-                        className="cursor-pointer text-fg-quaternary transition duration-200 hover:text-fg-quaternary_hover focus:text-fg-quaternary_hover"
-                    >
-                        <Icon name="help-circle" size="sm" />
-                    </TooltipTrigger>
-                </Tooltip>
-            )}
+            {/* TODO: Add tooltip support */}
         </AriaLabel>
     );
 };

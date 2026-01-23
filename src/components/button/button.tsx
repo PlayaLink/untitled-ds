@@ -16,7 +16,7 @@ export const styles = sortCx({
   common: {
     root: [
       'group relative inline-flex h-max cursor-pointer items-center justify-center whitespace-nowrap transition duration-100 ease-linear',
-      'outline-none focus-visible:ring-4 focus-visible:ring-brand-100 focus-visible:ring-offset-2',
+      'outline-none focus-visible:shadow-focus-ring',
       'disabled:cursor-not-allowed',
       '*:data-icon:pointer-events-none *:data-icon:size-5 *:data-icon:shrink-0',
     ].join(' '),
@@ -51,68 +51,68 @@ export const styles = sortCx({
   colors: {
     primary: {
       root: [
-        'bg-brand-600 text-base-white shadow-sm',
+        'bg-brand-600 text-base-white shadow-xs',
         'hover:bg-brand-700',
-        'disabled:bg-gray-100 disabled:text-gray-400',
+        'disabled:bg-disabled disabled:text-disabled',
         '*:data-icon:text-base-white',
       ].join(' '),
     },
     secondary: {
       root: [
-        'bg-base-white text-gray-700 shadow-sm ring-1 ring-gray-300 ring-inset',
-        'hover:bg-gray-50 hover:text-gray-800',
-        'disabled:text-gray-400 disabled:ring-gray-200',
-        '*:data-icon:text-gray-500 hover:*:data-icon:text-gray-600',
+        'bg-primary text-secondary shadow-xs ring-1 ring-border-primary ring-inset',
+        'hover:bg-primary-hover hover:text-primary',
+        'disabled:text-disabled disabled:ring-border-disabled',
+        '*:data-icon:text-fg-quaternary hover:*:data-icon:text-fg-tertiary',
       ].join(' '),
     },
     tertiary: {
       root: [
-        'text-gray-600',
-        'hover:bg-gray-50 hover:text-gray-700',
-        'disabled:text-gray-400',
-        '*:data-icon:text-gray-500 hover:*:data-icon:text-gray-600',
+        'text-tertiary',
+        'hover:bg-primary-hover hover:text-secondary',
+        'disabled:text-disabled',
+        '*:data-icon:text-fg-quaternary hover:*:data-icon:text-fg-tertiary',
       ].join(' '),
     },
     'link-gray': {
       root: [
-        'justify-normal rounded p-0! text-gray-600',
-        'hover:text-gray-700',
-        'disabled:text-gray-400',
+        'justify-normal rounded p-0! text-tertiary',
+        'hover:text-secondary',
+        'disabled:text-disabled',
         '*:data-text:underline *:data-text:decoration-transparent *:data-text:underline-offset-2 hover:*:data-text:decoration-current',
-        '*:data-icon:text-gray-500 hover:*:data-icon:text-gray-600',
+        '*:data-icon:text-fg-quaternary hover:*:data-icon:text-fg-tertiary',
       ].join(' '),
     },
     'link-color': {
       root: [
-        'justify-normal rounded p-0! text-brand-600',
-        'hover:text-brand-700',
-        'disabled:text-gray-400',
+        'justify-normal rounded p-0! text-brand-secondary',
+        'hover:text-brand-secondary-hover',
+        'disabled:text-disabled',
         '*:data-text:underline *:data-text:decoration-transparent *:data-text:underline-offset-2 hover:*:data-text:decoration-current',
-        '*:data-icon:text-brand-600 hover:*:data-icon:text-brand-700',
+        '*:data-icon:text-fg-brand-secondary hover:*:data-icon:text-fg-brand-secondary-hover',
       ].join(' '),
     },
     'primary-destructive': {
       root: [
-        'bg-error-600 text-base-white shadow-sm',
+        'bg-error-600 text-base-white shadow-xs focus-visible:shadow-focus-ring-error',
         'hover:bg-error-700',
-        'disabled:bg-gray-100 disabled:text-gray-400',
+        'disabled:bg-disabled disabled:text-disabled',
         '*:data-icon:text-base-white',
       ].join(' '),
     },
     'secondary-destructive': {
       root: [
-        'bg-base-white text-error-700 shadow-sm ring-1 ring-error-300 ring-inset',
-        'hover:bg-error-50 hover:text-error-800',
-        'disabled:text-gray-400 disabled:ring-gray-200',
-        '*:data-icon:text-error-500 hover:*:data-icon:text-error-600',
+        'bg-primary text-error-primary shadow-xs ring-1 ring-border-error-subtle ring-inset focus-visible:shadow-focus-ring-error',
+        'hover:bg-error-primary hover:text-error-primary-hover',
+        'disabled:text-disabled disabled:ring-border-disabled',
+        '*:data-icon:text-fg-error-secondary hover:*:data-icon:text-fg-error-primary',
       ].join(' '),
     },
     'tertiary-destructive': {
       root: [
-        'text-error-700',
-        'hover:bg-error-50 hover:text-error-800',
-        'disabled:text-gray-400',
-        '*:data-icon:text-error-500 hover:*:data-icon:text-error-600',
+        'text-error-primary focus-visible:shadow-focus-ring-error',
+        'hover:bg-error-primary hover:text-error-primary-hover',
+        'disabled:text-disabled',
+        '*:data-icon:text-fg-error-secondary hover:*:data-icon:text-fg-error-primary',
       ].join(' '),
     },
   },

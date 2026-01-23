@@ -22,29 +22,27 @@ export const styles = sortCx({
   // Trigger button styles
   trigger: {
     icon: [
-      'group inline-flex cursor-pointer items-center justify-center rounded-lg p-2 text-gray-500 outline-none transition-colors',
-      'hover:bg-gray-50 hover:text-gray-700',
-      'focus-visible:ring-4 focus-visible:ring-brand-100',
-      'data-[open]:bg-gray-50 data-[open]:text-gray-700',
-      'disabled:cursor-not-allowed disabled:text-gray-300',
+      'group inline-flex cursor-pointer items-center justify-center rounded-lg p-2 text-fg-quaternary outline-none transition-all',
+      'hover:bg-primary-hover hover:text-fg-secondary',
+      'aria-expanded:bg-primary-hover aria-expanded:text-fg-secondary aria-expanded:shadow-focus-ring',
+      'disabled:cursor-not-allowed disabled:text-fg-disabled',
     ].join(' '),
     button: [
-      'group inline-flex cursor-pointer items-center gap-2 rounded-lg bg-base-white px-3.5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm outline-none ring-1 ring-inset ring-gray-300 transition-all',
-      'hover:bg-gray-50 hover:text-gray-800',
-      'focus-visible:ring-4 focus-visible:ring-brand-100',
-      'data-[open]:ring-2 data-[open]:ring-brand-500',
-      'disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400',
+      'group inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-3.5 py-2.5 text-sm font-semibold text-secondary shadow-xs outline-none ring-1 ring-border-primary transition-all ring-inset',
+      'hover:bg-primary-hover hover:text-primary',
+      'aria-expanded:shadow-focus-ring',
+      'disabled:cursor-not-allowed disabled:bg-disabled-subtle disabled:text-disabled',
     ].join(' '),
     avatar: [
       'group inline-flex cursor-pointer items-center justify-center rounded-full outline-none transition-all',
-      'focus-visible:ring-4 focus-visible:ring-brand-100',
+      'aria-expanded:shadow-focus-ring',
       'disabled:cursor-not-allowed disabled:opacity-50',
     ].join(' '),
   },
   // Icon styles within triggers
   icon: {
     trigger: 'shrink-0',
-    chevron: 'shrink-0 text-gray-500 transition-transform duration-200 group-data-[open]:rotate-180',
+    chevron: 'shrink-0 text-fg-quaternary transition-transform duration-200 group-aria-expanded:rotate-180',
   },
   // Avatar styles
   avatar: {
@@ -53,8 +51,8 @@ export const styles = sortCx({
   // Popover menu container
   popover: {
     base: [
-      'min-w-[240px] overflow-hidden rounded-lg bg-base-white shadow-lg',
-      'ring-1 ring-gray-200',
+      'min-w-[240px] overflow-hidden rounded-lg bg-primary shadow-lg',
+      'ring-1 ring-border-secondary',
       'entering:animate-in entering:fade-in entering:zoom-in-95',
       'exiting:animate-out exiting:fade-out exiting:zoom-out-95',
     ].join(' '),

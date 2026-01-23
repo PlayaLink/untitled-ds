@@ -11,23 +11,23 @@ import type { MenuItemProps as AriaMenuItemProps } from 'react-aria-components'
 import { MenuItem as AriaMenuItem } from 'react-aria-components'
 import { cx, sortCx } from '@/utils/cx'
 import { isReactComponent } from '@/utils/is-react-component'
-import { Icon } from '@/components/icon'
+import { CheckboxBase } from '@/components/checkbox'
 
 export const styles = sortCx({
   common: {
     root: [
-      'group flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-sm font-semibold outline-none transition-colors',
-      'hover:bg-gray-50 hover:text-gray-900',
-      'focus:bg-gray-50 focus:text-gray-900',
-      'data-[disabled]:cursor-not-allowed data-[disabled]:text-gray-500',
-      'data-[selected]:bg-gray-50',
+      'group flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-sm font-semibold text-secondary outline-none transition-colors',
+      'hover:bg-secondary hover:text-secondary-hover',
+      'focus:bg-secondary focus:text-secondary-hover',
+      'data-[disabled]:cursor-not-allowed data-[disabled]:text-disabled',
+      'data-[selected]:bg-secondary',
     ].join(' '),
-    icon: 'size-4 shrink-0 text-gray-500',
+    icon: 'size-4 shrink-0 text-tertiary',
     content: 'flex flex-1 items-center gap-2',
     text: 'flex-1 truncate',
-    shortcut: 'ml-auto flex items-center rounded px-1 py-0.5 text-xs font-medium text-gray-500 ring-1 ring-inset ring-gray-200',
+    shortcut: 'ml-auto flex items-center rounded px-1 py-0.5 text-xs font-medium text-tertiary ring-1 ring-inset ring-border-secondary',
     checkbox: 'size-4 shrink-0',
-    divider: 'h-px bg-gray-200',
+    divider: 'h-px bg-border-secondary',
   },
 })
 
@@ -57,11 +57,7 @@ export function MenuItem({
 }: MenuItemProps) {
   const renderIcon = () => {
     if (showCheckbox) {
-      return isChecked ? (
-        <Icon name="square-check" size="md" className="text-brand-600" />
-      ) : (
-        <Icon name="square" size="md" className="text-gray-300" />
-      )
+      return <CheckboxBase size="sm" isSelected={isChecked} />
     }
 
     if (!IconProp) return null

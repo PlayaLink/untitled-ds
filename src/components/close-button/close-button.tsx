@@ -31,11 +31,11 @@ export interface CloseButtonProps extends Omit<AriaButtonProps, 'children'> {
 // STYLES
 // =============================================================================
 
-// Map button size to icon size
+// Map button size to icon size (per Figma specs)
 const iconSizeMap: Record<CloseButtonSize, IconSize> = {
-  sm: 'lg',  // 20px
-  md: 'lg',  // 20px
-  lg: 'xl',  // 24px
+  sm: 'lg',  // 20px icon in 36px container (8px padding)
+  md: 'lg',  // 20px icon in 40px container (10px padding)
+  lg: 'xl',  // 24px icon in 44px container (10px padding)
 }
 
 export const styles = sortCx({
@@ -58,13 +58,13 @@ export const styles = sortCx({
   },
   sizes: {
     sm: {
-      root: 'size-9', // 36px
+      root: 'size-[36px]', // 36px
     },
     md: {
-      root: 'size-10', // 40px
+      root: 'size-10', // 40px (exists in spacing tokens)
     },
     lg: {
-      root: 'size-11', // 44px
+      root: 'size-[44px]', // 44px
     },
   },
   variants: {

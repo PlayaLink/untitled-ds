@@ -1,0 +1,46 @@
+---
+alwaysApply: false
+---
+
+# NPM Package Distribution
+
+This design system is distributed as an NPM package. Components are imported as dependencies and cannot be modified by consumers.
+
+## Publishing a New Version
+
+1. Update version in `package.json`
+2. Commit and push changes
+3. Create and push a git tag: `git tag v0.1.0 && git push origin v0.1.0`
+4. GitHub Actions will automatically build and publish to GitHub Packages
+
+## Consumer Usage
+
+### Installation
+
+```bash
+npm install @playalink/untitled-ds
+```
+
+### CSS Setup
+
+In your global CSS file:
+
+```css
+@import 'tailwindcss';
+@config '@playalink/untitled-ds/tailwind.config';
+@import '@playalink/untitled-ds/styles/tokens';
+@import '@playalink/untitled-ds/styles/globals';
+@source 'node_modules/@playalink/untitled-ds/dist/**/*.js';
+```
+
+### Component Usage
+
+```typescript
+import { Button, Badge, Tag, ButtonGroup } from '@playalink/untitled-ds'
+
+function App() {
+  return (
+    <Button color="primary" size="md">Click me</Button>
+  )
+}
+```

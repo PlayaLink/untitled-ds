@@ -1,0 +1,165 @@
+---
+alwaysApply: false
+---
+
+# Untitled UI Component Workflow
+
+Use this workflow when your Figma component **matches the default Untitled UI design**. This keeps ALL functionality from the CLI import.
+
+## When to Use
+
+- Figma component uses standard Untitled UI variants (Size, Hierarchy, State, Icon, etc.)
+- You want the full feature set from Untitled UI
+- No simplification or customization is needed
+
+## Steps
+
+### 1. Get Figma URL
+
+User provides Figma URL for the doc header link. **No Figma fetch is needed** - we're using the full Untitled UI component.
+
+### 2. Import from Untitled UI CLI
+
+```bash
+npx untitledui@latest add <component-name> --path src/components --overwrite
+```
+
+**IMPORTANT:** Keep ALL functionality from the import. Do NOT remove features, variants, or props.
+
+### 3. Update Import Paths
+
+Change imports to use project aliases:
+- `@/utils/cx` for class merging (replace any `cn` or `clsx` imports)
+- `@/utils/is-react-component` for component type checking
+
+### 4. Add Documentation Header
+
+Add at the top of the component file:
+
+```typescript
+/**
+ * ComponentName component
+ * @docs https://www.untitledui.com/react/components/<component-name>
+ * @figma <user-provided-figma-url>
+ */
+```
+
+### 5. Apply sortCx Pattern
+
+Reorganize styles using the `sortCx` pattern for IntelliSense support. Export `styles` from the component:
+
+```typescript
+import { cx, sortCx } from '@/utils/cx'
+
+export const styles = sortCx({
+  common: {
+    root: 'base classes for all variants',
+  },
+  sizes: {
+    sm: { root: 'size-specific classes' },
+    md: { root: 'size-specific classes' },
+  },
+  // ... other variant groups
+})
+
+export type ComponentSize = keyof typeof styles.sizes
+```
+
+### 6. Create Storybook Stories
+
+Create `<component>.stories.tsx` with exactly **3 stories**:
+
+| Story | Purpose |
+|-------|---------|
+| `Overview` | Visual showcase of ALL variants grouped by property |
+| `Props` | Interactive playground with `tags: ['show-panel']` |
+| `SourceCodeAndDesign` | Links to GitHub source and Figma design |
+
+**Do NOT use autodocs.** See `storybook-stories.mdc` for full patterns.
+
+### 7. Validate Tokens
+
+Check Storybook for visual issues. If styles look wrong:
+1. Identify missing tokens
+2. Update `tailwind.config.js`
+3. Update `tokens/figma-update.json`
+4. Notify user of token gaps
+
+### 8. Export from Index
+
+Update the component's barrel file and root exports:
+
+```typescript
+// src/components/<name>/index.ts
+export { ComponentName, type ComponentNameProps, type ComponentNameSize, styles } from './component-name'
+```
+
+```typescript
+// src/index.ts
+export { ComponentName, type ComponentNameProps, type ComponentNameSize, styles as componentNameStyles } from './components/<name>'
+```
+
+## File Structure
+
+```
+src/components/<name>/
+├── <name>.tsx           # Component with doc header
+├── <name>.stories.tsx   # Storybook stories (3 required)
+└── index.ts             # Barrel exports
+```
+
+## Handling Figma `_` Prefixed Components
+
+### What the `_` Prefix Means
+
+In Figma, components prefixed with `_` (or `.`) are **internal/private components** that are hidden from publishing to the team library. These are "atomic" building blocks that compose larger "molecule" components.
+
+Examples:
+- `_MenuItem` - internal component used by `Dropdown`
+- `_ListItem` - internal component used by `Select` or `List`
+
+### Why This Matters
+
+**Untitled UI React may NOT provide standalone React components** for `_` prefixed Figma components. They often bake the styling directly into the parent component rather than exposing atoms separately.
+
+### Workflow When Building Molecule Components
+
+**Before starting work on a molecule component**, ask for or identify:
+
+1. **The main component Figma link** (e.g., Dropdown)
+2. **Any `_` prefixed sub-components** visible in the Figma layers (e.g., `_MenuItem`)
+
+### Decision: Standalone vs. Inline
+
+When encountering a `_` prefixed Figma component, decide whether to:
+
+| Approach | When to Use | Example |
+|----------|-------------|---------|
+| **Create standalone component** | Sub-component is reusable across multiple parents | `MenuItem` used by Dropdown, ContextMenu, etc. |
+| **Inline into parent** | Sub-component is tightly coupled to one parent | Internal list item only used by one component |
+
+### Example: MenuItem
+
+The `_MenuItem` Figma component was created as a standalone `MenuItem` React component because:
+- It can be reused in `Dropdown`, context menus, and other menu-like components
+- It has its own variants (icon, checkbox, shortcut, divider)
+- Consumers pass `<MenuItem>` children to `<Dropdown>` rather than a data array
+
+```typescript
+// Dropdown accepts MenuItem children
+<Dropdown triggerType="button" triggerLabel="Options">
+  <MenuItem icon={EditIcon}>Edit</MenuItem>
+  <MenuItem icon={CopyIcon} shortcut="⌘C">Copy</MenuItem>
+  <MenuDivider />
+  <MenuItem icon={TrashIcon}>Delete</MenuItem>
+</Dropdown>
+```
+
+### Contrast: Select Component
+
+The `Select` component does NOT use `MenuItem`. Instead, it:
+- Takes an `options` array prop
+- Renders items internally using React Aria's `ListBoxItem`
+- Has its own item styles baked in
+
+This is appropriate because Select options have different semantics (form selection vs. actions) and don't need to be reused elsewhere.

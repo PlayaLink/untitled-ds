@@ -1,0 +1,57 @@
+---
+alwaysApply: true
+---
+
+# Design Token Architecture
+
+## Token Flow
+
+```
+Figma Variables → Export Plugin → tokens/all-figma.tokens.json
+                                         ↓
+                               npm run build:tokens
+                                         ↓
+                    ┌────────────────────┴────────────────────┐
+                    ↓                                         ↓
+        src/styles/tokens.css                    src/styles/tailwind-tokens.cjs
+        (CSS variables + dark mode)              (Tailwind theme values)
+                                                          ↓
+                                               tailwind.config.cjs (imports generated tokens)
+```
+
+**Single source of truth:** Figma exports 786 variables from 7 collections (Primitives, Light mode, Dark mode, Typography, Spacing, Widths/Radius, Containers).
+
+## Updating Tokens from Figma
+
+When tokens change in Figma:
+1. Export via Plugins → Development → Variables Export
+2. Save JSON to `tokens/all-figma.tokens.json`
+3. Run `npm run build:tokens` to regenerate CSS variables and Tailwind config
+
+## Generated Files
+
+| File | Purpose |
+|------|---------|
+| `src/styles/tokens.css` | CSS custom properties with `:root` (light) and `[data-theme="dark"]` overrides |
+| `src/styles/tailwind-tokens.cjs` | Tailwind theme values (colors, spacing, radius, widths, typography) |
+
+## Dark Mode
+
+Toggle dark mode by setting the `data-theme` attribute:
+```js
+document.documentElement.dataset.theme = "dark"  // Enable dark mode
+document.documentElement.dataset.theme = "light" // Force light mode
+// Remove attribute to follow system preference
+```
+
+The generated CSS includes `@media (prefers-color-scheme: dark)` for automatic system preference support.
+
+## Styling Conventions
+
+- **Tailwind 4** with `@import 'tailwindcss'` syntax in `src/styles/globals.css`
+- **Config reference:** `@config '../../tailwind.config.cjs'`
+- **Semantic aliases:** `primary` (brand), `destructive` (error)
+
+## Utilities
+
+Use `cx()` from `@/cx` for className merging (wraps tailwind-merge).

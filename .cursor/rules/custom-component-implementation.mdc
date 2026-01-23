@@ -1,0 +1,136 @@
+---
+alwaysApply: false
+---
+
+# Custom Component Implementation Workflow
+
+Use this workflow when your Figma component **differs from the default Untitled UI design**. This strips features not present in your design.
+
+## When to Use
+
+- Figma component has been customized or simplified
+- Only certain variants/sizes are needed
+- Design system has diverged from standard Untitled UI
+
+## Steps
+
+### 1. Fetch Figma Data
+
+Use the Figma MCP to fetch component data from the provided Figma link:
+
+```
+get_figma_data with fileKey and nodeId
+```
+
+Analyze the Figma data to understand:
+- Which variants exist (Size, Hierarchy, State, Icon, etc.)
+- Which props are actually used
+- Any custom modifications from standard Untitled UI
+
+### 2. Import from Untitled UI CLI (as starting point)
+
+```bash
+npx untitledui@latest add <component-name> --path src/components --overwrite
+```
+
+This gives us a solid foundation to simplify from.
+
+### 3. Simplify to Match Figma
+
+**Critical step:** Compare Figma data to the imported component:
+
+- **Remove variants** not present in Figma
+- **Remove props** not used in Figma
+- **Remove size options** that don't exist
+- Keep ONLY the features that exist in your design
+
+Example: If Figma only has `sm` and `md` sizes, remove `lg`, `xl`, `2xl` from styles and types.
+
+### 4. Update Import Paths
+
+Change imports to use project aliases:
+- `@/utils/cx` for class merging (replace any `cn` or `clsx` imports)
+- `@/utils/is-react-component` for component type checking
+
+### 5. Add Documentation Header
+
+```typescript
+/**
+ * ComponentName component
+ * @docs https://www.untitledui.com/react/components/<component-name>
+ * @figma <figma-url-with-node-id>
+ */
+```
+
+### 6. Apply sortCx Pattern
+
+Reorganize styles using the `sortCx` pattern. Only include variants that exist in Figma:
+
+```typescript
+import { cx, sortCx } from '@/utils/cx'
+
+export const styles = sortCx({
+  common: {
+    root: 'base classes',
+  },
+  sizes: {
+    // Only sizes that exist in Figma
+    sm: { root: '...' },
+    md: { root: '...' },
+  },
+})
+
+export type ComponentSize = keyof typeof styles.sizes
+```
+
+### 7. Create Storybook Stories
+
+Create stories **only for variants that exist in your Figma**:
+
+| Story | Purpose |
+|-------|---------|
+| `Overview` | Visual showcase of YOUR variants (not all Untitled UI variants) |
+| `Props` | Interactive playground with `tags: ['show-panel']` |
+| `SourceCodeAndDesign` | Links to GitHub source and Figma design |
+
+**Do NOT include variants in stories that don't exist in your Figma.**
+
+### 8. Validate Tokens
+
+Check Storybook for visual issues. If styles look wrong:
+1. Identify missing tokens
+2. Update `tailwind.config.js`
+3. Update `tokens/figma-update.json`
+4. Notify user of token gaps
+
+### 9. Export from Index
+
+Update the component's barrel file and root exports:
+
+```typescript
+// src/components/<name>/index.ts
+export { ComponentName, type ComponentNameProps, type ComponentNameSize, styles } from './component-name'
+```
+
+```typescript
+// src/index.ts
+export { ComponentName, type ComponentNameProps, type ComponentNameSize, styles as componentNameStyles } from './components/<name>'
+```
+
+## File Structure
+
+```
+src/components/<name>/
+├── <name>.tsx           # Simplified component matching Figma
+├── <name>.stories.tsx   # Stories for Figma variants only
+└── index.ts             # Barrel exports
+```
+
+## Key Difference from Untitled UI Component Workflow
+
+| Aspect | Untitled UI Workflow | Custom Workflow |
+|--------|---------------------|-----------------|
+| Figma fetch | Not needed | **Required** |
+| Features | Keep ALL | Strip unused |
+| Stories | All variants | Figma variants only |
+| Goal | Full feature set | Lean 1:1 Figma match |

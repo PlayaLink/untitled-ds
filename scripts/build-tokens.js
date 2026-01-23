@@ -244,23 +244,59 @@ function resolveTokenReference(value, primitives, useCssVar = true) {
  * Extract semantic colors from light/dark mode sections
  * Handles both "Colors" and "Component colors" top-level keys
  * Recursively extracts nested tokens
+ *
+ * NOTE: The Figma tokens have a structure like:
+ *   Colors > Text > "text-primary (900)"
+ *   Colors > Border > "border-primary"
+ *   Colors > Foreground > "fg-primary (900)"
+ *   Colors > Background > "bg-primary"
+ *
+ * The token keys already contain their category prefix (text-, border-, fg-, bg-),
+ * so we should NOT add the parent category to avoid redundant names like "text-text-primary".
  */
 function extractSemanticColors(modeTokens, primitives, mode = 'light') {
   const colors = {};
 
+  // Categories where the token keys already include the type prefix
+  const selfPrefixedCategories = ['text', 'border', 'foreground', 'background'];
+
+  // Helper to check if a key starts with a known semantic prefix
+  function hasSemanticPrefix(key) {
+    const sanitized = sanitizeKey(key);
+    return sanitized.startsWith('text-') ||
+           sanitized.startsWith('border-') ||
+           sanitized.startsWith('fg-') ||
+           sanitized.startsWith('bg-');
+  }
+
   // Helper to recursively extract tokens
-  function extractTokens(obj, prefix = '') {
+  function extractTokens(obj, prefix = '', parentCategory = '') {
     for (const [key, value] of Object.entries(obj)) {
       if (!value || typeof value !== 'object') continue;
 
       if (value.$value !== undefined) {
         // This is a token
-        const varName = prefix ? `${prefix}-${sanitizeKey(key)}` : sanitizeKey(key);
+        const sanitizedKey = sanitizeKey(key);
+
+        // If parent is a self-prefixed category AND the key already has a semantic prefix,
+        // don't add the parent category to avoid "text-text-primary" redundancy
+        const parentCategorySanitized = sanitizeKey(parentCategory);
+        const skipPrefix = selfPrefixedCategories.includes(parentCategorySanitized) && hasSemanticPrefix(key);
+
+        let varName;
+        if (skipPrefix) {
+          // Use just the token key (which already has its prefix like "text-primary")
+          varName = sanitizedKey;
+        } else {
+          varName = prefix ? `${prefix}-${sanitizedKey}` : sanitizedKey;
+        }
+
         colors[varName] = resolveTokenReference(value.$value, primitives, false);
       } else {
         // This is a category or sub-category, recurse
-        const newPrefix = prefix ? `${prefix}-${sanitizeKey(key)}` : sanitizeKey(key);
-        extractTokens(value, newPrefix);
+        const sanitizedKey = sanitizeKey(key);
+        const newPrefix = prefix ? `${prefix}-${sanitizedKey}` : sanitizedKey;
+        extractTokens(value, newPrefix, key);
       }
     }
   }
@@ -629,6 +665,7 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
   }
 
   // Add semantic color references using CSS variables
+  // These are now properly named without redundancy (e.g., "text-primary" not "text-text-primary")
   const semanticCategories = {
     text: {},
     border: {},
@@ -640,27 +677,56 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
     const varRef = `var(--color-${key})`;
 
     if (key.startsWith('text-')) {
+      // Keys are like "text-primary" -> extract "primary" for text.primary
+      // This creates classes like text-text-primary (text utility + text.primary color)
       const name = key.replace('text-', '').replace(/_/g, '-');
       semanticCategories.text[name] = varRef;
     } else if (key.startsWith('border-')) {
+      // Keys are like "border-primary" -> extract "primary" for border.primary
       const name = key.replace('border-', '').replace(/_/g, '-');
       semanticCategories.border[name] = varRef;
-    } else if (key.startsWith('foreground-fg-')) {
-      // Keys are like "foreground-fg-quaternary" -> extract "quaternary" for "fg-quaternary" class
-      const name = key.replace('foreground-fg-', '').replace(/_/g, '-');
+    } else if (key.startsWith('fg-')) {
+      // Keys are like "fg-primary" -> extract "primary" for fg.primary
+      const name = key.replace('fg-', '').replace(/_/g, '-');
       semanticCategories.fg[name] = varRef;
-    } else if (key.startsWith('background-bg-')) {
-      // Keys are like "background-bg-primary" -> extract "primary" for "bg-primary" class
-      const name = key.replace('background-bg-', '').replace(/_/g, '-');
+    } else if (key.startsWith('bg-')) {
+      // Keys are like "bg-primary" -> extract "primary" for bg.primary
+      const name = key.replace('bg-', '').replace(/_/g, '-');
       semanticCategories.bg[name] = varRef;
     }
   }
 
   Object.assign(colors, semanticCategories);
 
-  // Add semantic aliases
+  // Add semantic aliases for primitive color scales
   colors.primary = colors.brand;
   colors.destructive = colors.error;
+
+  // Build utility-specific configs for semantic colors
+  // This allows text-primary, bg-primary, border-primary to use semantic CSS variables
+  // while text-brand-500 still accesses the primitive brand scale
+  const textColor = {};
+  const backgroundColor = {};
+  const borderColor = {};
+
+  // Map semantic text colors to textColor
+  for (const [key, value] of Object.entries(semanticCategories.text)) {
+    textColor[key] = value;
+  }
+  // Add foreground colors as text colors too (fg-* becomes usable as text-fg-*)
+  for (const [key, value] of Object.entries(semanticCategories.fg)) {
+    textColor[`fg-${key}`] = value;
+  }
+
+  // Map semantic background colors to backgroundColor
+  for (const [key, value] of Object.entries(semanticCategories.bg)) {
+    backgroundColor[key] = value;
+  }
+
+  // Map semantic border colors to borderColor
+  for (const [key, value] of Object.entries(semanticCategories.border)) {
+    borderColor[key] = value;
+  }
 
   // Build spacing object (primitive + semantic)
   const spacing = {};
@@ -738,6 +804,14 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
 
 module.exports = {
   colors: ${formatJsObject(colors)},
+
+  // Utility-specific semantic colors
+  // These allow text-primary, bg-primary, border-primary to use semantic CSS variables
+  textColor: ${formatJsObject(textColor)},
+
+  backgroundColor: ${formatJsObject(backgroundColor)},
+
+  borderColor: ${formatJsObject(borderColor)},
 
   spacing: ${formatJsObject(spacing)},
 

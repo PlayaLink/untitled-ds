@@ -16,6 +16,19 @@ module.exports = {
     fontSize: tokens.fontSize,
     fontFamily: tokens.fontFamily,
     fontWeight: tokens.fontWeight,
+    // Utility-specific semantic colors for text-primary, bg-primary, border-primary
+    textColor: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.textColor,
+    }),
+    backgroundColor: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.backgroundColor,
+    }),
+    borderColor: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.borderColor,
+    }),
     extend: {
       // Container max widths from design system
       maxWidth: {

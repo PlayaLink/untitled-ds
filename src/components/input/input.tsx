@@ -87,21 +87,21 @@ export const InputBase = ({
             ref={groupRef}
             className={({ isFocusWithin, isDisabled, isInvalid }) =>
                 cx(
-                    "relative flex w-full flex-row place-content-center place-items-center rounded-lg bg-primary shadow-xs ring-1 ring-primary transition-shadow duration-100 ease-linear ring-inset",
+                    "relative flex w-full flex-row place-content-center place-items-center rounded-lg bg-primary shadow-xs ring-1 ring-border-primary transition-shadow duration-100 ease-linear ring-inset",
 
-                    isFocusWithin && !isDisabled && "ring-2 ring-brand",
+                    isFocusWithin && !isDisabled && "ring-2 ring-border-brand",
 
                     // Disabled state styles
-                    isDisabled && "cursor-not-allowed bg-disabled_subtle ring-disabled",
-                    "group-disabled:cursor-not-allowed group-disabled:bg-disabled_subtle group-disabled:ring-disabled",
+                    isDisabled && "cursor-not-allowed bg-disabled-subtle ring-border-disabled",
+                    "group-disabled:cursor-not-allowed group-disabled:bg-disabled-subtle group-disabled:ring-border-disabled",
 
                     // Invalid state styles
-                    isInvalid && "ring-error_subtle",
-                    "group-invalid:ring-error_subtle",
+                    isInvalid && "ring-border-error-subtle",
+                    "group-invalid:ring-border-error-subtle",
 
                     // Invalid state with focus-within styles
-                    isInvalid && isFocusWithin && "ring-2 ring-error",
-                    isFocusWithin && "group-invalid:ring-2 group-invalid:ring-error",
+                    isInvalid && isFocusWithin && "ring-2 ring-border-error",
+                    isFocusWithin && "group-invalid:ring-2 group-invalid:ring-border-error",
 
                     context?.wrapperClassName,
                     wrapperClassName,
@@ -140,7 +140,7 @@ export const InputBase = ({
                 <Tooltip title={tooltip} placement="top">
                     <TooltipTrigger
                         className={cx(
-                            "absolute cursor-pointer text-fg-quaternary transition duration-200 hover:text-fg-quaternary_hover focus:text-fg-quaternary_hover",
+                            "absolute cursor-pointer text-fg-quaternary transition duration-200 hover:text-fg-quaternary-hover focus:text-fg-quaternary-hover",
                             sizes[inputSize].iconTrailing,
                             context?.tooltipClassName,
                             tooltipClassName,
@@ -175,7 +175,7 @@ export const InputBase = ({
                 >
                     <span
                         className={cx(
-                            "pointer-events-none rounded px-1 py-px text-xs font-medium text-quaternary ring-1 ring-secondary select-none ring-inset",
+                            "pointer-events-none rounded px-1 py-px text-xs font-medium text-quaternary ring-1 ring-border-secondary select-none ring-inset",
                             isDisabled && "bg-transparent text-disabled",
                         )}
                         aria-hidden="true"

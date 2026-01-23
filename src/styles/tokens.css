@@ -482,6 +482,8 @@
   --spacing-480: 1920px;
   --spacing-0_5: 2px;
   --spacing-1_5: 6px;
+  --spacing-2_5: 10px;
+  --spacing-3_5: 14px;
 
   /* ============================================
    * Border Radius
@@ -533,11 +535,11 @@
   --font-weight-bold-italic: 700;
 
   /* Font Size */
-  --font-size-text-xs: 12px;
-  --font-size-text-sm: 14px;
-  --font-size-text-md: 16px;
-  --font-size-text-lg: 18px;
-  --font-size-text-xl: 20px;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
   --font-size-display-xs: 24px;
   --font-size-display-sm: 30px;
   --font-size-display-md: 36px;
@@ -546,11 +548,11 @@
   --font-size-display-2xl: 72px;
 
   /* Line Height */
-  --line-height-text-xs: 18px;
-  --line-height-text-sm: 20px;
-  --line-height-text-md: 24px;
-  --line-height-text-lg: 28px;
-  --line-height-text-xl: 30px;
+  --line-height-xs: 18px;
+  --line-height-sm: 20px;
+  --line-height-md: 24px;
+  --line-height-lg: 28px;
+  --line-height-xl: 30px;
   --line-height-display-xs: 32px;
   --line-height-display-sm: 38px;
   --line-height-display-md: 44px;

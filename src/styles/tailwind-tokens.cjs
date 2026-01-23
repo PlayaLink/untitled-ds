@@ -601,6 +601,8 @@ module.exports = {
   '480': '1920px',
   '0.5': '2px',
   '1.5': '6px',
+  '2.5': '10px',
+  '3.5': '14px',
   none: '0px',
   xxs: '2px',
   xs: '4px',
@@ -656,31 +658,31 @@ module.exports = {
 },
 
   fontSize: {
-  'text-xs': [
+  xs: [
     '12px',
     {
       lineHeight: '18px'
     }
   ],
-  'text-sm': [
+  sm: [
     '14px',
     {
       lineHeight: '20px'
     }
   ],
-  'text-md': [
+  md: [
     '16px',
     {
       lineHeight: '24px'
     }
   ],
-  'text-lg': [
+  lg: [
     '18px',
     {
       lineHeight: '28px'
     }
   ],
-  'text-xl': [
+  xl: [
     '20px',
     {
       lineHeight: '30px'

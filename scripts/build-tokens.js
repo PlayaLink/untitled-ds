@@ -173,6 +173,19 @@ function extractPrimitiveSpacing(primitives) {
     }
   }
 
+  // Add Tailwind default fractional values that may not be in Figma
+  // These are commonly used in Tailwind components
+  const tailwindFractionals = {
+    '2.5': '10px',   // 2.5 * 4px
+    '3.5': '14px',   // 3.5 * 4px
+  };
+
+  for (const [key, value] of Object.entries(tailwindFractionals)) {
+    if (!spacing[key]) {
+      spacing[key] = value;
+    }
+  }
+
   return spacing;
 }
 
@@ -452,21 +465,21 @@ function extractTypography(typographyTokens) {
     }
   }
 
-  // Extract font sizes
+  // Extract font sizes (strip "text-" prefix for Tailwind compatibility)
   if (typographyTokens['Font size']) {
     for (const [key, token] of Object.entries(typographyTokens['Font size'])) {
       if (token.$value !== undefined) {
-        const name = sanitizeKey(key);
+        const name = sanitizeKey(key).replace(/^text-/, '');
         typography.fontSize[name] = `${token.$value}px`;
       }
     }
   }
 
-  // Extract line heights
+  // Extract line heights (strip "text-" prefix for Tailwind compatibility)
   if (typographyTokens['Line height']) {
     for (const [key, token] of Object.entries(typographyTokens['Line height'])) {
       if (token.$value !== undefined) {
-        const name = sanitizeKey(key);
+        const name = sanitizeKey(key).replace(/^text-/, '');
         typography.lineHeight[name] = `${token.$value}px`;
       }
     }

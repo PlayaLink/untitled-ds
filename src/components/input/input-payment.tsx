@@ -115,7 +115,7 @@ export const PaymentInput = ({ onChange, value, defaultValue, className, maxLeng
                         isDisabled={isDisabled}
                         isInvalid={isInvalid}
                         icon={card.icon}
-                        inputClassName="pl-13"
+                        inputClassName="pl-10"
                         iconClassName="left-2.5 h-6 w-8.5"
                     />
 

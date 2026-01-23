@@ -1,7 +1,7 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 import { HintText } from "./hint-text";
 import type { InputBaseProps } from "./input";
-import { TextField } from "./input";
+import { InputBase, TextField } from "./input";
 import { Label } from "./label";
 import { cx, sortCx } from "@/utils/cx";
 
@@ -36,7 +36,7 @@ export const InputPrefix = ({ isDisabled, children, ...props }: InputPrefixProps
 );
 
 // `${string}ClassName` is used to omit any className prop that ends with a `ClassName` suffix
-interface InputGroupProps extends Omit<InputBaseProps, "type" | "icon" | "placeholder" | "tooltip" | "shortcut" | `${string}ClassName`> {
+interface InputGroupProps extends Omit<InputBaseProps, "type" | "icon" | "tooltip" | "shortcut" | `${string}ClassName`> {
     /** A prefix text that is displayed in the same box as the input.*/
     prefix?: string;
     /** A leading addon that is displayed with visual separation from the input. */
@@ -45,8 +45,8 @@ interface InputGroupProps extends Omit<InputBaseProps, "type" | "icon" | "placeh
     trailingAddon?: ReactNode;
     /** The class name to apply to the input group. */
     className?: string;
-    /** The children of the input group (i.e `<InputBase />`) */
-    children: ReactNode;
+    /** The children of the input group (i.e `<InputBase />`). If not provided, InputBase is rendered internally. */
+    children?: ReactNode;
 }
 
 export const InputGroup = ({ size = "sm", prefix, leadingAddon, trailingAddon, label, hint, children, ...props }: InputGroupProps) => {
@@ -114,7 +114,14 @@ export const InputGroup = ({ size = "sm", prefix, leadingAddon, trailingAddon, l
                             </span>
                         )}
 
-                        {children}
+                        {children || (
+                            <InputBase
+                                {...props}
+                                size={size}
+                                isDisabled={isDisabled}
+                                isInvalid={isInvalid}
+                            />
+                        )}
 
                         {trailingAddon && <section data-trailing={hasTrailing || undefined}>{trailingAddon}</section>}
                     </div>

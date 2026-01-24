@@ -20,14 +20,46 @@ module.exports = {
     textColor: ({ theme }) => ({
       ...theme('colors'),
       ...tokens.textColor,
+      ...tokens.semanticColors,
     }),
     backgroundColor: ({ theme }) => ({
       ...theme('colors'),
       ...tokens.backgroundColor,
+      ...tokens.semanticColors,
     }),
     borderColor: ({ theme }) => ({
       ...theme('colors'),
       ...tokens.borderColor,
+      ...tokens.semanticColors,
+    }),
+    // Map ALL color utilities to semantic tokens for dark mode support
+    ringColor: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.semanticColors,
+    }),
+    outlineColor: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.semanticColors,
+    }),
+    fill: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.semanticColors,
+    }),
+    stroke: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.semanticColors,
+    }),
+    divideColor: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.semanticColors,
+    }),
+    caretColor: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.semanticColors,
+    }),
+    accentColor: ({ theme }) => ({
+      ...theme('colors'),
+      ...tokens.semanticColors,
     }),
     extend: {
       // Width/height utilities from design system (includes intrinsic sizing)

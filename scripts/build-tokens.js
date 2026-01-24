@@ -181,8 +181,13 @@ function extractPrimitiveSpacing(primitives) {
 /**
  * Resolve a token reference like "{Colors.Gray (light mode).900}"
  * Returns the CSS variable reference or the resolved value
+ *
+ * @param {string} value - The value to resolve
+ * @param {object} primitives - Primitive tokens for direct value lookup
+ * @param {boolean} useCssVar - Whether to return CSS var() references
+ * @param {object} componentColorsMap - Map of component color keys to their values (for two-pass resolution)
  */
-function resolveTokenReference(value, primitives, useCssVar = true) {
+function resolveTokenReference(value, primitives, useCssVar = true, componentColorsMap = null) {
   if (typeof value !== 'string') return value;
 
   // Check if it's a reference
@@ -190,6 +195,24 @@ function resolveTokenReference(value, primitives, useCssVar = true) {
   if (!refMatch) return value;
 
   const refPath = refMatch[1];
+
+  // Handle Component colors references like "{Component colors.Utility.Gray.utility-gray-50}"
+  if (refPath.startsWith('Component colors.')) {
+    const pathParts = refPath.replace('Component colors.', '').split('.');
+    // Build a CSS variable name from the path parts
+    // e.g., "Utility.Gray.utility-gray-50" -> "utility-gray-utility-gray-50"
+    const varName = pathParts.map(p => sanitizeKey(p)).join('-');
+
+    // If we have a component colors map, try to resolve directly
+    if (componentColorsMap) {
+      const lookupKey = varName;
+      if (componentColorsMap[lookupKey]) {
+        return componentColorsMap[lookupKey];
+      }
+    }
+
+    return `var(--color-${varName})`;
+  }
 
   // Parse the reference path
   if (refPath.startsWith('Colors.')) {
@@ -241,6 +264,101 @@ function resolveTokenReference(value, primitives, useCssVar = true) {
   }
 
   return value;
+}
+
+/**
+ * Resolve all references in a colors map iteratively.
+ * This handles tokens that reference other tokens (including Component colors references).
+ *
+ * @param {object} colors - Map of color keys to values
+ * @param {object} primitiveColors - Resolved primitive colors for lookup
+ * @param {number} maxIterations - Maximum resolution iterations to prevent infinite loops
+ * @returns {object} - Colors with all references resolved
+ */
+function resolveAllReferences(colors, primitiveColors, maxIterations = 10) {
+  const resolved = { ...colors };
+  let iteration = 0;
+  let hasUnresolvedRefs = true;
+
+  while (hasUnresolvedRefs && iteration < maxIterations) {
+    hasUnresolvedRefs = false;
+    iteration++;
+
+    for (const [key, value] of Object.entries(resolved)) {
+      if (typeof value !== 'string') continue;
+
+      // Check for unresolved Figma references like {Component colors.Utility.Gray.utility-gray-50}
+      const figmaRefMatch = value.match(/^\{([^}]+)\}$/);
+      if (figmaRefMatch) {
+        hasUnresolvedRefs = true;
+        const refPath = figmaRefMatch[1];
+
+        // Handle Component colors references
+        if (refPath.startsWith('Component colors.')) {
+          const pathParts = refPath.replace('Component colors.', '').split('.');
+          const lookupKey = pathParts.map(p => sanitizeKey(p)).join('-');
+
+          // Try to find in our resolved map
+          if (resolved[lookupKey] && resolved[lookupKey] !== value) {
+            resolved[key] = resolved[lookupKey];
+            continue;
+          }
+        }
+
+        // Try standard resolution
+        const newValue = resolveTokenReference(value, {}, false, resolved);
+        if (newValue !== value) {
+          resolved[key] = newValue;
+        }
+      }
+
+      // Check for CSS var references that might need further resolution
+      const varMatch = value.match(/^var\(--color-([^)]+)\)$/);
+      if (varMatch) {
+        const varPath = varMatch[1];
+
+        // Try to resolve from resolved map first
+        if (resolved[varPath] && !resolved[varPath].startsWith('var(')) {
+          resolved[key] = resolved[varPath];
+          continue;
+        }
+
+        // Try to resolve from primitives
+        const parts = varPath.split('-');
+        if (parts.length >= 2) {
+          const colorName = parts.slice(0, -1).join('-');
+          const shade = parts[parts.length - 1];
+
+          if (primitiveColors[colorName] && primitiveColors[colorName][shade]) {
+            resolved[key] = primitiveColors[colorName][shade];
+            continue;
+          }
+
+          // Try longer color names (e.g., "gray-light-900")
+          for (const [name, shades] of Object.entries(primitiveColors)) {
+            if (varPath.startsWith(name + '-')) {
+              const shadeKey = varPath.replace(name + '-', '');
+              if (shades[shadeKey]) {
+                resolved[key] = shades[shadeKey];
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (iteration >= maxIterations) {
+    const unresolvedCount = Object.values(resolved).filter(v =>
+      typeof v === 'string' && (v.includes('{') || v.startsWith('var('))
+    ).length;
+    if (unresolvedCount > 0) {
+      console.warn(`⚠️  ${unresolvedCount} tokens still have unresolved references after ${maxIterations} iterations`);
+    }
+  }
+
+  return resolved;
 }
 
 /**
@@ -318,16 +436,12 @@ function extractSemanticColors(modeTokens, primitives, mode = 'light') {
 }
 
 /**
- * Resolve all references in semantic colors to actual values
+ * Resolve all references in semantic colors to actual values.
+ * Uses two-pass resolution to handle Component colors and other cross-references.
  */
 function resolveSemanticColors(semanticColors, primitiveColors) {
-  const resolved = {};
-
-  for (const [key, value] of Object.entries(semanticColors)) {
-    resolved[key] = resolveValue(value, primitiveColors);
-  }
-
-  return resolved;
+  // Use the new two-pass resolution
+  return resolveAllReferences(semanticColors, primitiveColors);
 }
 
 /**
@@ -751,6 +865,13 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
     borderColor[key] = value;
   }
 
+  // Build unified semanticColors object for ALL color utilities (ring, fill, stroke, etc.)
+  // This allows ring-border-primary, stroke-fg-primary, fill-bg-primary, etc.
+  const semanticColors = {};
+  for (const [key] of Object.entries(lightSemanticColors)) {
+    semanticColors[key] = `var(--color-${key})`;
+  }
+
   // Build spacing object (primitive + semantic)
   const spacing = {};
   for (const [key, value] of Object.entries(primitiveSpacing)) {
@@ -854,7 +975,11 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
 module.exports = {
   colors: ${formatJsObject(colors)},
 
-  // Utility-specific semantic colors
+  // Unified semantic colors for ALL color utilities (ring, fill, stroke, divide, etc.)
+  // Use these with: ring-border-primary, stroke-fg-primary, fill-bg-primary, etc.
+  semanticColors: ${formatJsObject(semanticColors)},
+
+  // Utility-specific semantic colors (legacy - for backward compatibility)
   // These allow text-primary, bg-primary, border-primary to use semantic CSS variables
   textColor: ${formatJsObject(textColor)},
 

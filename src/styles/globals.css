@@ -1,6 +1,6 @@
+@import './tokens.css';
 @import 'tailwindcss';
 @config '../../tailwind.config.cjs';
-@import './tokens.css';
 
 /* Intrinsic sizing utilities - required because custom spacing replaces Tailwind defaults */
 @theme {

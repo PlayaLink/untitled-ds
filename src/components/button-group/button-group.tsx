@@ -14,23 +14,23 @@ import { isReactComponent } from '@/utils/is-react-component'
 
 export const styles = sortCx({
   group: [
-    'inline-flex w-fit overflow-hidden rounded-lg shadow-xs ring-1 ring-gray-300',
+    'inline-flex w-fit overflow-hidden rounded-lg shadow-xs ring-1 ring-border-primary',
   ].join(' '),
   item: {
     base: [
-      'relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap bg-base-white px-4 py-2 text-sm font-semibold text-gray-700 transition duration-100 ease-linear',
+      'relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap bg-primary px-4 py-2 text-sm font-semibold text-secondary transition duration-100 ease-linear',
       'outline-none focus-visible:z-10 focus-visible:ring-4 focus-visible:ring-brand-100',
-      'hover:bg-gray-50 hover:text-gray-800',
-      'selected:bg-gray-50 selected:text-gray-900',
-      'disabled:cursor-not-allowed disabled:bg-base-white disabled:text-gray-400',
+      'hover:bg-secondary hover:text-secondary-hover',
+      'selected:bg-secondary selected:text-primary',
+      'disabled:cursor-not-allowed disabled:bg-primary disabled:text-disabled',
       // Divider between items (all items except last)
-      'border-r border-gray-300 last:border-r-0',
+      'border-r border-primary last:border-r-0',
     ].join(' '),
     iconOnly: 'px-3',
     dot: 'gap-2',
   },
-  icon: 'pointer-events-none size-5 shrink-0 text-gray-500',
-  iconSelected: 'text-gray-700',
+  icon: 'pointer-events-none size-5 shrink-0 text-tertiary',
+  iconSelected: 'text-secondary',
   dot: 'size-2.5 shrink-0 rounded-full',
 })
 

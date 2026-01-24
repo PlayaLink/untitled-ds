@@ -77,15 +77,36 @@ Create `<component>.stories.tsx` with exactly **3 stories**:
 
 **Do NOT use autodocs.** See `storybook-stories.mdc` for full patterns.
 
-### 7. Validate Tokens
+### 7. Replace Primitives with Semantic Tokens (Dark Mode)
+
+**CRITICAL for dark mode support.** Untitled UI imports use primitive colors that don't respond to theme changes. Replace grayscale primitives with semantic tokens:
+
+| Replace | With |
+|---------|------|
+| `text-gray-900` | `text-primary` |
+| `text-gray-700`, `text-gray-800` | `text-secondary` |
+| `text-gray-500`, `text-gray-600` | `text-tertiary` |
+| `text-gray-400` | `text-disabled` or `text-quaternary` |
+| `bg-base-white` | `bg-primary` |
+| `bg-gray-50` | `bg-secondary` |
+| `bg-gray-100` | `bg-tertiary` |
+| `border-gray-300`, `ring-gray-300` | `border-primary`, `ring-border-primary` |
+| `border-gray-200`, `ring-gray-200` | `border-secondary`, `ring-border-secondary` |
+
+**Keep primitives** for intentionally static colors (brand badges, status indicators, colored variants).
+
+See `design-tokens.mdc` for full mapping reference.
+
+### 8. Validate in Storybook
 
 Check Storybook for visual issues. If styles look wrong:
 1. Identify missing tokens
 2. Update `tailwind.config.js`
 3. Update `tokens/figma-update.json`
 4. Notify user of token gaps
+5. **Test dark mode toggle** - verify component responds to theme changes
 
-### 8. Export from Index
+### 9. Export from Index
 
 Update the component's barrel file and root exports:
 

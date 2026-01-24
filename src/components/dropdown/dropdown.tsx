@@ -128,7 +128,7 @@ export function Dropdown({
         return avatarSrc ? (
           <img src={avatarSrc} alt={avatarAlt} className={styles.avatar.image} />
         ) : (
-          <div className={cx(styles.avatar.image, 'bg-gray-200')} />
+          <div className={cx(styles.avatar.image, 'bg-tertiary')} />
         )
       default:
         return null

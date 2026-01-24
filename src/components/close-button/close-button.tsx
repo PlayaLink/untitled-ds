@@ -70,9 +70,9 @@ export const styles = sortCx({
   variants: {
     light: {
       root: cx(
-        'text-gray-500',
-        'hover:bg-gray-50 hover:text-gray-700',
-        'pressed:bg-gray-100'
+        'text-tertiary',
+        'hover:bg-secondary hover:text-secondary',
+        'pressed:bg-tertiary'
       ),
     },
     dark: {
@@ -80,7 +80,7 @@ export const styles = sortCx({
         'text-white/70',
         'hover:bg-white/20 hover:text-white',
         'pressed:bg-white/30',
-        'focus-visible:ring-offset-gray-900'
+        'focus-visible:ring-offset-bg-primary-solid'
       ),
     },
   },

@@ -534,6 +534,12 @@ function generateCSS(primitiveColors, primitiveSpacing, lightSemanticColors, dar
   let css = `/**
  * Design Tokens - Generated from Figma
  * DO NOT EDIT MANUALLY - Run \`npm run build:tokens\` to regenerate
+ *
+ * DARK MODE: Components should use semantic tokens (--color-text-*, --color-bg-*, --color-border-*)
+ * instead of primitive color scales for grayscale colors. Semantic tokens automatically
+ * adapt to the theme via [data-theme="dark"] selector.
+ *
+ * Toggle dark mode: document.documentElement.dataset.theme = "dark"
  */
 
 :root {
@@ -832,6 +838,17 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
   const config = `/**
  * Tailwind Design Tokens - Generated from Figma
  * DO NOT EDIT MANUALLY - Run \`npm run build:tokens\` to regenerate
+ *
+ * DARK MODE SUPPORT:
+ * For components to properly respond to dark mode, use SEMANTIC tokens instead of primitives:
+ *
+ * ❌ DON'T: text-gray-700, bg-gray-50, border-gray-300, ring-gray-200
+ * ✅ DO:    text-secondary, bg-secondary, border-primary, ring-border-secondary
+ *
+ * Semantic tokens use CSS variables that change with [data-theme="dark"].
+ * Primitive color scales (gray-light, brand, error, etc.) are static values.
+ *
+ * See .cursor/rules/design-tokens.mdc for the full mapping reference.
  */
 
 module.exports = {

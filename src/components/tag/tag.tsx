@@ -16,7 +16,7 @@ import { Icon, type IconSize } from '@/components/icon'
 export type TagSize = 'sm' | 'md' | 'lg'
 
 export const styles = sortCx({
-  base: 'inline-flex items-center font-medium whitespace-nowrap bg-base-white ring-1 ring-inset ring-gray-300 text-gray-700',
+  base: 'inline-flex items-center font-medium whitespace-nowrap bg-primary ring-1 ring-inset ring-border-primary text-secondary',
   interactive: 'cursor-pointer transition-colors duration-100 outline-none focus-visible:ring-2 focus-visible:ring-brand-500/24 focus-visible:ring-offset-1',
   size: {
     sm: {
@@ -38,21 +38,21 @@ export const styles = sortCx({
       closeButton: 'size-5 -mr-0.5',
     },
   },
-  icon: 'shrink-0 text-gray-500',
+  icon: 'shrink-0 text-tertiary',
   avatar: {
     sm: 'size-4 -ml-0.5 rounded-full object-cover',
     md: 'size-5 -ml-0.5 rounded-full object-cover',
     lg: 'size-6 -ml-0.5 rounded-full object-cover',
   },
   count: {
-    sm: 'inline-flex items-center justify-center rounded px-1 py-px text-xs font-medium bg-gray-100 text-gray-700 min-w-[18px]',
-    md: 'inline-flex items-center justify-center rounded px-1.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 min-w-[20px]',
-    lg: 'inline-flex items-center justify-center rounded-md px-1.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 min-w-[22px]',
+    sm: 'inline-flex items-center justify-center rounded px-1 py-px text-xs font-medium bg-tertiary text-secondary min-w-[18px]',
+    md: 'inline-flex items-center justify-center rounded px-1.5 py-0.5 text-xs font-medium bg-tertiary text-secondary min-w-[20px]',
+    lg: 'inline-flex items-center justify-center rounded-md px-1.5 py-0.5 text-xs font-medium bg-tertiary text-secondary min-w-[22px]',
   },
-  closeButton: 'inline-flex items-center justify-center rounded text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors',
+  closeButton: 'inline-flex items-center justify-center rounded text-quaternary hover:text-tertiary hover:bg-tertiary transition-colors',
   checkbox: {
     base: 'group inline-flex items-center justify-center rounded border transition-colors cursor-pointer',
-    unchecked: 'bg-base-white border-gray-300',
+    unchecked: 'bg-primary border-primary',
     checked: 'bg-brand-600 border-brand-600',
     sm: 'size-3.5',
     md: 'size-4',

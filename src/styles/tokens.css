@@ -1,6 +1,12 @@
 /**
  * Design Tokens - Generated from Figma
  * DO NOT EDIT MANUALLY - Run `npm run build:tokens` to regenerate
+ *
+ * DARK MODE: Components should use semantic tokens (--color-text-*, --color-bg-*, --color-border-*)
+ * instead of primitive color scales for grayscale colors. Semantic tokens automatically
+ * adapt to the theme via [data-theme="dark"] selector.
+ *
+ * Toggle dark mode: document.documentElement.dataset.theme = "dark"
  */
 
 :root {

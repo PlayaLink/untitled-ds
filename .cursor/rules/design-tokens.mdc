@@ -51,6 +51,65 @@ The generated CSS includes `@media (prefers-color-scheme: dark)` for automatic s
 - **Config reference:** `@config '../../tailwind.config.cjs'`
 - **Semantic aliases:** `primary` (brand), `destructive` (error)
 
+## Semantic vs Primitive Tokens (Dark Mode Support)
+
+**CRITICAL:** For dark mode to work, components MUST use semantic tokens instead of primitive color scales for grayscale colors.
+
+### ❌ DON'T use primitive gray tokens (won't respond to dark mode):
+```typescript
+// These are static values that won't change with theme
+'text-gray-900'    // Always #181d27
+'text-gray-700'    // Always #414651
+'text-gray-500'    // Always #717680
+'bg-gray-50'       // Always #fafafa
+'bg-gray-100'      // Always #f5f5f5
+'border-gray-300'  // Always #d5d7da
+'ring-gray-300'    // Always #d5d7da
+```
+
+### ✅ DO use semantic tokens (responds to dark mode):
+```typescript
+// These use CSS variables that change with [data-theme="dark"]
+'text-primary'           // Main text (gray-900 in light, gray-dark-50 in dark)
+'text-secondary'         // Secondary text (gray-700 in light, gray-dark-300 in dark)
+'text-tertiary'          // Muted text (gray-600 in light, gray-dark-400 in dark)
+'text-quaternary'        // Very muted (gray-500 in light, gray-dark-400 in dark)
+'text-disabled'          // Disabled text
+'text-placeholder'       // Placeholder text
+
+'bg-primary'             // Main background (white in light, gray-dark-950 in dark)
+'bg-secondary'           // Subtle background (gray-50 in light, gray-dark-900 in dark)
+'bg-tertiary'            // Slightly darker (gray-100 in light, gray-dark-800 in dark)
+'bg-primary-hover'       // Hover state for primary bg
+'bg-secondary-hover'     // Hover state for secondary bg
+
+'border-primary'         // Main borders (gray-300 in light, gray-dark-700 in dark)
+'border-secondary'       // Subtle borders (gray-200 in light, gray-dark-800 in dark)
+'ring-border-primary'    // For ring-* utilities
+'ring-border-secondary'  // For ring-* utilities
+```
+
+### Mapping Reference (Light → Semantic):
+| Primitive | Semantic Token |
+|-----------|----------------|
+| `text-gray-900` | `text-primary` |
+| `text-gray-700` | `text-secondary` |
+| `text-gray-600` | `text-tertiary` |
+| `text-gray-500` | `text-tertiary` or `text-quaternary` |
+| `text-gray-400` | `text-disabled` |
+| `bg-base-white` | `bg-primary` |
+| `bg-gray-50` | `bg-secondary` |
+| `bg-gray-100` | `bg-tertiary` |
+| `border-gray-300` | `border-primary` |
+| `border-gray-200` | `border-secondary` |
+| `ring-gray-300` | `ring-border-primary` |
+| `ring-gray-200` | `ring-border-secondary` |
+
+### When to Keep Primitives:
+- **Colored badges/pills** (brand, error, warning, success colors) - these should be consistent across themes
+- **Brand colors** (brand-500, brand-600) - intentionally static
+- **Status colors** (error-500, success-500) - intentionally static
+
 ## Utilities
 
 Use `cx()` from `@/cx` for className merging (wraps tailwind-merge).

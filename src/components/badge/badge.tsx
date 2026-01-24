@@ -35,7 +35,7 @@ export const styles = sortCx({
   type: {
     'pill-color': 'rounded-full',
     'badge-color': 'rounded-md',
-    'badge-modern': 'rounded-md shadow-xs bg-base-white text-gray-700 ring-gray-300',
+    'badge-modern': 'rounded-md shadow-xs bg-primary text-secondary ring-border-primary',
   },
   size: {
     sm: {
@@ -53,9 +53,9 @@ export const styles = sortCx({
   },
   color: {
     gray: {
-      root: 'bg-gray-50 text-gray-700 ring-gray-200',
-      rootInteractive: 'bg-gray-50 text-gray-700 ring-gray-200 hover:bg-gray-100 focus-visible:ring-gray-300',
-      icon: 'text-gray-500',
+      root: 'bg-secondary text-secondary ring-border-secondary',
+      rootInteractive: 'bg-secondary text-secondary ring-border-secondary hover:bg-tertiary focus-visible:ring-border-primary',
+      icon: 'text-tertiary',
     },
     brand: {
       root: 'bg-brand-50 text-brand-700 ring-brand-200',

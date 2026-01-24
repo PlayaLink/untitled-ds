@@ -42,13 +42,13 @@ export const styles = sortCx({
   // Trigger button
   trigger: {
     base: [
-      'group inline-flex w-full items-center justify-between gap-2 bg-base-white text-gray-900',
-      'ring-1 ring-inset ring-gray-300',
+      'group inline-flex w-full items-center justify-between gap-2 bg-primary text-primary',
+      'ring-1 ring-inset ring-border-primary',
       'outline-none transition-all duration-100',
-      'hover:ring-gray-400',
+      'hover:ring-border-brand',
       'focus:ring-2 focus:ring-brand-500',
       'data-[open]:ring-2 data-[open]:ring-brand-500',
-      'disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500',
+      'disabled:cursor-not-allowed disabled:bg-secondary disabled:text-tertiary',
     ].join(' '),
     size: {
       sm: 'h-10 rounded-lg px-3 py-2 text-sm',
@@ -58,12 +58,12 @@ export const styles = sortCx({
   // Value display area
   value: {
     base: 'flex flex-1 items-center gap-2 truncate text-left',
-    placeholder: 'text-gray-500',
+    placeholder: 'text-placeholder',
   },
   // Icon styles
   icon: {
-    sm: 'size-4 shrink-0 text-gray-500',
-    md: 'size-5 shrink-0 text-gray-500',
+    sm: 'size-4 shrink-0 text-tertiary',
+    md: 'size-5 shrink-0 text-tertiary',
   },
   // Avatar styles
   avatar: {
@@ -71,12 +71,12 @@ export const styles = sortCx({
     md: 'size-6 shrink-0 rounded-full object-cover',
   },
   // Chevron icon
-  chevron: 'shrink-0 text-gray-500 transition-transform duration-200 group-data-[open]:rotate-180',
+  chevron: 'shrink-0 text-tertiary transition-transform duration-200 group-data-[open]:rotate-180',
   // Popover dropdown
   popover: {
     base: [
-      'w-[var(--trigger-width)] overflow-hidden rounded-lg bg-base-white shadow-lg',
-      'ring-1 ring-gray-200',
+      'w-[var(--trigger-width)] overflow-hidden rounded-lg bg-primary shadow-lg',
+      'ring-1 ring-border-secondary',
       'entering:animate-in entering:fade-in entering:zoom-in-95',
       'exiting:animate-out exiting:fade-out exiting:zoom-out-95',
     ].join(' '),
@@ -88,11 +88,11 @@ export const styles = sortCx({
   // ListBox item
   item: {
     base: [
-      'flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-gray-900 outline-none',
-      'hover:bg-gray-50',
-      'focus:bg-gray-50',
-      'data-[selected]:bg-gray-50',
-      'data-[disabled]:cursor-not-allowed data-[disabled]:text-gray-400',
+      'flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-primary outline-none',
+      'hover:bg-secondary',
+      'focus:bg-secondary',
+      'data-[selected]:bg-secondary',
+      'data-[disabled]:cursor-not-allowed data-[disabled]:text-disabled',
     ].join(' '),
     size: {
       sm: 'py-2 text-sm',
@@ -103,7 +103,7 @@ export const styles = sortCx({
   checkIcon: 'ml-auto shrink-0 text-brand-600',
   // Label
   label: {
-    base: 'mb-1.5 block text-sm font-medium text-gray-700',
+    base: 'mb-1.5 block text-sm font-medium text-secondary',
   },
 })
 
@@ -162,7 +162,7 @@ export function Select<T extends object = SelectOption>({
           <Icon
             name="circle"
             size={dotIconSizeMap[selectSize]}
-            className={option.dotColor || 'text-gray-500'}
+            className={option.dotColor || 'text-tertiary'}
           />
         )}
         {renderIcon(option.iconLeading, selectSize)}

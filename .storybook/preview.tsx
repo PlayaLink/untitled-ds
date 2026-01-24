@@ -27,6 +27,8 @@ const preview: Preview = {
       const theme = context.globals.theme || 'light';
       // Set theme synchronously before render
       document.documentElement.setAttribute('data-theme', theme);
+      // Set background color on Storybook's body based on theme
+      document.body.style.backgroundColor = theme === 'dark' ? 'var(--color-bg-primary)' : '';
       return <Story />;
     },
   ],

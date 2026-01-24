@@ -121,6 +121,40 @@ When Tailwind generates utilities like `ring-border-primary`, they reference the
 
 **Important:** Do NOT add semantic colors to `@theme` blocks in `globals.css` - this creates circular references that break the dark mode cascade.
 
+## Available Color Utilities
+
+All these Tailwind utilities support semantic tokens for dark mode:
+
+| Utility | Example | Use Case |
+|---------|---------|----------|
+| `text-*` | `text-primary`, `text-secondary` | Text color |
+| `bg-*` | `bg-primary`, `bg-secondary` | Background color |
+| `border-*` | `border-primary`, `border-secondary` | Border color |
+| `ring-*` | `ring-border-primary`, `ring-border-error` | Focus rings, outlines |
+| `fill-*` | `fill-fg-primary` | SVG fill color |
+| `stroke-*` | `stroke-fg-primary` | SVG stroke color |
+| `divide-*` | `divide-border-secondary` | Divider lines |
+| `outline-*` | `outline-border-primary` | Outline color |
+| `caret-*` | `caret-fg-primary` | Text cursor color |
+| `accent-*` | `accent-bg-brand-primary` | Form accent color |
+
+## Troubleshooting
+
+### Dark Mode Not Working
+
+1. **Check `data-theme` attribute**: Ensure `<html data-theme="dark">` is set
+2. **Verify CSS variables exist**: In DevTools, check that `--color-border-primary` etc. are defined on `:root`
+3. **Disable browser extensions**: Dark Reader and similar extensions override all colors and will break your design system's dark mode
+
+### Browser Extension Interference
+
+If colors look wrong or `box-shadow: none` appears unexpectedly, check for browser extensions like **Dark Reader** that modify page colors. These extensions:
+- Override CSS custom properties
+- Remove shadows
+- Replace your carefully designed dark mode with their own
+
+Add sites to extension exclusion lists when developing.
+
 ## Utilities
 
 Use `cx()` from `@/cx` for className merging (wraps tailwind-merge).

@@ -55,12 +55,12 @@ export const styles = sortCx({
   // Arrow styles
   arrow: {
     base: 'size-2.5 fill-bg-primary-solid',
-    placement: [
-      'in-placement-left:-rotate-90',
-      'in-placement-right:rotate-90',
-      'in-placement-top:rotate-0',
-      'in-placement-bottom:rotate-180',
-    ].join(' '),
+    placement: {
+      top: 'rotate-0',
+      bottom: 'rotate-180',
+      left: '-rotate-90',
+      right: 'rotate-90',
+    },
   },
   // Trigger styles
   trigger: {
@@ -138,27 +138,36 @@ export function Tooltip({
           )
         }
       >
-        {({ isEntering, isExiting }) => (
-          <div
-            className={cx(
-              styles.container.base,
-              description ? styles.container.withDescription : styles.container.withoutDescription,
-              isEntering && styles.animation.entering,
-              isExiting && styles.animation.exiting
-            )}
-          >
-            <span className={styles.text.title}>{title}</span>
-
-            {description && <span className={styles.text.description}>{description}</span>}
-
+        {({ isEntering, isExiting, placement: actualPlacement }) => (
+          <>
             {arrow && (
               <AriaOverlayArrow>
-                <svg viewBox="0 0 100 100" className={cx(styles.arrow.base, styles.arrow.placement)}>
+                <svg
+                  viewBox="0 0 100 100"
+                  className={cx(
+                    styles.arrow.base,
+                    styles.arrow.placement[
+                      (actualPlacement?.split(' ')[0] as keyof typeof styles.arrow.placement) ?? 'top'
+                    ]
+                  )}
+                >
                   <path d="M0,0 L35.858,35.858 Q50,50 64.142,35.858 L100,0 Z" />
                 </svg>
               </AriaOverlayArrow>
             )}
-          </div>
+            <div
+              className={cx(
+                styles.container.base,
+                description ? styles.container.withDescription : styles.container.withoutDescription,
+                isEntering && styles.animation.entering,
+                isExiting && styles.animation.exiting
+              )}
+            >
+              <span className={styles.text.title}>{title}</span>
+
+              {description && <span className={styles.text.description}>{description}</span>}
+            </div>
+          </>
         )}
       </AriaTooltip>
     </AriaTooltipTrigger>

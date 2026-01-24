@@ -35,8 +35,9 @@
     "@fortawesome/free-regular-svg-icons": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
-    "react-aria-components": "^1.9.0",
-    "tailwind-merge": "^3.0.0"
+    "@untitledui/icons": "^0.0.20",
+    "react-aria-components": "^1.14.0",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^8.5.0",

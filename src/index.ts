@@ -16,6 +16,9 @@ export { Label, type LabelProps } from './components/input'
 export { HintText, type HintTextProps } from './components/input'
 export { Toggle, ToggleBase, type ToggleProps, type ToggleSize, type ToggleType, styles as toggleStyles } from './components/toggle'
 export { Checkbox, CheckboxBase, type CheckboxProps, type CheckboxSize, type CheckboxType, styles as checkboxStyles } from './components/checkbox'
+export { ColorSelect, type ColorSelectProps, styles as colorSelectStyles } from './components/color-select'
+export { ProgressBar, type ProgressBarProps, type ProgressBarLabelPosition, styles as progressBarStyles } from './components/progress-bar'
+export { Slider, type SliderProps, type SliderLabelPosition, styles as sliderStyles } from './components/slider'
 
 // Utilities
 export { cx, sortCx } from './utils/cx'

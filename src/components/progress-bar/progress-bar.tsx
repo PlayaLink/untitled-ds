@@ -24,14 +24,19 @@ export const styles = sortCx({
   track: 'relative h-2 w-full overflow-hidden rounded-full bg-secondary',
   // Progress indicator
   indicator: 'h-full rounded-full bg-brand-600 transition-[width] duration-300 ease-out',
-  // Label text
-  label: 'text-sm font-medium text-secondary tabular-nums',
+  // Label text (inline labels)
+  label: {
+    base: 'tabular-nums',
+    inline: 'text-sm font-medium text-secondary',
+    // Floating tooltip-style label (from _Control handle Figma component)
+    floating: 'rounded-lg border border-primary bg-primary px-3 py-2 text-xs font-semibold text-tertiary shadow-lg',
+  },
   // Label positioning
   labelPosition: {
     right: 'shrink-0',
     bottom: 'self-end',
-    'top-floating': 'absolute -top-6',
-    'bottom-floating': 'absolute -bottom-6',
+    'top-floating': 'absolute bottom-full mb-2',
+    'bottom-floating': 'absolute top-full mt-2',
     none: '',
   },
   // Container for floating labels (needs relative positioning)

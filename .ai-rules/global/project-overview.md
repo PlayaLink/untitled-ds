@@ -1,5 +1,5 @@
 ---
-alwaysApply: true
+description: Project overview, commands, and path aliases
 ---
 
 # Project Overview

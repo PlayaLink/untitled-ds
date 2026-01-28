@@ -1,6 +1,11 @@
 ---
-alwaysApply: false
+description: Design token architecture and dark mode support
+globs:
+  - "**/styles/**"
+  - "**/tokens/**"
+  - "**/tailwind.config.*"
 ---
+
 # Design Token Architecture
 
 ## Token Flow

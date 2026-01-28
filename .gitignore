@@ -29,6 +29,12 @@ storybook-static/
 mcp.json
 .claude/mcp.json
 
+# AI agent generated files (source of truth is .ai-rules/)
+.cursor/rules/
+.claude/rules/
+.claude/skills/
+.claude/settings.local.json
+
 # Debug logs
 npm-debug.log*
 yarn-debug.log*

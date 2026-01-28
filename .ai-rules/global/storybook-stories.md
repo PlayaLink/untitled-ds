@@ -1,5 +1,5 @@
 ---
-alwaysApply: true
+description: Storybook story structure and guidelines
 ---
 
 # Storybook Stories Guidelines

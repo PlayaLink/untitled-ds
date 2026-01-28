@@ -1,5 +1,5 @@
 ---
-alwaysApply: true
+description: Conventional commit format and guidelines for git commits
 ---
 
 # Commit Message Conventions

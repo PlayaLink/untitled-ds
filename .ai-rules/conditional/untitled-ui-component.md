@@ -1,5 +1,7 @@
 ---
-alwaysApply: false
+description: Workflow for implementing full Untitled UI components
+globs:
+  - "**/components/**"
 ---
 
 # Untitled UI Component Workflow
@@ -75,7 +77,7 @@ Create `<component>.stories.tsx` with exactly **3 stories**:
 | `Props` | Interactive playground with `tags: ['show-panel']` |
 | `SourceCodeAndDesign` | Links to GitHub source and Figma design |
 
-**Do NOT use autodocs.** See `storybook-stories.mdc` for full patterns.
+**Do NOT use autodocs.** See `storybook-stories.md` for full patterns.
 
 ### 7. Replace Primitives with Semantic Tokens (Dark Mode)
 
@@ -95,7 +97,7 @@ Create `<component>.stories.tsx` with exactly **3 stories**:
 
 **Keep primitives** for intentionally static colors (brand badges, status indicators, colored variants).
 
-See `design-tokens.mdc` for full mapping reference.
+See `design-tokens.md` for full mapping reference.
 
 ### 8. Validate in Storybook
 

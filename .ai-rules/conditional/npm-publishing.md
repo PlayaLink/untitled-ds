@@ -1,6 +1,10 @@
 ---
-alwaysApply: false
+description: NPM package distribution and publishing workflow
+globs:
+  - "**/package.json"
+  - "**/dist/**"
 ---
+
 # NPM Package Distribution
 
 This design system is distributed as an NPM package. Components are imported as dependencies and cannot be modified by consumers.

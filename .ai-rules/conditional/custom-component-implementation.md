@@ -1,5 +1,7 @@
 ---
-alwaysApply: false
+description: Workflow for implementing simplified/customized components
+globs:
+  - "**/components/**"
 ---
 
 # Custom Component Implementation Workflow
@@ -106,4 +108,3 @@ src/components/<name>/
 ├── <name>.stories.tsx   # Stories for Figma variants only
 └── index.ts             # Barrel exports
 ```
-

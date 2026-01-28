@@ -80,7 +80,7 @@ export const styles = sortCx({
     'cursor-pointer rounded-md text-fg-quaternary outline-focus-ring transition duration-100 ease-linear',
     'hover:text-fg-quaternary_hover pressed:text-fg-quaternary_hover',
     'focus-visible:outline-2 focus-visible:outline-offset-2',
-    '[&[aria-expanded=true]]:outline-2 [&[aria-expanded=true]]:outline-offset-2',
+    'data-[open]:outline-2 data-[open]:outline-offset-2',
   ].join(' '),
 })
 

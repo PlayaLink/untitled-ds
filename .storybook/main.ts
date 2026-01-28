@@ -3,7 +3,7 @@ import { mergeConfig } from 'vite'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const currentDir = dirname(fileURLToPath(import.meta.url))
 
 const config: StorybookConfig = {
   stories: [
@@ -21,7 +21,7 @@ const config: StorybookConfig = {
       plugins: [tailwindcss()],
       resolve: {
         alias: {
-          '@': resolve(__dirname, '../src'),
+          '@': resolve(currentDir, '../src'),
         },
       },
     })

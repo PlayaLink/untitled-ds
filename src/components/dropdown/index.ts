@@ -5,5 +5,4 @@ export {
   type DropdownMenuProps,
   type DropdownPopoverProps,
   type DropdownSeparatorProps,
-  type DropdownDotsButtonProps,
 } from './dropdown'

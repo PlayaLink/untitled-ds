@@ -23,16 +23,14 @@
  */
 'use client'
 
-import type { FC, RefAttributes } from 'react'
+import type { FC } from 'react'
 import type {
-  ButtonProps as AriaButtonProps,
   MenuItemProps as AriaMenuItemProps,
   MenuProps as AriaMenuProps,
   PopoverProps as AriaPopoverProps,
   SeparatorProps as AriaSeparatorProps,
 } from 'react-aria-components'
 import {
-  Button as AriaButton,
   Header as AriaHeader,
   Menu as AriaMenu,
   MenuItem as AriaMenuItem,
@@ -42,7 +40,6 @@ import {
   Separator as AriaSeparator,
 } from 'react-aria-components'
 import { cx, sortCx } from '@/utils/cx'
-import { Icon } from '@/components/icon'
 
 // =============================================================================
 // Styles
@@ -76,11 +73,6 @@ export const styles = sortCx({
     addonDisabled: 'text-disabled',
   },
   separator: 'my-1 h-px w-full bg-border-secondary',
-  dotsButton: [
-    'cursor-pointer rounded-md text-fg-quaternary outline-focus-ring transition duration-100 ease-linear',
-    'hover:text-fg-quaternary_hover pressed:text-fg-quaternary_hover',
-    'aria-expanded:outline-2 aria-expanded:outline-offset-2',
-  ].join(' '),
 })
 
 // =============================================================================
@@ -103,8 +95,6 @@ export interface DropdownMenuProps<T extends object> extends AriaMenuProps<T> {}
 export interface DropdownPopoverProps extends AriaPopoverProps {}
 
 export interface DropdownSeparatorProps extends AriaSeparatorProps {}
-
-export interface DropdownDotsButtonProps extends AriaButtonProps, RefAttributes<HTMLButtonElement> {}
 
 // =============================================================================
 // Components
@@ -208,23 +198,6 @@ const DropdownSeparator = (props: DropdownSeparatorProps) => {
   return <AriaSeparator {...props} className={cx(styles.separator, props.className)} />
 }
 
-const DropdownDotsButton = (props: DropdownDotsButtonProps) => {
-  return (
-    <AriaButton
-      {...props}
-      aria-label="Open menu"
-      className={(state) =>
-        cx(
-          styles.dotsButton,
-          typeof props.className === 'function' ? props.className(state) : props.className
-        )
-      }
-    >
-      <Icon name="dots-vertical" size="lg" className="transition-inherit-all" />
-    </AriaButton>
-  )
-}
-
 // =============================================================================
 // Compound Export
 // =============================================================================
@@ -235,7 +208,7 @@ const DropdownDotsButton = (props: DropdownDotsButtonProps) => {
  * @example
  * ```tsx
  * <Dropdown.Root>
- *   <Dropdown.DotsButton />
+ *   <Button iconLeading={DotsVerticalIcon} aria-label="Open menu" />
  *   <Dropdown.Popover>
  *     <Dropdown.Menu onAction={(key) => console.log(key)}>
  *       <Dropdown.Item id="edit">Edit</Dropdown.Item>
@@ -260,6 +233,4 @@ export const Dropdown = {
   Item: DropdownItem,
   /** Visual separator between items. */
   Separator: DropdownSeparator,
-  /** Pre-styled trigger button with dots-vertical icon. */
-  DotsButton: DropdownDotsButton,
 }

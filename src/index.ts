@@ -21,6 +21,25 @@ export { ProgressBar, type ProgressBarProps, type ProgressBarLabelPosition, styl
 export { Slider, type SliderProps, type SliderLabelPosition, styles as sliderStyles } from './components/slider'
 export { ProgressCircle, type ProgressCircleProps, type ProgressCircleSize, type ProgressCircleShape, styles as progressCircleStyles } from './components/progress-circle'
 
+// Avatar
+export {
+  Avatar,
+  styles as avatarStyles,
+  type AvatarProps,
+  type AvatarSize,
+  AvatarLabelGroup,
+  labelGroupStyles as avatarLabelGroupStyles,
+  type AvatarLabelGroupProps,
+  type AvatarLabelGroupSize,
+  AvatarProfilePhoto,
+  profilePhotoStyles as avatarProfilePhotoStyles,
+  type AvatarProfilePhotoProps,
+  type AvatarProfilePhotoSize,
+  AvatarOnlineIndicator,
+  AvatarCompanyIcon,
+  VerifiedTick,
+} from './components/avatar'
+
 // Sidebar Navigation
 export {
   SidebarNavigation,

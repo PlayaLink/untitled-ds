@@ -7,7 +7,7 @@ export { Badge, type BadgeProps, type BadgeSize, type BadgeType, type BadgeColor
 export { Tag, type TagProps, type TagSize, styles as tagStyles } from './components/tag'
 export { Select, type SelectProps, type SelectOption, type SelectSize, styles as selectStyles } from './components/select'
 export { MenuItem, MenuDivider, type MenuItemProps, styles as menuItemStyles } from './components/menu-item'
-export { Dropdown, type DropdownProps, type DropdownTriggerType, styles as dropdownStyles } from './components/dropdown'
+export { Dropdown, type DropdownItemProps, type DropdownMenuProps, type DropdownPopoverProps, styles as dropdownStyles } from './components/dropdown'
 export { Tooltip, TooltipTrigger, type TooltipProps, type TooltipTriggerProps, styles as tooltipStyles } from './components/tooltip'
 export { Input, InputBase, TextField, type InputProps, type InputBaseProps } from './components/input'
 export { InputGroup, InputPrefix, type InputGroupProps } from './components/input'

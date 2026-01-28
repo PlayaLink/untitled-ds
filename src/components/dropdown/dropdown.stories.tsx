@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Dropdown, type DropdownTriggerType } from './dropdown'
-import { MenuItem, MenuDivider } from '../menu-item/menu-item'
+import { Dropdown } from './dropdown'
 import { Button } from '../button/button'
+import { Avatar } from '../avatar/avatar'
 import { createIcon } from '@/components/icon'
 
 // Icon components for demos using the centralized Icon component
@@ -14,86 +14,26 @@ const LogOutIcon = createIcon('log-out')
 const GitHubIcon = createIcon('github')
 const FigmaIcon = createIcon('figma')
 
-const meta: Meta<typeof Dropdown> = {
+const meta: Meta<typeof Dropdown.Menu> = {
   title: 'Components/Dropdown',
-  component: Dropdown,
+  component: Dropdown.Menu,
   parameters: {
     layout: 'centered',
-  },
-  argTypes: {
-    // Appearance props
-    triggerType: {
-      name: 'triggerType (Type)',
-      control: 'select',
-      options: ['icon', 'button', 'avatar'],
-      description: 'The type of trigger to display',
-      table: { category: 'Appearance' },
-    },
-    triggerLabel: {
-      control: 'text',
-      description: 'Label for button trigger type',
-      table: { category: 'Appearance' },
-    },
-    avatarSrc: {
-      control: 'text',
-      description: 'Avatar image URL for avatar trigger type',
-      table: { category: 'Appearance' },
-    },
-    avatarAlt: {
-      control: 'text',
-      description: 'Avatar alt text',
-      table: { category: 'Appearance' },
-    },
-    // State props
-    isDisabled: {
-      name: 'isDisabled (State)',
-      control: 'boolean',
-      description: 'Whether the trigger is disabled',
-      table: { category: 'State' },
-    },
-    // Icons
-    triggerIcon: {
-      control: false,
-      description: 'Custom icon for icon trigger type',
-      table: { category: 'Icons' },
-    },
-    // Advanced props
-    triggerClassName: {
-      control: false,
-      table: { category: 'Advanced' },
-    },
-    popoverClassName: {
-      control: false,
-      table: { category: 'Advanced' },
-    },
-    menuClassName: {
-      control: false,
-      table: { category: 'Advanced' },
-    },
-    children: {
-      control: false,
-      table: { category: 'Content' },
-    },
-  },
-  args: {
-    triggerType: 'icon',
-    triggerLabel: 'Options',
-    isDisabled: false,
   },
 }
 
 export default meta
-type Story = StoryObj<typeof Dropdown>
+type Story = StoryObj<typeof Dropdown.Menu>
 
 // Sample menu items for demos
 const SampleMenuItems = () => (
   <>
-    <MenuItem icon={UserIcon}>View profile</MenuItem>
-    <MenuItem icon={SettingsIcon}>Settings</MenuItem>
-    <MenuItem icon={EditIcon}>Edit</MenuItem>
-    <MenuItem icon={CopyIcon} shortcut="⌘C">Copy</MenuItem>
-    <MenuDivider />
-    <MenuItem icon={LogOutIcon}>Log out</MenuItem>
+    <Dropdown.Item id="profile" icon={UserIcon} label="View profile" />
+    <Dropdown.Item id="settings" icon={SettingsIcon} label="Settings" />
+    <Dropdown.Item id="edit" icon={EditIcon} label="Edit" />
+    <Dropdown.Item id="copy" icon={CopyIcon} label="Copy" addon="⌘C" />
+    <Dropdown.Separator />
+    <Dropdown.Item id="logout" icon={LogOutIcon} label="Log out" />
   </>
 )
 
@@ -103,111 +43,161 @@ const SampleMenuItems = () => (
 
 export const Overview: Story = {
   render: () => {
-    const triggerTypes: DropdownTriggerType[] = ['icon', 'button', 'avatar']
-
     return (
       <div className="flex flex-col gap-8 px-12 pb-12 pt-8">
-        {/* Trigger Type */}
+        {/* DotsButton Trigger (default) */}
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-gray-500">Trigger Type</span>
+          <span className="text-sm font-medium text-gray-500">DotsButton Trigger</span>
           <div className="flex items-center gap-8">
-            {triggerTypes.map((type) => (
-              <div key={type} className="flex flex-col items-center gap-2">
-                <Dropdown
-                  triggerType={type}
-                  triggerLabel="Options"
-                  avatarSrc="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face"
-                >
+            <Dropdown.Root>
+              <Dropdown.DotsButton />
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
                   <SampleMenuItems />
-                </Dropdown>
-                <span className="text-xs text-gray-400">{type}</span>
-              </div>
-            ))}
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
           </div>
         </div>
 
-        {/* Icon Trigger with Custom Icon */}
+        {/* Custom Button Trigger */}
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-gray-500">Custom Icon Trigger</span>
+          <span className="text-sm font-medium text-gray-500">Button Triggers</span>
           <div className="flex items-center gap-4">
-            <Dropdown triggerType="icon" triggerIcon={SettingsIcon}>
-              <SampleMenuItems />
-            </Dropdown>
-            <Dropdown triggerType="icon" triggerIcon={UserIcon}>
-              <SampleMenuItems />
-            </Dropdown>
+            <Dropdown.Root>
+              <Button color="secondary">Options</Button>
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <SampleMenuItems />
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
+
+            <Dropdown.Root>
+              <Button color="primary">Actions</Button>
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <SampleMenuItems />
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
+
+            <Dropdown.Root>
+              <Button color="tertiary">More</Button>
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <SampleMenuItems />
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
           </div>
         </div>
 
-        {/* Button Trigger Variations */}
+        {/* Avatar Trigger */}
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-gray-500">Button Trigger Labels</span>
+          <span className="text-sm font-medium text-gray-500">Avatar Trigger</span>
           <div className="flex items-center gap-4">
-            <Dropdown triggerType="button" triggerLabel="Options">
-              <SampleMenuItems />
-            </Dropdown>
-            <Dropdown triggerType="button" triggerLabel="Actions">
-              <SampleMenuItems />
-            </Dropdown>
-            <Dropdown triggerType="button" triggerLabel="More">
-              <SampleMenuItems />
-            </Dropdown>
+            <Dropdown.Root>
+              <Button className="rounded-full p-0">
+                <Avatar
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face"
+                  alt="User avatar"
+                  size="md"
+                />
+              </Button>
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <SampleMenuItems />
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
           </div>
         </div>
 
-        {/* States */}
+        {/* Icon Button Triggers */}
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-gray-500">State</span>
-          <div className="flex items-center gap-8">
-            <div className="flex flex-col items-center gap-2">
-              <Dropdown triggerType="icon">
-                <SampleMenuItems />
-              </Dropdown>
-              <span className="text-xs text-gray-400">Default</span>
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              <Dropdown triggerType="icon" isDisabled>
-                <SampleMenuItems />
-              </Dropdown>
-              <span className="text-xs text-gray-400">Disabled</span>
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              <Dropdown triggerType="button" triggerLabel="Options">
-                <SampleMenuItems />
-              </Dropdown>
-              <span className="text-xs text-gray-400">Default</span>
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              <Dropdown triggerType="button" triggerLabel="Options" isDisabled>
-                <SampleMenuItems />
-              </Dropdown>
-              <span className="text-xs text-gray-400">Disabled</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Menu Items with Checkboxes */}
-        <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-gray-500">Menu with Checkboxes</span>
+          <span className="text-sm font-medium text-gray-500">Icon Button Triggers</span>
           <div className="flex items-center gap-4">
-            <Dropdown triggerType="button" triggerLabel="Filter">
-              <MenuItem showCheckbox isChecked>Option 1</MenuItem>
-              <MenuItem showCheckbox isChecked>Option 2</MenuItem>
-              <MenuItem showCheckbox>Option 3</MenuItem>
-              <MenuItem showCheckbox>Option 4</MenuItem>
-            </Dropdown>
+            <Dropdown.Root>
+              <Button color="tertiary" iconLeading={SettingsIcon} aria-label="Settings" />
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <SampleMenuItems />
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
+
+            <Dropdown.Root>
+              <Button color="tertiary" iconLeading={UserIcon} aria-label="User menu" />
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <SampleMenuItems />
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
           </div>
         </div>
 
-        {/* Menu Items with Shortcuts */}
+        {/* Menu with Sections */}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-gray-500">Menu with Sections</span>
+          <div className="flex items-center gap-4">
+            <Dropdown.Root>
+              <Button color="secondary">Grouped Menu</Button>
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <Dropdown.Section>
+                    <Dropdown.SectionHeader className="px-3 py-1.5 text-xs font-semibold text-gray-500">
+                      Account
+                    </Dropdown.SectionHeader>
+                    <Dropdown.Item id="profile" icon={UserIcon} label="View profile" />
+                    <Dropdown.Item id="settings" icon={SettingsIcon} label="Settings" />
+                  </Dropdown.Section>
+                  <Dropdown.Section>
+                    <Dropdown.SectionHeader className="px-3 py-1.5 text-xs font-semibold text-gray-500">
+                      Actions
+                    </Dropdown.SectionHeader>
+                    <Dropdown.Item id="edit" icon={EditIcon} label="Edit" />
+                    <Dropdown.Item id="copy" icon={CopyIcon} label="Copy" addon="⌘C" />
+                    <Dropdown.Item id="delete" icon={TrashIcon} label="Delete" />
+                  </Dropdown.Section>
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
+          </div>
+        </div>
+
+        {/* Menu with Shortcuts */}
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium text-gray-500">Menu with Shortcuts</span>
           <div className="flex items-center gap-4">
-            <Dropdown triggerType="button" triggerLabel="Edit">
-              <MenuItem icon={EditIcon} shortcut="⌘E">Edit</MenuItem>
-              <MenuItem icon={CopyIcon} shortcut="⌘C">Copy</MenuItem>
-              <MenuItem icon={TrashIcon} shortcut="⌘⌫">Delete</MenuItem>
-            </Dropdown>
+            <Dropdown.Root>
+              <Button color="secondary">Edit</Button>
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <Dropdown.Item id="edit" icon={EditIcon} label="Edit" addon="⌘E" />
+                  <Dropdown.Item id="copy" icon={CopyIcon} label="Copy" addon="⌘C" />
+                  <Dropdown.Item id="delete" icon={TrashIcon} label="Delete" addon="⌘⌫" />
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
+          </div>
+        </div>
+
+        {/* Disabled Items */}
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-gray-500">Disabled Items</span>
+          <div className="flex items-center gap-4">
+            <Dropdown.Root>
+              <Button color="secondary">With Disabled</Button>
+              <Dropdown.Popover>
+                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+                  <Dropdown.Item id="edit" icon={EditIcon} label="Edit" />
+                  <Dropdown.Item id="copy" icon={CopyIcon} label="Copy" isDisabled />
+                  <Dropdown.Item id="delete" icon={TrashIcon} label="Delete" isDisabled />
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown.Root>
           </div>
         </div>
       </div>
@@ -216,24 +206,42 @@ export const Overview: Story = {
 }
 
 // =============================================================================
-// PROPS (with controls)
+// BASIC EXAMPLE
 // =============================================================================
 
-export const Props: Story = {
-  tags: ['show-panel'],
-  args: {
-    triggerType: 'button',
-    triggerLabel: 'Options',
-    avatarSrc: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face',
-    isDisabled: false,
-  },
-  render: (args) => (
-    <Dropdown {...args}>
-      <MenuItem icon={UserIcon}>View profile</MenuItem>
-      <MenuItem icon={SettingsIcon}>Settings</MenuItem>
-      <MenuDivider />
-      <MenuItem icon={LogOutIcon}>Log out</MenuItem>
-    </Dropdown>
+export const Basic: Story = {
+  render: () => (
+    <Dropdown.Root>
+      <Dropdown.DotsButton />
+      <Dropdown.Popover>
+        <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+          <Dropdown.Item id="edit" icon={EditIcon} label="Edit" />
+          <Dropdown.Item id="copy" icon={CopyIcon} label="Copy" />
+          <Dropdown.Separator />
+          <Dropdown.Item id="delete" icon={TrashIcon} label="Delete" />
+        </Dropdown.Menu>
+      </Dropdown.Popover>
+    </Dropdown.Root>
+  ),
+}
+
+// =============================================================================
+// WITH BUTTON TRIGGER
+// =============================================================================
+
+export const WithButtonTrigger: Story = {
+  render: () => (
+    <Dropdown.Root>
+      <Button color="secondary">Options</Button>
+      <Dropdown.Popover>
+        <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
+          <Dropdown.Item id="profile" icon={UserIcon} label="View profile" />
+          <Dropdown.Item id="settings" icon={SettingsIcon} label="Settings" />
+          <Dropdown.Separator />
+          <Dropdown.Item id="logout" icon={LogOutIcon} label="Log out" />
+        </Dropdown.Menu>
+      </Dropdown.Popover>
+    </Dropdown.Root>
   ),
 }
 

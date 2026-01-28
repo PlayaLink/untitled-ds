@@ -76,7 +76,11 @@ export function ProgressBar({
 
   const label = showLabel && (
     <span
-      className={cx(styles.label, styles.labelPosition[labelPosition])}
+      className={cx(
+        styles.label.base,
+        isFloating ? styles.label.floating : styles.label.inline,
+        styles.labelPosition[labelPosition]
+      )}
       style={isFloating ? { left: `${percentage}%`, transform: 'translateX(-50%)' } : undefined}
     >
       {percentage}%

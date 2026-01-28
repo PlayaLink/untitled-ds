@@ -3,7 +3,7 @@ import type { LabelProps as AriaLabelProps } from "react-aria-components";
 import { Label as AriaLabel } from "react-aria-components";
 import { cx } from "@/utils/cx";
 
-interface LabelProps extends AriaLabelProps {
+export interface LabelProps extends AriaLabelProps {
     children: ReactNode;
     isRequired?: boolean;
     tooltip?: string;

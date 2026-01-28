@@ -16,7 +16,7 @@ export const styles = sortCx({
   common: {
     root: [
       'group relative inline-flex h-max cursor-pointer items-center justify-center whitespace-nowrap transition duration-100 ease-linear',
-      'outline-none focus-visible:shadow-focus-ring data-[open]:shadow-focus-ring',
+      'outline-none aria-expanded:shadow-focus-ring',
       'disabled:cursor-not-allowed',
       '*:data-icon:pointer-events-none *:data-icon:size-5 *:data-icon:shrink-0',
     ].join(' '),
@@ -93,7 +93,7 @@ export const styles = sortCx({
     },
     'primary-destructive': {
       root: [
-        'bg-error-600 text-base-white shadow-xs focus-visible:shadow-focus-ring-error data-[open]:shadow-focus-ring-error',
+        'bg-error-600 text-base-white shadow-xs aria-expanded:shadow-focus-ring-error',
         'hover:bg-error-700',
         'disabled:bg-disabled disabled:text-disabled',
         '*:data-icon:text-base-white',
@@ -101,7 +101,7 @@ export const styles = sortCx({
     },
     'secondary-destructive': {
       root: [
-        'bg-primary text-error-primary shadow-xs ring-1 ring-border-error-subtle ring-inset focus-visible:shadow-focus-ring-error data-[open]:shadow-focus-ring-error',
+        'bg-primary text-error-primary shadow-xs ring-1 ring-border-error-subtle ring-inset aria-expanded:shadow-focus-ring-error',
         'hover:bg-error-primary hover:text-error-primary-hover',
         'disabled:text-disabled disabled:ring-border-disabled',
         '*:data-icon:text-fg-error-secondary hover:*:data-icon:text-fg-error-primary',
@@ -109,7 +109,7 @@ export const styles = sortCx({
     },
     'tertiary-destructive': {
       root: [
-        'text-error-primary focus-visible:shadow-focus-ring-error data-[open]:shadow-focus-ring-error',
+        'text-error-primary aria-expanded:shadow-focus-ring-error',
         'hover:bg-error-primary hover:text-error-primary-hover',
         'disabled:text-disabled',
         '*:data-icon:text-fg-error-secondary hover:*:data-icon:text-fg-error-primary',

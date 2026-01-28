@@ -45,22 +45,7 @@ export const Overview: Story = {
   render: () => {
     return (
       <div className="flex flex-col gap-8 px-12 pb-12 pt-8">
-        {/* DotsButton Trigger (default) */}
-        <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-gray-500">DotsButton Trigger</span>
-          <div className="flex items-center gap-8">
-            <Dropdown.Root>
-              <Dropdown.DotsButton />
-              <Dropdown.Popover>
-                <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
-                  <SampleMenuItems />
-                </Dropdown.Menu>
-              </Dropdown.Popover>
-            </Dropdown.Root>
-          </div>
-        </div>
-
-        {/* Custom Button Trigger */}
+        {/* Button Triggers */}
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium text-gray-500">Button Triggers</span>
           <div className="flex items-center gap-4">
@@ -209,11 +194,13 @@ export const Overview: Story = {
 // PROPS (with controls)
 // =============================================================================
 
+const DotsVerticalIcon = createIcon('dots-vertical')
+
 export const Props: Story = {
   tags: ['show-panel'],
   render: () => (
     <Dropdown.Root>
-      <Dropdown.DotsButton />
+      <Button color="tertiary" iconLeading={DotsVerticalIcon} aria-label="Open menu" />
       <Dropdown.Popover>
         <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
           <Dropdown.Item id="edit" icon={EditIcon} label="Edit" />

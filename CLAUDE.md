@@ -38,7 +38,7 @@ This project uses a **single source of truth** for all AI agent instructions, su
 
 .cursor/rules/                # GENERATED (gitignored)
 .claude/rules/                # GENERATED (gitignored)
-.claude/skills/               # GENERATED (gitignored)
+.claude/skills/               # GENERATED (committed - symlinks to .ai-rules/skills/)
 ```
 
 ### How It Works

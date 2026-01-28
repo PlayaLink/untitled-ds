@@ -23,8 +23,11 @@ export const styles = sortCx({
   trackBg: 'absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-full bg-quaternary',
   trackFill: 'absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-full bg-brand-solid',
   // Thumb
-  thumb: 'top-1/2 box-border size-6 cursor-grab rounded-full bg-components-sliders-slider-handle-bg shadow-md ring-2 ring-inset ring-components-sliders-slider-handle-border transition-shadow',
-  thumbHover: 'shadow-lg ring-brand-solid-hover',
+  thumb: 'top-1/2 box-border size-6 cursor-grab rounded-full shadow-md ring-2 ring-inset transition-shadow',
+  thumbRingDefault: 'ring-components-sliders-slider-handle-border',
+  thumbRingHover: 'shadow-lg ring-bg-brand-solid-hover',
+  thumbBgDefault: 'bg-components-sliders-slider-handle-bg',
+  thumbBgDragging: 'bg-brand-primary',
   thumbFocused: 'outline-2 outline-offset-2 outline-focus-ring',
   thumbDragging: 'cursor-grabbing',
   // Label positions
@@ -82,7 +85,8 @@ export function Slider({
                   className={({ isFocusVisible, isDragging, isHovered }) =>
                     cx(
                       styles.thumb,
-                      isHovered && styles.thumbHover,
+                      isHovered ? styles.thumbRingHover : styles.thumbRingDefault,
+                      isDragging ? styles.thumbBgDragging : styles.thumbBgDefault,
                       isFocusVisible && styles.thumbFocused,
                       isDragging && styles.thumbDragging
                     )

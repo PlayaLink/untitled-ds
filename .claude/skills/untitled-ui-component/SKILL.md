@@ -1,0 +1,1 @@
+../../../.ai-rules/skills/untitled-ui-component.md

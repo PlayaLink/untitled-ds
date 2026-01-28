@@ -1,0 +1,1 @@
+../../../.ai-rules/skills/custom-component.md

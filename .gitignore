@@ -32,8 +32,9 @@ mcp.json
 # AI agent generated files (source of truth is .ai-rules/)
 .cursor/rules/
 .claude/rules/
-.claude/skills/
 .claude/settings.local.json
+
+# Note: .claude/skills/ is NOT ignored - skill symlinks should be committed
 
 # Debug logs
 npm-debug.log*

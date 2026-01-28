@@ -27,32 +27,13 @@ Analyze the Figma data to understand:
 - Which props are actually used
 - Any custom modifications from standard Untitled UI
 
-### 2. Import from Untitled UI CLI (as starting point)
-
-```bash
-npx untitledui@latest add <component-name> --path src/components --overwrite
-```
-
-This gives us a solid foundation to simplify from.
-
-### 3. Simplify to Match Figma
-
-**Critical step:** Compare Figma data to the imported component:
-
-- **Remove variants** not present in Figma
-- **Remove props** not used in Figma
-- **Remove size options** that don't exist
-- Keep ONLY the features that exist in your design
-
-Example: If Figma only has `sm` and `md` sizes, remove `lg`, `xl`, `2xl` from styles and types.
-
-### 4. Update Import Paths
+### 3. Update Import Paths
 
 Change imports to use project aliases:
 - `@/utils/cx` for class merging (replace any `cn` or `clsx` imports)
 - `@/utils/is-react-component` for component type checking
 
-### 5. Add Documentation Header
+### 4. Add Documentation Header
 
 ```typescript
 /**
@@ -62,7 +43,7 @@ Change imports to use project aliases:
  */
 ```
 
-### 6. Apply sortCx Pattern
+### 5. Apply sortCx Pattern used by our other components
 
 Reorganize styles using the `sortCx` pattern. Only include variants that exist in Figma:
 
@@ -83,7 +64,7 @@ export const styles = sortCx({
 export type ComponentSize = keyof typeof styles.sizes
 ```
 
-### 7. Create Storybook Stories
+### 6. Create Storybook Stories
 
 Create stories **only for variants that exist in your Figma**:
 
@@ -126,11 +107,3 @@ src/components/<name>/
 └── index.ts             # Barrel exports
 ```
 
-## Key Difference from Untitled UI Component Workflow
-
-| Aspect | Untitled UI Workflow | Custom Workflow |
-|--------|---------------------|-----------------|
-| Figma fetch | Not needed | **Required** |
-| Features | Keep ALL | Strip unused |
-| Stories | All variants | Figma variants only |
-| Goal | Full feature set | Lean 1:1 Figma match |

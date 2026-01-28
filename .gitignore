@@ -27,6 +27,7 @@ storybook-static/
 # MCP Configuration (contains API keys)
 .mcp.json
 mcp.json
+.claude/mcp.json
 
 # Debug logs
 npm-debug.log*

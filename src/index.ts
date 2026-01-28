@@ -19,6 +19,7 @@ export { Checkbox, CheckboxBase, type CheckboxProps, type CheckboxSize, type Che
 export { ColorSelect, type ColorSelectProps, styles as colorSelectStyles } from './components/color-select'
 export { ProgressBar, type ProgressBarProps, type ProgressBarLabelPosition, styles as progressBarStyles } from './components/progress-bar'
 export { Slider, type SliderProps, type SliderLabelPosition, styles as sliderStyles } from './components/slider'
+export { ProgressCircle, type ProgressCircleProps, type ProgressCircleSize, type ProgressCircleShape, styles as progressCircleStyles } from './components/progress-circle'
 
 // Utilities
 export { cx, sortCx } from './utils/cx'

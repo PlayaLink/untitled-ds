@@ -21,6 +21,38 @@ export { ProgressBar, type ProgressBarProps, type ProgressBarLabelPosition, styl
 export { Slider, type SliderProps, type SliderLabelPosition, styles as sliderStyles } from './components/slider'
 export { ProgressCircle, type ProgressCircleProps, type ProgressCircleSize, type ProgressCircleShape, styles as progressCircleStyles } from './components/progress-circle'
 
+// Sidebar Navigation
+export {
+  SidebarNavigation,
+  sidebarNavigationStyles,
+  type SidebarNavigationProps,
+  type SidebarNavigationStyle,
+  type SidebarNavigationBreakpoint,
+  NavItem,
+  navItemStyles,
+  type NavItemProps,
+  type NavItemState,
+  NavItemButton,
+  navItemButtonStyles,
+  type NavItemButtonProps,
+  type NavItemButtonSize,
+  NavItemDropdown,
+  navItemDropdownStyles,
+  type NavItemDropdownProps,
+  type NavItemDropdownItem,
+  AppNavMenuButton,
+  appNavMenuButtonStyles,
+  type AppNavMenuButtonProps,
+  NavAccountCard,
+  navAccountCardStyles,
+  type NavAccountCardProps,
+  type NavAccountCardBreakpoint,
+  NavAccountCardMenuItem,
+  navAccountCardMenuItemStyles,
+  type NavAccountCardMenuItemProps,
+  type NavAccountCardMenuItemType,
+} from './components/sidebar-nav'
+
 // Utilities
 export { cx, sortCx } from './utils/cx'
 export { isReactComponent, isFunctionComponent, isClassComponent, isForwardRefComponent } from './utils/is-react-component'

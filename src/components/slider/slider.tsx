@@ -23,7 +23,8 @@ export const styles = sortCx({
   trackBg: 'absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-full bg-quaternary',
   trackFill: 'absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-full bg-brand-solid',
   // Thumb
-  thumb: 'top-1/2 box-border size-6 cursor-grab rounded-full bg-slider-handle-bg shadow-md ring-2 ring-inset ring-slider-handle-border',
+  thumb: 'top-1/2 box-border size-6 cursor-grab rounded-full bg-components-sliders-slider-handle-bg shadow-md ring-2 ring-inset ring-components-sliders-slider-handle-border transition-shadow',
+  thumbHover: 'shadow-lg ring-brand-solid-hover',
   thumbFocused: 'outline-2 outline-offset-2 outline-focus-ring',
   thumbDragging: 'cursor-grabbing',
   // Label positions
@@ -78,9 +79,10 @@ export function Slider({
                 <AriaSliderThumb
                   key={index}
                   index={index}
-                  className={({ isFocusVisible, isDragging }) =>
+                  className={({ isFocusVisible, isDragging, isHovered }) =>
                     cx(
                       styles.thumb,
+                      isHovered && styles.thumbHover,
                       isFocusVisible && styles.thumbFocused,
                       isDragging && styles.thumbDragging
                     )

@@ -206,39 +206,20 @@ export const Overview: Story = {
 }
 
 // =============================================================================
-// BASIC EXAMPLE
+// PROPS (with controls)
 // =============================================================================
 
-export const Basic: Story = {
+export const Props: Story = {
+  tags: ['show-panel'],
   render: () => (
     <Dropdown.Root>
       <Dropdown.DotsButton />
       <Dropdown.Popover>
         <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
           <Dropdown.Item id="edit" icon={EditIcon} label="Edit" />
-          <Dropdown.Item id="copy" icon={CopyIcon} label="Copy" />
+          <Dropdown.Item id="copy" icon={CopyIcon} label="Copy" addon="⌘C" />
           <Dropdown.Separator />
           <Dropdown.Item id="delete" icon={TrashIcon} label="Delete" />
-        </Dropdown.Menu>
-      </Dropdown.Popover>
-    </Dropdown.Root>
-  ),
-}
-
-// =============================================================================
-// WITH BUTTON TRIGGER
-// =============================================================================
-
-export const WithButtonTrigger: Story = {
-  render: () => (
-    <Dropdown.Root>
-      <Button color="secondary">Options</Button>
-      <Dropdown.Popover>
-        <Dropdown.Menu onAction={(key) => console.log('Selected:', key)}>
-          <Dropdown.Item id="profile" icon={UserIcon} label="View profile" />
-          <Dropdown.Item id="settings" icon={SettingsIcon} label="Settings" />
-          <Dropdown.Separator />
-          <Dropdown.Item id="logout" icon={LogOutIcon} label="Log out" />
         </Dropdown.Menu>
       </Dropdown.Popover>
     </Dropdown.Root>

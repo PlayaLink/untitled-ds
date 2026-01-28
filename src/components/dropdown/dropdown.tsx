@@ -50,7 +50,7 @@ import { Icon } from '@/components/icon'
 
 export const styles = sortCx({
   popover: [
-    'w-62 origin-(--trigger-anchor-point) overflow-auto rounded-lg bg-primary shadow-lg ring-1 ring-secondary_alt will-change-transform',
+    'w-62 origin-(--trigger-anchor-point) overflow-auto rounded-lg bg-primary shadow-lg ring-1 ring-border-secondary-alt will-change-transform',
     'entering:duration-150 entering:ease-out entering:animate-in entering:fade-in',
     'entering:placement-right:slide-in-from-left-0.5 entering:placement-top:slide-in-from-bottom-0.5 entering:placement-bottom:slide-in-from-top-0.5',
     'exiting:duration-100 exiting:ease-in exiting:animate-out exiting:fade-out',
@@ -220,7 +220,7 @@ const DropdownDotsButton = (props: DropdownDotsButtonProps) => {
         )
       }
     >
-      <Icon name="dots-vertical" size="md" className="transition-inherit-all" />
+      <Icon name="dots-vertical" size="lg" className="transition-inherit-all" />
     </AriaButton>
   )
 }

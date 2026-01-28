@@ -79,7 +79,8 @@ export const styles = sortCx({
   dotsButton: [
     'cursor-pointer rounded-md text-fg-quaternary outline-focus-ring transition duration-100 ease-linear',
     'hover:text-fg-quaternary_hover pressed:text-fg-quaternary_hover',
-    'pressed:outline-2 pressed:outline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2',
+    'focus-visible:outline-2 focus-visible:outline-offset-2',
+    '[&[aria-expanded=true]]:outline-2 [&[aria-expanded=true]]:outline-offset-2',
   ].join(' '),
 })
 

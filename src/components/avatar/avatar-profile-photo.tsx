@@ -1,7 +1,7 @@
 /**
  * AvatarProfilePhoto component - Large avatar for profile pages
  * @docs https://www.untitledui.com/react/components/avatars
- * @figma https://www.figma.com/design/fDxXGrTItVnXVTWhtx7yuQ/?node-id=19483-44049
+ * @figma https://www.figma.com/design/fDxXGrTItVnXVTWhtx7yuQ/%E2%9D%96-BASE-COMPONENTS?node-id=19483-44238
  */
 'use client'
 

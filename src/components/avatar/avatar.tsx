@@ -1,7 +1,7 @@
 /**
  * Avatar component
  * @docs https://www.untitledui.com/react/components/avatars
- * @figma https://www.figma.com/design/fDxXGrTItVnXVTWhtx7yuQ/?node-id=19483-44049
+ * @figma https://www.figma.com/design/fDxXGrTItVnXVTWhtx7yuQ/%E2%9D%96-BASE-COMPONENTS?node-id=19483-44049
  */
 'use client'
 
@@ -69,7 +69,7 @@ export const styles = sortCx({
       icon: 'size-7',
     },
     xl: {
-      root: 'size-14 outline-1 -outline-offset-1',
+      root: 'size-[56px] outline-1 -outline-offset-1',
       initials: 'text-xl font-semibold',
       icon: 'size-8',
     },

@@ -1,188 +1,80 @@
 ---
-description: Workflow for implementing full Untitled UI components
+description: Workflow for implementing Untitled UI components in untitled-ds
 globs:
   - "**/components/**"
 ---
 
 # Untitled UI Component Workflow
 
-Use this workflow when your Figma component **matches the default Untitled UI design**. This keeps ALL functionality from the CLI import.
+This workflow applies when adding or updating components in the untitled-ds package.
 
-## When to Use
+## Quick Reference
 
-- Figma component uses standard Untitled UI variants (Size, Hierarchy, State, Icon, etc.)
-- You want the full feature set from Untitled UI
-- No simplification or customization is needed
+See the global `untitled-ui-components.md` rule for the complete 8-step workflow:
 
-## Steps
+1. Pull from Untitled UI CLI
+2. Fetch Figma data for parity check
+3. Verify prop/variant parity
+4. Replace `@untitledui/icons` with `createIcon`
+5. Apply semantic color tokens
+6. Organize styles with `sortCx`
+7. Create Storybook stories (3 required)
+8. Export from index files
 
-### 1. Get Figma URL
+---
 
-User provides Figma URL for the doc header link. **No Figma fetch is needed** - we're using the full Untitled UI component.
+## untitled-ds Specific Notes
 
-### 2. Import from Untitled UI CLI
+### Icon Replacement
+
+All icons must use the `Icon` component architecture:
+
+```tsx
+import { createIcon } from '../icon'
+
+const ChevronDownIcon = createIcon('chevron-down', 'sm')
+```
+
+Do NOT use `@untitledui/icons` directly in component code or stories.
+
+### Storybook Commands
 
 ```bash
-npx untitledui@latest add <component-name> --path src/components --overwrite
+npm run dev        # Start Storybook dev server
+npm run build      # Build Storybook static site
+npm run build:lib  # Build library for consumption
 ```
 
-**IMPORTANT:** Keep ALL functionality from the import. Do NOT remove features, variants, or props.
+### Library Build
 
-### 3. Update Import Paths
+After making changes, always rebuild the library:
 
-Change imports to use project aliases:
-- `@/utils/cx` for class merging (replace any `cn` or `clsx` imports)
-- `@/utils/is-react-component` for component type checking
-
-### 4. Add Documentation Header
-
-Add at the top of the component file:
-
-```typescript
-/**
- * ComponentName component
- * @docs https://www.untitledui.com/react/components/<component-name>
- * @figma <user-provided-figma-url>
- */
+```bash
+npm run build:lib
 ```
 
-### 5. Apply sortCx Pattern
+This generates `dist/` which is what consuming apps import.
 
-Reorganize styles using the `sortCx` pattern for IntelliSense support. Export `styles` from the component:
+---
 
-```typescript
-import { cx, sortCx } from '@/utils/cx'
+## Handling `_` Prefixed Figma Components
 
-export const styles = sortCx({
-  common: {
-    root: 'base classes for all variants',
-  },
-  sizes: {
-    sm: { root: 'size-specific classes' },
-    md: { root: 'size-specific classes' },
-  },
-  // ... other variant groups
-})
-
-export type ComponentSize = keyof typeof styles.sizes
-```
-
-### 6. Create Storybook Stories
-
-Create `<component>.stories.tsx` with exactly **3 stories**:
-
-| Story | Purpose |
-|-------|---------|
-| `Overview` | Visual showcase of ALL variants grouped by property |
-| `Props` | Interactive playground with `tags: ['show-panel']` |
-| `SourceCodeAndDesign` | Links to GitHub source and Figma design |
-
-**Do NOT use autodocs.** See `storybook-stories.md` for full patterns.
-
-### 7. Replace Primitives with Semantic Tokens (Dark Mode)
-
-**CRITICAL for dark mode support.** Untitled UI imports use primitive colors that don't respond to theme changes. Replace grayscale primitives with semantic tokens:
-
-| Replace | With |
-|---------|------|
-| `text-gray-900` | `text-primary` |
-| `text-gray-700`, `text-gray-800` | `text-secondary` |
-| `text-gray-500`, `text-gray-600` | `text-tertiary` |
-| `text-gray-400` | `text-disabled` or `text-quaternary` |
-| `bg-base-white` | `bg-primary` |
-| `bg-gray-50` | `bg-secondary` |
-| `bg-gray-100` | `bg-tertiary` |
-| `border-gray-300`, `ring-gray-300` | `border-primary`, `ring-border-primary` |
-| `border-gray-200`, `ring-gray-200` | `border-secondary`, `ring-border-secondary` |
-
-**Keep primitives** for intentionally static colors (brand badges, status indicators, colored variants).
-
-See `design-tokens.md` for full mapping reference.
-
-### 8. Validate in Storybook
-
-Check Storybook for visual issues. If styles look wrong:
-1. Identify missing tokens
-2. Update `tailwind.config.js`
-3. Update `tokens/figma-update.json`
-4. Notify user of token gaps
-5. **Test dark mode toggle** - verify component responds to theme changes
-
-### 9. Export from Index
-
-Update the component's barrel file and root exports:
-
-```typescript
-// src/components/<name>/index.ts
-export { ComponentName, type ComponentNameProps, type ComponentNameSize, styles } from './component-name'
-```
-
-```typescript
-// src/index.ts
-export { ComponentName, type ComponentNameProps, type ComponentNameSize, styles as componentNameStyles } from './components/<name>'
-```
-
-## File Structure
-
-```
-src/components/<name>/
-├── <name>.tsx           # Component with doc header
-├── <name>.stories.tsx   # Storybook stories (3 required)
-└── index.ts             # Barrel exports
-```
-
-## Handling Figma `_` Prefixed Components
-
-### What the `_` Prefix Means
-
-In Figma, components prefixed with `_` (or `.`) are **internal/private components** that are hidden from publishing to the team library. These are "atomic" building blocks that compose larger "molecule" components.
-
-Examples:
-- `_MenuItem` - internal component used by `Dropdown`
-- `_ListItem` - internal component used by `Select` or `List`
-
-### Why This Matters
-
-**Untitled UI React may NOT provide standalone React components** for `_` prefixed Figma components. They often bake the styling directly into the parent component rather than exposing atoms separately.
-
-### Workflow When Building Molecule Components
-
-**Before starting work on a molecule component**, ask for or identify:
-
-1. **The main component Figma link** (e.g., Dropdown)
-2. **Any `_` prefixed sub-components** visible in the Figma layers (e.g., `_MenuItem`)
+Components prefixed with `_` in Figma are internal/private building blocks.
 
 ### Decision: Standalone vs. Inline
 
-When encountering a `_` prefixed Figma component, decide whether to:
-
 | Approach | When to Use | Example |
 |----------|-------------|---------|
-| **Create standalone component** | Sub-component is reusable across multiple parents | `MenuItem` used by Dropdown, ContextMenu, etc. |
-| **Inline into parent** | Sub-component is tightly coupled to one parent | Internal list item only used by one component |
+| **Create standalone** | Reusable across parents | `MenuItem` for Dropdown, ContextMenu |
+| **Inline into parent** | Tightly coupled to one parent | Internal item only used by one component |
 
-### Example: MenuItem
+### Example
 
-The `_MenuItem` Figma component was created as a standalone `MenuItem` React component because:
-- It can be reused in `Dropdown`, context menus, and other menu-like components
-- It has its own variants (icon, checkbox, shortcut, divider)
-- Consumers pass `<MenuItem>` children to `<Dropdown>` rather than a data array
+`MenuItem` was created standalone because it's reused by `Dropdown` and other menu-like components:
 
-```typescript
-// Dropdown accepts MenuItem children
-<Dropdown triggerType="button" triggerLabel="Options">
+```tsx
+<Dropdown triggerLabel="Options">
   <MenuItem icon={EditIcon}>Edit</MenuItem>
-  <MenuItem icon={CopyIcon} shortcut="⌘C">Copy</MenuItem>
-  <MenuDivider />
-  <MenuItem icon={TrashIcon}>Delete</MenuItem>
+  <MenuItem icon={CopyIcon}>Copy</MenuItem>
 </Dropdown>
 ```
-
-### Contrast: Select Component
-
-The `Select` component does NOT use `MenuItem`. Instead, it:
-- Takes an `options` array prop
-- Renders items internally using React Aria's `ListBoxItem`
-- Has its own item styles baked in
-
-This is appropriate because Select options have different semantics (form selection vs. actions) and don't need to be reused elsewhere.

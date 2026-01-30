@@ -196,12 +196,6 @@ export const SourceCodeAndDesign: Story = {
                     View in Figma
                 </Button>
             </div>
-            <IconNotification
-                title="Order confirmed"
-                description="Your order #12345 has been confirmed and is being processed."
-                color="success"
-                confirmLabel="Track order"
-            />
         </div>
     ),
 }

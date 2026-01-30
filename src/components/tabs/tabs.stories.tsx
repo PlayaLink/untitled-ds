@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Tabs, TabList, TabPanel, Tab, type TabType, type TabSize } from './tabs'
+import { Button } from '../button'
+import { createIcon } from '../icon'
+
+const GitHubIcon = createIcon('github')
+const FigmaIcon = createIcon('figma')
 
 /**
  * Tabs component for organizing content into selectable panels.
@@ -244,29 +249,28 @@ export const Props: Story = {
  */
 export const SourceCodeAndDesign: Story = {
   name: 'Source Code + Design',
-  parameters: {
-    design: {
-      type: 'figma',
-      url: 'https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=18491-81531',
-    },
-    github: {
-      url: 'https://github.com/playalink/untitled-ds/blob/main/src/components/tabs/tabs.tsx',
-    },
-  },
   render: () => (
-    <div className="flex flex-col gap-4">
-      <p className="text-secondary">
-        View this component's source code and Figma design using the addon panels.
-      </p>
-      <Tabs>
-        <TabList items={tabs} type="underline" size="sm">
-          {(item) => (
-            <Tab key={item.id} id={item.id}>
-              {item.label}
-            </Tab>
-          )}
-        </TabList>
-      </Tabs>
+    <div className="flex min-w-[480px] flex-col items-center gap-8 py-12">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <h2 className="text-display-xs font-semibold text-primary">Source Code + Figma Design</h2>
+        <p className="text-md text-tertiary">This component was built from the Untitled Design System</p>
+      </div>
+      <div className="flex gap-4">
+        <Button
+          href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/tabs"
+          iconLeading={GitHubIcon}
+          color="secondary"
+        >
+          View on GitHub
+        </Button>
+        <Button
+          href="https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=18491-81531"
+          iconLeading={FigmaIcon}
+          color="primary"
+        >
+          View in Figma
+        </Button>
+      </div>
     </div>
   ),
 }

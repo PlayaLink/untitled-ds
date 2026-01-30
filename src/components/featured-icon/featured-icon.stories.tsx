@@ -168,11 +168,6 @@ export const SourceCodeAndDesign: Story = {
                     View in Figma
                 </Button>
             </div>
-            <div className="flex gap-4">
-                <FeaturedIcon theme="light" color="brand" size="lg" icon={<Icon name="mail" size="xl" />} />
-                <FeaturedIcon theme="gradient" color="success" size="lg" icon={<Icon name="check" size="xl" />} />
-                <FeaturedIcon theme="dark" color="error" size="lg" icon={<Icon name="x-close" size="xl" />} />
-            </div>
         </div>
     ),
 }

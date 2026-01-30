@@ -194,41 +194,28 @@ export const Props: Story = {
  */
 export const SourceCodeAndDesign: Story = {
     name: 'Source Code + Design',
-    render: () => {
-        const [value, setValue] = useState('')
-        return (
-            <div className="flex min-w-[480px] flex-col items-center gap-8 py-12">
-                <div className="flex flex-col items-center gap-4 text-center">
-                    <h2 className="text-display-xs font-semibold text-primary">Source Code + Figma Design</h2>
-                    <p className="text-md text-tertiary">This component was built from the Untitled Design System</p>
-                </div>
-                <div className="flex gap-4">
-                    <Button
-                        href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/textarea"
-                        iconLeading={GitHubIcon}
-                        color="secondary"
-                    >
-                        View on GitHub
-                    </Button>
-                    <Button
-                        href="https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=5232-117168"
-                        iconLeading={FigmaIcon}
-                        color="primary"
-                    >
-                        View in Figma
-                    </Button>
-                </div>
-                <div className="w-full max-w-md">
-                    <TextArea
-                        label="Your message"
-                        hint={`${value.length}/500 characters`}
-                        placeholder="Type your message here..."
-                        value={value}
-                        onChange={setValue}
-                        rows={4}
-                    />
-                </div>
+    render: () => (
+        <div className="flex min-w-[480px] flex-col items-center gap-8 py-12">
+            <div className="flex flex-col items-center gap-4 text-center">
+                <h2 className="text-display-xs font-semibold text-primary">Source Code + Figma Design</h2>
+                <p className="text-md text-tertiary">This component was built from the Untitled Design System</p>
             </div>
-        )
-    },
+            <div className="flex gap-4">
+                <Button
+                    href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/textarea"
+                    iconLeading={GitHubIcon}
+                    color="secondary"
+                >
+                    View on GitHub
+                </Button>
+                <Button
+                    href="https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=5232-117168"
+                    iconLeading={FigmaIcon}
+                    color="primary"
+                >
+                    View in Figma
+                </Button>
+            </div>
+        </div>
+    ),
 }

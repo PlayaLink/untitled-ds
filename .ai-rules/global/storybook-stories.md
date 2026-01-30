@@ -253,9 +253,71 @@ export const Props: Story = {
 export const SourceCodeAndDesign: Story = {
   name: 'Source Code + Design',
   render: () => (
-    <div className="flex flex-col items-center gap-8 py-12">
-      {/* GitHub and Figma links */}
+    <div className="flex min-w-[480px] flex-col items-center gap-8 py-12">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <h2 className="text-display-xs font-semibold text-primary">Source Code + Figma Design</h2>
+        <p className="text-md text-tertiary">This component was built from the Untitled Design System</p>
+      </div>
+      <div className="flex gap-4">
+        <Button
+          href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/[component-name]"
+          iconLeading={GitHubIcon}
+          color="secondary"
+        >
+          View on GitHub
+        </Button>
+        <Button
+          href="https://www.figma.com/design/[figma-file-key]/?node-id=[node-id]"
+          iconLeading={FigmaIcon}
+          color="primary"
+        >
+          View in Figma
+        </Button>
+      </div>
+      {/* Optional: Include a small component demo below the buttons */}
     </div>
   ),
 }
 ```
+
+### Source Code + Design Pattern
+
+The SourceCodeAndDesign story must render **actual Button components** with links:
+
+```typescript
+import { Button } from '../button'
+import { createIcon } from '../icon'
+
+const GitHubIcon = createIcon('github')
+const FigmaIcon = createIcon('figma')
+
+export const SourceCodeAndDesign: Story = {
+  name: 'Source Code + Design',
+  render: () => (
+    <div className="flex min-w-[480px] flex-col items-center gap-8 py-12">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <h2 className="text-display-xs font-semibold text-primary">Source Code + Figma Design</h2>
+        <p className="text-md text-tertiary">This component was built from the Untitled Design System</p>
+      </div>
+      <div className="flex gap-4">
+        <Button
+          href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/button"
+          iconLeading={GitHubIcon}
+          color="secondary"
+        >
+          View on GitHub
+        </Button>
+        <Button
+          href="https://www.figma.com/design/fDxXGrTItVnXVTWhtx7yuQ/?node-id=19483-3721"
+          iconLeading={FigmaIcon}
+          color="primary"
+        >
+          View in Figma
+        </Button>
+      </div>
+    </div>
+  ),
+}
+```
+
+**Important:** Do NOT use `parameters.design` or `parameters.github` - render actual clickable buttons.

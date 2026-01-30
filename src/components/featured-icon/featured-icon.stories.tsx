@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { FeaturedIcon, type FeaturedIconTheme, type FeaturedIconSize, type FeaturedIconColor } from './featured-icon'
-import { Icon } from '../icon'
+import { Icon, createIcon } from '../icon'
+import { Button } from '../button'
+
+const GitHubIcon = createIcon('github')
+const FigmaIcon = createIcon('figma')
 
 /**
  * Featured Icon component for highlighting important icons with decorative backgrounds.
@@ -142,20 +146,28 @@ export const Props: Story = {
  */
 export const SourceCodeAndDesign: Story = {
     name: 'Source Code + Design',
-    parameters: {
-        design: {
-            type: 'figma',
-            url: 'https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=18487-14887',
-        },
-        github: {
-            url: 'https://github.com/playalink/untitled-ds/blob/main/src/components/featured-icon/featured-icon.tsx',
-        },
-    },
     render: () => (
-        <div className="flex flex-col gap-4">
-            <p className="text-secondary">
-                View this component's source code and Figma design using the addon panels.
-            </p>
+        <div className="flex min-w-[480px] flex-col items-center gap-8 py-12">
+            <div className="flex flex-col items-center gap-4 text-center">
+                <h2 className="text-display-xs font-semibold text-primary">Source Code + Figma Design</h2>
+                <p className="text-md text-tertiary">This component was built from the Untitled Design System</p>
+            </div>
+            <div className="flex gap-4">
+                <Button
+                    href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/featured-icon"
+                    iconLeading={GitHubIcon}
+                    color="secondary"
+                >
+                    View on GitHub
+                </Button>
+                <Button
+                    href="https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=18487-14887"
+                    iconLeading={FigmaIcon}
+                    color="primary"
+                >
+                    View in Figma
+                </Button>
+            </div>
             <div className="flex gap-4">
                 <FeaturedIcon theme="light" color="brand" size="lg" icon={<Icon name="mail" size="xl" />} />
                 <FeaturedIcon theme="gradient" color="success" size="lg" icon={<Icon name="check" size="xl" />} />

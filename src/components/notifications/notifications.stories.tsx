@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { IconNotification, AvatarNotification, ImageNotification, type NotificationColor } from './notifications'
+import { Button } from '../button'
+import { createIcon } from '../icon'
+
+const GitHubIcon = createIcon('github')
+const FigmaIcon = createIcon('figma')
 
 /**
  * Notification components for displaying alerts and messages.
@@ -169,20 +174,28 @@ export const Props: Story = {
  */
 export const SourceCodeAndDesign: Story = {
     name: 'Source Code + Design',
-    parameters: {
-        design: {
-            type: 'figma',
-            url: 'https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=4296-24282',
-        },
-        github: {
-            url: 'https://github.com/playalink/untitled-ds/blob/main/src/components/notifications/notifications.tsx',
-        },
-    },
     render: () => (
-        <div className="flex flex-col gap-4 w-[400px]">
-            <p className="text-secondary">
-                View this component's source code and Figma design using the addon panels.
-            </p>
+        <div className="flex min-w-[480px] flex-col items-center gap-8 py-12">
+            <div className="flex flex-col items-center gap-4 text-center">
+                <h2 className="text-display-xs font-semibold text-primary">Source Code + Figma Design</h2>
+                <p className="text-md text-tertiary">This component was built from the Untitled Design System</p>
+            </div>
+            <div className="flex gap-4">
+                <Button
+                    href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/notifications"
+                    iconLeading={GitHubIcon}
+                    color="secondary"
+                >
+                    View on GitHub
+                </Button>
+                <Button
+                    href="https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=4296-24282"
+                    iconLeading={FigmaIcon}
+                    color="primary"
+                >
+                    View in Figma
+                </Button>
+            </div>
             <IconNotification
                 title="Order confirmed"
                 description="Your order #12345 has been confirmed and is being processed."

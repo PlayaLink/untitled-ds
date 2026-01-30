@@ -49,13 +49,13 @@ export const styles = sortCx({
     type: {
         text: {
             root: "",
-            icon: "text-fg-quaternary group-hover:text-fg-quaternary_hover",
-            label: "text-quaternary group-hover:text-tertiary_hover",
+            icon: "text-fg-quaternary group-hover:text-fg-quaternary-hover",
+            label: "text-quaternary group-hover:text-tertiary-hover",
         },
         button: {
-            root: "p-1 hover:bg-primary_hover",
-            icon: "text-fg-quaternary group-hover:text-fg-quaternary_hover",
-            label: "px-1 text-quaternary group-hover:text-tertiary_hover",
+            root: "p-1 hover:bg-primary-hover",
+            icon: "text-fg-quaternary group-hover:text-fg-quaternary-hover",
+            label: "px-1 text-quaternary group-hover:text-tertiary-hover",
         },
     },
     current: {
@@ -65,9 +65,9 @@ export const styles = sortCx({
             label: "text-brand-secondary group-hover:text-brand-secondary",
         },
         button: {
-            root: "bg-primary_hover",
-            icon: "text-fg-quaternary_hover",
-            label: "text-fg-tertiary_hover",
+            root: "bg-primary-hover",
+            icon: "text-fg-quaternary-hover",
+            label: "text-fg-tertiary-hover",
         },
     },
 });

@@ -26,7 +26,7 @@ export const InputPrefix = ({ position, size = "sm", isDisabled, children, ...pr
             size === "sm" && "px-3 py-2",
             size === "md" && "py-2.5 pr-3 pl-3.5",
             // Disabled styles
-            isDisabled && "bg-disabled_subtle text-disabled ring-border-disabled",
+            isDisabled && "bg-disabled-subtle text-disabled ring-border-disabled",
             props.className,
         )}
     >
@@ -118,8 +118,8 @@ export const InputGroup = ({ size = "sm", prefix, leadingAddon, trailingAddon, l
                             // Only apply focus ring when child is select and input is focused
                             "has-[&>select]:shadow-xs has-[&>select]:ring-1 has-[&>select]:ring-border-primary has-[&>select]:ring-inset has-[&>select]:has-[input:focus]:ring-2 has-[&>select]:has-[input:focus]:ring-border-brand",
 
-                            isDisabled && "cursor-not-allowed has-[&>select]:bg-disabled_subtle has-[&>select]:ring-border-disabled",
-                            isInvalid && "has-[&>select]:ring-border-error_subtle has-[&>select]:has-[input:focus]:ring-border-error",
+                            isDisabled && "cursor-not-allowed has-[&>select]:bg-disabled-subtle has-[&>select]:ring-border-disabled",
+                            isInvalid && "has-[&>select]:ring-border-error-subtle has-[&>select]:has-[input:focus]:ring-border-error",
                         )}
                     >
                         {leadingAddon && cloneAddon(leadingAddon, "leading", size, isDisabled)}

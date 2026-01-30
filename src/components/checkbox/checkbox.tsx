@@ -24,7 +24,7 @@ export const styles = sortCx({
     boxDisabledSelected: 'bg-disabled border-disabled',
     boxFocused: 'outline-2 outline-offset-2 outline-focus-ring',
     icon: 'text-fg-white',
-    iconDisabled: 'text-fg-disabled_subtle',
+    iconDisabled: 'text-fg-disabled-subtle',
   },
   types: {
     checkbox: {

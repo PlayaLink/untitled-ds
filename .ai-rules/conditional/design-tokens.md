@@ -143,6 +143,50 @@ All these Tailwind utilities support semantic tokens for dark mode:
 | `caret-*` | `caret-fg-primary` | Text cursor color |
 | `accent-*` | `accent-bg-brand-primary` | Form accent color |
 
+## Token Naming Convention
+
+**CRITICAL:** All token names use **hyphens**, not underscores.
+
+### ❌ DON'T use underscores:
+```typescript
+'bg-secondary_alt'      // Wrong - uses underscore
+'bg-primary_hover'      // Wrong - uses underscore
+'text-fg-quaternary_hover'  // Wrong - uses underscore
+'ring-secondary'        // Wrong - missing border- prefix
+```
+
+### ✅ DO use hyphens:
+```typescript
+'bg-secondary-alt'      // Correct - uses hyphen
+'bg-primary-hover'      // Correct - uses hyphen
+'text-fg-quaternary-hover'  // Correct - uses hyphen
+'ring-border-secondary' // Correct - has border- prefix
+```
+
+### Ring Color Pattern
+
+For `ring-*` utilities with semantic colors, always include the category prefix:
+
+| Wrong | Correct |
+|-------|---------|
+| `ring-primary` | `ring-border-primary` |
+| `ring-secondary` | `ring-border-secondary` |
+| `ring-error` | `ring-border-error` |
+
+### Lint Check
+
+Run `npm run lint:tokens` to catch naming issues:
+
+```bash
+npm run lint:tokens
+```
+
+This checks for:
+- Underscore usage (`_alt`, `_hover`, `_subtle`, etc.)
+- Missing `border-` prefix on ring colors
+
+Add to CI to catch issues before merge.
+
 ## Troubleshooting
 
 ### Dark Mode Not Working

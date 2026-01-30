@@ -23,7 +23,9 @@
     "dev": "storybook dev -p 6006",
     "build": "storybook build",
     "build:lib": "vite build",
-    "build:tokens": "node scripts/build-tokens.js"
+    "build:tokens": "node scripts/build-tokens.js",
+    "lint:tokens": "./scripts/check-token-naming.sh",
+    "lint": "npm run lint:tokens"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

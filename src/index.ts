@@ -22,6 +22,22 @@ export { Slider, type SliderProps, type SliderLabelPosition, styles as sliderSty
 export { ProgressCircle, type ProgressCircleProps, type ProgressCircleSize, type ProgressCircleShape, styles as progressCircleStyles } from './components/progress-circle'
 export { Tabs, TabList, TabPanel, Tab, type TabsProps, type TabPanelProps, type TabComponentProps, type TabType, type TabSize, styles as tabsStyles } from './components/tabs'
 export { Breadcrumbs, BreadcrumbItem, type BreadcrumbsProps, type BreadcrumbItemProps, type BreadcrumbType, type BreadcrumbDivider, styles as breadcrumbsStyles } from './components/breadcrumbs'
+export { Pagination, type PaginationProps, styles as paginationStyles } from './components/pagination'
+export { FeaturedIcon, type FeaturedIconProps, type FeaturedIconSize, type FeaturedIconColor, type FeaturedIconTheme, styles as featuredIconStyles } from './components/featured-icon'
+export { TextArea, TextAreaBase, type TextAreaProps, type TextAreaBaseProps, styles as textAreaStyles } from './components/textarea'
+export {
+    IconNotification,
+    AvatarNotification,
+    ImageNotification,
+    type IconNotificationProps,
+    type AvatarNotificationProps,
+    type ImageNotificationProps,
+    type NotificationColor,
+    styles as notificationStyles,
+    Toaster,
+    ToastsOverlay,
+    DEFAULT_TOAST_POSITION,
+} from './components/notifications'
 
 // Avatar
 export {

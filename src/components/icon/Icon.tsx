@@ -16,6 +16,8 @@ import {
 // Solid icons - for icons without regular alternatives
 import {
   faCircleInfo,
+  faCircleExclamation,
+  faCircleCheck,
   faMagnifyingGlass,
   faDollarSign,
   faChevronDown,
@@ -26,6 +28,7 @@ import {
   faCircle,
   faPlus,
   faArrowRight,
+  faArrowLeft,
   faGear,
   faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons'
@@ -47,6 +50,8 @@ const iconMap = {
   // UI Icons (regular/outline where available, solid otherwise)
   'help-circle': faCircleQuestionRegular,
   'info-circle': faCircleInfo, // no regular version available
+  'alert-circle': faCircleExclamation, // no regular version
+  'check-circle': faCircleCheck, // no regular version
   'mail': faEnvelopeRegular,
   'search': faMagnifyingGlass, // no regular version
   'dollar-sign': faDollarSign, // no regular version
@@ -61,6 +66,7 @@ const iconMap = {
   'square-check': faSquareCheckRegular,
   'plus': faPlus, // no regular version
   'arrow-right': faArrowRight, // no regular version
+  'arrow-left': faArrowLeft, // no regular version
   'user': faUserRegular,
   'settings': faGear, // no regular version
   'trash': faTrashCanRegular,

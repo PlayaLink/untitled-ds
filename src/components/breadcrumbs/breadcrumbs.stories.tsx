@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Breadcrumbs, BreadcrumbItem } from './breadcrumbs'
+import { Breadcrumbs, BreadcrumbItem, type BreadcrumbType, type BreadcrumbDivider } from './breadcrumbs'
 import { createIcon } from '../icon'
 
 const HomeIcon = createIcon('user', 'lg')
@@ -24,10 +24,48 @@ const meta: Meta<typeof Breadcrumbs> = {
   parameters: {
     layout: 'padded',
   },
+  argTypes: {
+    type: {
+      name: 'type (Type)',
+      control: 'select',
+      options: ['text', 'text-line', 'button'],
+      description: 'Visual style of the breadcrumbs',
+      table: { category: 'Appearance' },
+    },
+    divider: {
+      control: 'select',
+      options: ['chevron', 'slash'],
+      description: 'Divider style between items',
+      table: { category: 'Appearance' },
+    },
+    maxVisibleItems: {
+      control: 'number',
+      description: 'Maximum visible items before collapsing',
+      table: { category: 'Behavior' },
+    },
+    children: {
+      control: false,
+      description: 'BreadcrumbItem components',
+      table: { category: 'Content' },
+    },
+    className: {
+      control: false,
+      table: { category: 'Advanced' },
+    },
+  },
+  args: {
+    type: 'text',
+    divider: 'chevron',
+    maxVisibleItems: 4,
+  },
 }
 
 export default meta
 type Story = StoryObj<typeof Breadcrumbs>
+
+// =============================================================================
+// OVERVIEW (all variants)
+// =============================================================================
 
 /**
  * Visual showcase of all breadcrumb variants and configurations.
@@ -104,25 +142,45 @@ export const Overview: Story = {
   ),
 }
 
+// =============================================================================
+// PROPS (with controls)
+// =============================================================================
+
 /**
  * Interactive playground for testing props.
+ * Use the controls panel to adjust type, divider, and maxVisibleItems.
  */
 export const Props: Story = {
   tags: ['show-panel'],
-  render: () => (
-    <Breadcrumbs type="text" divider="chevron">
+  args: {
+    type: 'text',
+    divider: 'chevron',
+    maxVisibleItems: 4,
+  },
+  render: (args) => (
+    <Breadcrumbs
+      type={args.type as BreadcrumbType}
+      divider={args.divider as BreadcrumbDivider}
+      maxVisibleItems={args.maxVisibleItems}
+    >
       <BreadcrumbItem href="#">Home</BreadcrumbItem>
-      <BreadcrumbItem href="#">Settings</BreadcrumbItem>
-      <BreadcrumbItem href="#">Account</BreadcrumbItem>
-      <BreadcrumbItem>Security</BreadcrumbItem>
+      <BreadcrumbItem href="#">Products</BreadcrumbItem>
+      <BreadcrumbItem href="#">Electronics</BreadcrumbItem>
+      <BreadcrumbItem href="#">Phones</BreadcrumbItem>
+      <BreadcrumbItem>iPhone 15 Pro</BreadcrumbItem>
     </Breadcrumbs>
   ),
 }
+
+// =============================================================================
+// SOURCE CODE + DESIGN
+// =============================================================================
 
 /**
  * Links to source code and Figma design.
  */
 export const SourceCodeAndDesign: Story = {
+  name: 'Source Code + Design',
   parameters: {
     design: {
       type: 'figma',

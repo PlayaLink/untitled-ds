@@ -125,7 +125,84 @@ Common Untitled UI Figma variants and their React prop equivalents:
 See **Required Storybook Pages** section above. Every component must export exactly 3 stories:
 `Overview`, `Props`, and `SourceCodeAndDesign`.
 
-## 4. Story File Structure
+## 4. Props Story Controls (CRITICAL)
+
+**The Props story MUST have working controls in the Storybook controls panel.** If controls are blank/empty, the story is broken.
+
+### Requirements for Working Controls
+
+1. **Define `argTypes` in meta** with control types for each configurable prop
+2. **Define `args` in meta** with default values
+3. **Props story must use args** - either via automatic rendering or a `render` function that uses `args`
+
+### Common Mistakes
+
+❌ **Wrong - No controls will appear:**
+```typescript
+export const Props: Story = {
+  tags: ['show-panel'],
+  render: () => (
+    <Component prop="hardcoded" />  // Args not used!
+  ),
+}
+```
+
+✅ **Correct - Controls will work:**
+```typescript
+export const Props: Story = {
+  tags: ['show-panel'],
+  args: {
+    type: 'default',
+    size: 'md',
+  },
+  render: (args) => (
+    <Component type={args.type} size={args.size} />  // Args passed through!
+  ),
+}
+```
+
+✅ **Also correct - Simple components can omit render:**
+```typescript
+export const Props: Story = {
+  tags: ['show-panel'],
+  args: {
+    children: 'Label',
+    color: 'primary',
+  },
+  // No render needed - Storybook renders Component with args automatically
+}
+```
+
+### Compound Components (Tabs, Breadcrumbs, etc.)
+
+For compound components, set `component` to the sub-component with the main props:
+
+```typescript
+const meta: Meta<typeof TabList> = {  // TabList has type, size, fullWidth
+  title: 'Application/Tabs',
+  component: TabList,  // Not Tabs!
+  argTypes: {
+    type: { control: 'select', options: [...] },
+    size: { control: 'select', options: [...] },
+  },
+}
+```
+
+Then use a render function that wraps the sub-component:
+
+```typescript
+export const Props: Story = {
+  render: (args) => (
+    <Tabs>
+      <TabList type={args.type} size={args.size}>
+        {/* ... */}
+      </TabList>
+    </Tabs>
+  ),
+}
+```
+
+## 5. Story File Structure
 
 ```typescript
 import type { Meta, StoryObj } from '@storybook/react'

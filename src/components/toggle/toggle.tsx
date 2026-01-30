@@ -30,7 +30,7 @@ export const styles = sortCx({
       thumb: '',
     },
     slim: {
-      track: 'ring-1 ring-secondary ring-inset',
+      track: 'ring-1 ring-border-secondary ring-inset',
       trackSelected: 'ring-transparent',
       thumb: 'shadow-xs border border-toggle-border',
       thumbSelected: 'border-toggle-slim-border_pressed',

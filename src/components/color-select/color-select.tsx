@@ -14,7 +14,7 @@ export const styles = sortCx({
       'cursor-pointer transition-all duration-150',
       'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-focus-ring',
     ].join(' '),
-    rootSelected: 'ring-[1.5px] ring-primary ring-inset',
+    rootSelected: 'ring-[1.5px] ring-border-primary ring-inset',
     swatch: 'size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)]',
   },
 })

@@ -19,6 +19,7 @@ import {
   faMagnifyingGlass,
   faDollarSign,
   faChevronDown,
+  faChevronRight,
   faCheck,
   faXmark,
   faEllipsisVertical,
@@ -50,6 +51,7 @@ const iconMap = {
   'search': faMagnifyingGlass, // no regular version
   'dollar-sign': faDollarSign, // no regular version
   'chevron-down': faChevronDown, // no regular version
+  'chevron-right': faChevronRight, // no regular version
   'check': faCheck, // no regular version
   'x-close': faXmark, // no regular version
   'dots-vertical': faEllipsisVertical, // no regular version

@@ -20,6 +20,8 @@ export { ColorSelect, type ColorSelectProps, styles as colorSelectStyles } from 
 export { ProgressBar, type ProgressBarProps, type ProgressBarLabelPosition, styles as progressBarStyles } from './components/progress-bar'
 export { Slider, type SliderProps, type SliderLabelPosition, styles as sliderStyles } from './components/slider'
 export { ProgressCircle, type ProgressCircleProps, type ProgressCircleSize, type ProgressCircleShape, styles as progressCircleStyles } from './components/progress-circle'
+export { Tabs, TabList, TabPanel, Tab, type TabsProps, type TabPanelProps, type TabComponentProps, type TabType, type TabSize, styles as tabsStyles } from './components/tabs'
+export { Breadcrumbs, BreadcrumbItem, type BreadcrumbsProps, type BreadcrumbItemProps, type BreadcrumbType, type BreadcrumbDivider, styles as breadcrumbsStyles } from './components/breadcrumbs'
 
 // Avatar
 export {

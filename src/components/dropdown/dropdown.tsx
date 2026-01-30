@@ -68,7 +68,7 @@ export const styles = sortCx({
     labelDefault: 'text-secondary',
     labelDisabled: 'text-disabled',
     labelFocused: 'text-secondary_hover',
-    addon: 'ml-3 shrink-0 rounded px-1 py-px text-xs font-medium ring-1 ring-secondary ring-inset',
+    addon: 'ml-3 shrink-0 rounded px-1 py-px text-xs font-medium ring-1 ring-border-secondary ring-inset',
     addonDefault: 'text-quaternary',
     addonDisabled: 'text-disabled',
   },

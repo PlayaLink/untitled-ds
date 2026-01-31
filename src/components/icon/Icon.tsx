@@ -12,6 +12,13 @@ import {
   faTrashCan as faTrashCanRegular,
   faCopy as faCopyRegular,
   faPenToSquare as faPenToSquareRegular,
+  faFolder as faFolderRegular,
+  faFile as faFileRegular,
+  faFileLines as faFileLinesRegular,
+  faImage as faImageRegular,
+  faFileCode as faFileCodeRegular,
+  faFilePdf as faFilePdfRegular,
+  faFileZipper as faFileZipperRegular,
 } from '@fortawesome/free-regular-svg-icons'
 // Solid icons - for icons without regular alternatives
 import {
@@ -22,6 +29,7 @@ import {
   faDollarSign,
   faChevronDown,
   faChevronRight,
+  faChevronLeft,
   faCheck,
   faXmark,
   faEllipsisVertical,
@@ -29,8 +37,25 @@ import {
   faPlus,
   faArrowRight,
   faArrowLeft,
+  faArrowUp,
+  faArrowDown,
   faGear,
   faRightFromBracket,
+  faCalendar,
+  faCloudArrowUp,
+  faFolder,
+  faFile,
+  faFileLines,
+  faImage,
+  faFileCode,
+  faFilePdf,
+  faFileZipper,
+  faCircleXmark,
+  faBox,
+  faCreditCard,
+  faFileAlt,
+  faSpinner,
+  faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faCcVisa,
@@ -57,6 +82,8 @@ const iconMap = {
   'dollar-sign': faDollarSign, // no regular version
   'chevron-down': faChevronDown, // no regular version
   'chevron-right': faChevronRight, // no regular version
+  'chevron-left': faChevronLeft, // no regular version
+  'calendar': faCalendar, // no regular version
   'check': faCheck, // no regular version
   'x-close': faXmark, // no regular version
   'dots-vertical': faEllipsisVertical, // no regular version
@@ -67,12 +94,39 @@ const iconMap = {
   'plus': faPlus, // no regular version
   'arrow-right': faArrowRight, // no regular version
   'arrow-left': faArrowLeft, // no regular version
+  'arrow-up': faArrowUp, // no regular version
+  'arrow-down': faArrowDown, // no regular version
   'user': faUserRegular,
   'settings': faGear, // no regular version
   'trash': faTrashCanRegular,
   'edit': faPenToSquareRegular,
   'copy': faCopyRegular,
   'log-out': faRightFromBracket, // no regular version
+  // File/Folder Icons
+  'upload-cloud': faCloudArrowUp, // no regular version
+  'folder': faFolderRegular,
+  'folder-solid': faFolder,
+  'file': faFileRegular,
+  'file-solid': faFile,
+  'file-text': faFileLinesRegular,
+  'file-text-solid': faFileLines,
+  'image': faImageRegular,
+  'image-solid': faImage,
+  'file-code': faFileCodeRegular,
+  'file-code-solid': faFileCode,
+  'file-pdf': faFilePdfRegular,
+  'file-pdf-solid': faFilePdf,
+  'file-zip': faFileZipperRegular,
+  'file-zip-solid': faFileZipper,
+  // Status Icons
+  'x-circle': faCircleXmark, // no regular version
+  // Object Icons
+  'box': faBox, // no regular version
+  'credit-card': faCreditCard, // no regular version
+  'document': faFileAlt, // no regular version
+  // Loading/Spinner Icons
+  'loader': faCircleNotch, // commonly used for loading spinners
+  'spinner': faSpinner, // alternative spinner icon
   // Payment Icons
   'visa': faCcVisa,
   'mastercard': faCcMastercard,

@@ -58,7 +58,16 @@ export default defineConfig({
       fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime', 'react-aria-components', 'sonner'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'react-aria-components',
+        'sonner',
+        '@tanstack/react-table',
+        '@tanstack/react-virtual',
+        'motion/react',
+      ],
       output: {
         globals: {
           react: 'React',

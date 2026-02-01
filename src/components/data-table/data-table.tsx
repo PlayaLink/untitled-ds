@@ -283,7 +283,7 @@ export function DataTable<TData>({
                     <div
                       key={cell.id}
                       className={cx(
-                        'flex h-full items-center px-6 py-4',
+                        'flex h-full min-w-0 items-center overflow-hidden px-6 py-4',
                         hasExplicitWidth ? 'shrink-0' : 'flex-1'
                       )}
                       style={{
@@ -291,7 +291,9 @@ export function DataTable<TData>({
                         flexShrink: hasExplicitWidth ? 0 : undefined,
                       }}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      <div className="w-full min-w-0">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
                     </div>
                   )
                 })}

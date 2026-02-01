@@ -7,7 +7,7 @@
 
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Fragment, createContext, useContext } from "react";
-import type { TabListProps as AriaTabListProps, TabProps as AriaTabProps, TabRenderProps as AriaTabRenderProps } from "react-aria-components";
+import type { TabListProps as AriaTabListProps, TabPanelProps as AriaTabPanelProps, TabProps as AriaTabProps, TabRenderProps as AriaTabRenderProps, TabsProps as AriaTabsProps } from "react-aria-components";
 import { Tab as AriaTab, TabList as AriaTabList, TabPanel as AriaTabPanel, Tabs as AriaTabs, TabsContext, useSlottedContext } from "react-aria-components";
 import type { BadgeColor } from "../badge";
 import { Badge } from "../badge";
@@ -170,7 +170,7 @@ export const TabList = <T extends Orientation>({
     );
 };
 
-export interface TabPanelProps extends ComponentPropsWithRef<typeof AriaTabPanel> {}
+export interface TabPanelProps extends AriaTabPanelProps {}
 
 export const TabPanel = (props: TabPanelProps) => {
     return (
@@ -231,7 +231,7 @@ export const Tab = (props: TabComponentProps) => {
     );
 };
 
-export interface TabsProps extends ComponentPropsWithRef<typeof AriaTabs> {}
+export interface TabsProps extends AriaTabsProps {}
 
 export const Tabs = ({ className, ...props }: TabsProps) => {
     return (

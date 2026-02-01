@@ -151,7 +151,7 @@ export function DataTable<TData>({
   // Empty state
   if (data.length === 0 && emptyState) {
     return (
-      <div className="overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs">
+      <div className="w-full overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs">
         {emptyState}
       </div>
     )

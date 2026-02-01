@@ -5,6 +5,7 @@
 'use client'
 
 import { type FC } from 'react'
+import { Link } from 'react-aria-components'
 import { cx, sortCx } from '@/utils/cx'
 
 export type NavItemButtonSize = 'md' | 'lg'
@@ -16,6 +17,8 @@ export interface NavItemButtonProps {
   isCurrent?: boolean
   /** Size of the button */
   size?: NavItemButtonSize
+  /** URL to navigate to (renders as link) */
+  href?: string
   /** Click handler */
   onClick?: () => void
   /** Accessible label */
@@ -51,32 +54,54 @@ export function NavItemButton({
   icon: Icon,
   isCurrent = false,
   size = 'md',
+  href,
   onClick,
   'aria-label': ariaLabel,
   className,
 }: NavItemButtonProps) {
+  const sharedClassName = cx(
+    navItemButtonStyles.base,
+    navItemButtonStyles.sizes[size],
+    isCurrent ? navItemButtonStyles.states.current : navItemButtonStyles.states.default,
+    !isCurrent && navItemButtonStyles.states.hover,
+    className
+  )
+
+  const iconElement = (
+    <Icon
+      className={cx(
+        navItemButtonStyles.icon.sizes[size],
+        isCurrent
+          ? navItemButtonStyles.icon.colors.current
+          : navItemButtonStyles.icon.colors.default
+      )}
+    />
+  )
+
+  // Render as link when href is provided
+  if (href) {
+    return (
+      <Link
+        href={href}
+        aria-label={ariaLabel}
+        aria-current={isCurrent ? 'page' : undefined}
+        className={sharedClassName}
+      >
+        {iconElement}
+      </Link>
+    )
+  }
+
+  // Render as button for click handlers
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
       aria-current={isCurrent ? 'page' : undefined}
-      className={cx(
-        navItemButtonStyles.base,
-        navItemButtonStyles.sizes[size],
-        isCurrent ? navItemButtonStyles.states.current : navItemButtonStyles.states.default,
-        !isCurrent && navItemButtonStyles.states.hover,
-        className
-      )}
+      className={sharedClassName}
     >
-      <Icon
-        className={cx(
-          navItemButtonStyles.icon.sizes[size],
-          isCurrent
-            ? navItemButtonStyles.icon.colors.current
-            : navItemButtonStyles.icon.colors.default
-        )}
-      />
+      {iconElement}
     </button>
   )
 }

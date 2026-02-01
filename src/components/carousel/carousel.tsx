@@ -5,7 +5,7 @@
  * @docs https://www.untitledui.com/components/carousel
  */
 
-import type { CSSProperties, ComponentPropsWithRef, HTMLAttributes, KeyboardEvent, ReactNode, Ref } from 'react'
+import type { CSSProperties, ComponentPropsWithRef, HTMLAttributes, KeyboardEvent, ReactElement, ReactNode, Ref } from 'react'
 import { cloneElement, createContext, isValidElement, useCallback, useContext, useEffect, useState } from 'react'
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react'
 import { cx } from '@/utils/cx'
@@ -15,7 +15,7 @@ type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
 type CarouselOptions = UseCarouselParameters[0]
 type CarouselPlugin = UseCarouselParameters[1]
 
-type CarouselProps = {
+export type CarouselProps = {
   /** The options for the Embla carousel. */
   opts?: CarouselOptions
   /** The plugins for the Embla carousel. */
@@ -26,7 +26,7 @@ type CarouselProps = {
   setApi?: (api: CarouselApi) => void
 }
 
-type CarouselContextProps = CarouselProps & {
+export type CarouselContextProps = CarouselProps & {
   /** The ref of the carousel. */
   carouselRef: ReturnType<typeof useEmblaCarousel>[0]
   /** The API of the carousel. */
@@ -57,7 +57,9 @@ export const useCarousel = () => {
   return context
 }
 
-const CarouselRoot = ({ orientation = 'horizontal', opts, setApi, plugins, className, children, ...props }: ComponentPropsWithRef<'div'> & CarouselProps) => {
+export type CarouselRootProps = ComponentPropsWithRef<'div'> & CarouselProps
+
+const CarouselRoot = ({ orientation = 'horizontal', opts, setApi, plugins, className, children, ...props }: CarouselRootProps) => {
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
@@ -148,7 +150,7 @@ const CarouselRoot = ({ orientation = 'horizontal', opts, setApi, plugins, class
   )
 }
 
-interface CarouselContentProps extends ComponentPropsWithRef<'div'> {
+export interface CarouselContentProps extends ComponentPropsWithRef<'div'> {
   /** The class name of the content. */
   className?: string
   /** Whether to hide the overflow. */
@@ -165,7 +167,9 @@ const CarouselContent = ({ className, overflowHidden = true, ...props }: Carouse
   )
 }
 
-const CarouselItem = ({ className, ...props }: ComponentPropsWithRef<'div'>) => {
+export type CarouselItemProps = ComponentPropsWithRef<'div'>
+
+const CarouselItem = ({ className, ...props }: CarouselItemProps) => {
   return <div role="group" aria-roledescription="slide" className={cx('min-w-0 shrink-0 grow-0 basis-full', className)} {...props} />
 }
 
@@ -174,7 +178,7 @@ interface TriggerRenderProps {
   onClick: () => void
 }
 
-interface TriggerProps {
+export interface TriggerProps {
   /** The ref of the trigger. */
   ref?: Ref<HTMLButtonElement>
   /** If true, the child element will be cloned and passed down the prop of the trigger. */
@@ -236,7 +240,7 @@ interface CarouselIndicatorRenderProps {
   onClick: () => void
 }
 
-interface CarouselIndicatorProps {
+export interface CarouselIndicatorProps {
   /** The index of the indicator. */
   index: number
   /** If true, the child element will be cloned and passed down the prop of the indicator. */
@@ -286,7 +290,7 @@ const CarouselIndicator = ({ index, isSelected = false, children, asChild, class
   )
 }
 
-interface CarouselIndicatorGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface CarouselIndicatorGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
   children: ReactNode | ((props: { index: number }) => ReactNode)
   className?: string
 }
@@ -302,7 +306,17 @@ const CarouselIndicatorGroup = ({ children, ...props }: CarouselIndicatorGroupPr
   return <nav {...props}>{children}</nav>
 }
 
-export const Carousel = {
+export interface CarouselComponent {
+  Root: (props: CarouselRootProps) => ReactElement
+  Content: (props: CarouselContentProps) => ReactElement
+  Item: (props: CarouselItemProps) => ReactElement
+  PrevTrigger: (props: Omit<TriggerProps, 'direction'>) => ReactElement
+  NextTrigger: (props: Omit<TriggerProps, 'direction'>) => ReactElement
+  IndicatorGroup: (props: CarouselIndicatorGroupProps) => ReactElement
+  Indicator: (props: CarouselIndicatorProps) => ReactElement
+}
+
+export const Carousel: CarouselComponent = {
   Root: CarouselRoot,
   Content: CarouselContent,
   Item: CarouselItem,
@@ -312,4 +326,5 @@ export const Carousel = {
   Indicator: CarouselIndicator,
 }
 
-export type { CarouselProps, CarouselContextProps, CarouselContentProps, TriggerProps, CarouselIndicatorProps, CarouselIndicatorGroupProps }
+// Type alias for external consumers
+export type CarouselTriggerProps = TriggerProps

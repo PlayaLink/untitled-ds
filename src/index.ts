@@ -153,9 +153,12 @@ export {
   Carousel,
   CarouselContext,
   useCarousel,
+  type CarouselComponent,
   type CarouselProps,
+  type CarouselRootProps,
   type CarouselContextProps,
   type CarouselContentProps,
+  type CarouselItemProps,
   type CarouselTriggerProps,
   type CarouselIndicatorProps,
   type CarouselIndicatorGroupProps,
@@ -166,7 +169,20 @@ export { BackgroundPattern, type BackgroundPatternProps } from './components/sha
 export { Illustration, type IllustrationProps } from './components/shared-assets'
 
 // Empty State
-export { EmptyState } from './components/empty-state'
+export {
+  EmptyState,
+  type EmptyStateComponent,
+  type EmptyStateRootProps,
+  type EmptyStateRootContextProps,
+  type EmptyStateHeaderProps,
+  type EmptyStateContentProps,
+  type EmptyStateFooterProps,
+  type EmptyStateTitleProps,
+  type EmptyStateDescriptionProps,
+  type EmptyStateIllustrationProps,
+  type EmptyStateFeaturedIconProps,
+  type EmptyStateFileTypeIconProps,
+} from './components/empty-state'
 
 // Data Table
 export { DataTable, createColumn, createSelectColumn, createActionsColumn, TableActionsBar } from './components/data-table'
@@ -181,6 +197,43 @@ export {
   getReadableFileSize,
   type FileListItemProps,
 } from './components/file-upload'
+
+// Wizard
+export {
+  Wizard,
+  WizardContext,
+  useWizard,
+  type WizardComponent,
+  type WizardContextValue,
+  type WizardStep,
+  type WizardRootProps,
+  type WizardProgressProps,
+  type WizardStepProps,
+  type WizardHeaderProps,
+  type WizardContentProps,
+  type WizardFooterProps,
+  type WizardBackButtonProps,
+  type WizardNextButtonProps,
+} from './components/wizard'
+
+// WizardModal
+export {
+  WizardModal,
+  WizardModalProgress,
+  WizardModalStep,
+  WizardModalFooter,
+  WizardModalBackButton,
+  WizardModalNextButton,
+  useWizardModal,
+  type WizardModalProps,
+  type WizardModalContextValue,
+  type WizardModalStepType,
+  type WizardModalProgressProps,
+  type WizardModalStepProps,
+  type WizardModalFooterProps,
+  type WizardModalBackButtonProps,
+  type WizardModalNextButtonProps,
+} from './components/wizard'
 
 // Hooks
 export { useResizeObserver, useBreakpoint } from './hooks'

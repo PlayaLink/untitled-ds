@@ -5,7 +5,7 @@
  * @docs https://www.untitledui.com/components/empty-state
  */
 
-import type { ComponentProps, ComponentPropsWithRef, ReactNode } from 'react'
+import type { ComponentProps, ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { Children, createContext, isValidElement, useContext } from 'react'
 import { FileIcon } from '@untitledui/file-icons'
 import { FeaturedIcon as FeaturedIconBase } from '@/components/featured-icon'
@@ -14,17 +14,17 @@ import { BackgroundPattern, Illustration as Illustrations } from '@/components/s
 import { Icon } from '@/components/icon'
 import { cx } from '@/utils/cx'
 
-interface RootContextProps {
+export interface EmptyStateRootContextProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
-const RootContext = createContext<RootContextProps>({ size: 'lg' })
+const RootContext = createContext<EmptyStateRootContextProps>({ size: 'lg' })
 
-interface RootProps extends ComponentPropsWithRef<'div'>, RootContextProps {
+export interface EmptyStateRootProps extends ComponentPropsWithRef<'div'>, EmptyStateRootContextProps {
   children?: ReactNode
 }
 
-const Root = ({ size = 'lg', ...props }: RootProps) => {
+const Root = ({ size = 'lg', ...props }: EmptyStateRootProps) => {
   return (
     <RootContext.Provider value={{ size }}>
       <div {...props} className={cx('mx-auto flex w-full max-w-lg flex-col', props.className)} />
@@ -54,12 +54,7 @@ const Illustration = ({ type = 'cloud', color = 'gray', size = 'lg', ...props }:
   )
 }
 
-interface FileTypeIconProps extends ComponentPropsWithRef<'div'> {
-  type?: ComponentProps<typeof FileIcon>['type']
-  theme?: ComponentProps<typeof FileIcon>['variant']
-}
-
-const FileTypeIcon = ({ type = 'folder', theme = 'solid', ...props }: FileTypeIconProps) => {
+const FileTypeIcon = ({ type = 'folder', theme = 'solid', ...props }: EmptyStateFileTypeIconProps) => {
   return (
     <div {...props} className={cx('relative z-10 flex rounded-full bg-linear-to-b from-gray-50 to-gray-200 p-8', props.className)}>
       <FileIcon type={type} variant={theme} className="size-10 drop-shadow-sm" />
@@ -67,13 +62,13 @@ const FileTypeIcon = ({ type = 'folder', theme = 'solid', ...props }: FileTypeIc
   )
 }
 
-interface HeaderProps extends ComponentPropsWithRef<'div'> {
+export interface EmptyStateHeaderProps extends ComponentPropsWithRef<'div'> {
   children?: ReactNode
   pattern?: 'none' | BackgroundPatternProps['pattern']
   patternSize?: 'sm' | 'md' | 'lg'
 }
 
-const Header = ({ pattern = 'circle', patternSize = 'md', ...props }: HeaderProps) => {
+const Header = ({ pattern = 'circle', patternSize = 'md', ...props }: EmptyStateHeaderProps) => {
   const { size } = useContext(RootContext)
   // Whether we are passing `Illustration` component as children.
   const hasIllustration = Children.toArray(props.children).some((headerChild) => isValidElement(headerChild) && headerChild.type === Illustration)
@@ -132,16 +127,30 @@ const Description = (props: ComponentPropsWithRef<'p'>) => {
   return <p {...props} className={cx('w-full text-center text-sm text-tertiary', size === 'lg' && 'text-md', props.className)} />
 }
 
-const EmptyState = Root as typeof Root & {
-  Title: typeof Title
-  Header: typeof Header
-  Footer: typeof Footer
-  Content: typeof Content
-  Description: typeof Description
-  Illustration: typeof Illustration
-  FeaturedIcon: typeof FeaturedIcon
-  FileTypeIcon: typeof FileTypeIcon
+export type EmptyStateContentProps = ComponentPropsWithRef<'div'>
+export type EmptyStateFooterProps = ComponentPropsWithRef<'div'>
+export type EmptyStateTitleProps = ComponentPropsWithRef<'h1'>
+export type EmptyStateDescriptionProps = ComponentPropsWithRef<'p'>
+export type EmptyStateIllustrationProps = ComponentPropsWithRef<typeof Illustrations>
+export type EmptyStateFeaturedIconProps = ComponentPropsWithRef<typeof FeaturedIconBase>
+export interface EmptyStateFileTypeIconProps extends ComponentPropsWithRef<'div'> {
+  type?: ComponentProps<typeof FileIcon>['type']
+  theme?: ComponentProps<typeof FileIcon>['variant']
 }
+
+export interface EmptyStateComponent {
+  (props: EmptyStateRootProps): ReactElement
+  Title: (props: EmptyStateTitleProps) => ReactElement
+  Header: (props: EmptyStateHeaderProps) => ReactElement
+  Footer: (props: EmptyStateFooterProps) => ReactElement
+  Content: (props: EmptyStateContentProps) => ReactElement
+  Description: (props: EmptyStateDescriptionProps) => ReactElement
+  Illustration: (props: EmptyStateIllustrationProps) => ReactElement
+  FeaturedIcon: (props: EmptyStateFeaturedIconProps) => ReactElement
+  FileTypeIcon: (props: EmptyStateFileTypeIconProps) => ReactElement
+}
+
+const EmptyState = Root as EmptyStateComponent
 
 EmptyState.Title = Title
 EmptyState.Header = Header

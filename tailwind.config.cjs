@@ -16,6 +16,12 @@ module.exports = {
     fontSize: tokens.fontSize,
     fontFamily: tokens.fontFamily,
     fontWeight: tokens.fontWeight,
+    // Must be at root level (not extend) to override spacing-derived values in Tailwind v4
+    maxWidth: {
+      ...tokens.maxWidth,
+      'container-mobile': '100%',
+      'container-desktop': '1280px',
+    },
     // Utility-specific semantic colors for text-primary, bg-primary, border-primary
     textColor: ({ theme }) => ({
       ...theme('colors'),
@@ -67,11 +73,6 @@ module.exports = {
       height: tokens.height,
       minWidth: tokens.minWidth,
       minHeight: tokens.minHeight,
-      maxWidth: {
-        ...tokens.maxWidth,
-        'container-mobile': '100%',
-        'container-desktop': '1280px',
-      },
       maxHeight: tokens.maxHeight,
       // Shadow tokens from Figma (Effects.tokens.json)
       boxShadow: {

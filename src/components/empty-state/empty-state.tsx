@@ -5,7 +5,7 @@
  * @docs https://www.untitledui.com/components/empty-state
  */
 
-import type { ComponentProps, ComponentPropsWithRef } from 'react'
+import type { ComponentProps, ComponentPropsWithRef, ReactNode } from 'react'
 import { Children, createContext, isValidElement, useContext } from 'react'
 import { FileIcon } from '@untitledui/file-icons'
 import { FeaturedIcon as FeaturedIconBase } from '@/components/featured-icon'
@@ -20,12 +20,14 @@ interface RootContextProps {
 
 const RootContext = createContext<RootContextProps>({ size: 'lg' })
 
-interface RootProps extends ComponentPropsWithRef<'div'>, RootContextProps {}
+interface RootProps extends ComponentPropsWithRef<'div'>, RootContextProps {
+  children?: ReactNode
+}
 
 const Root = ({ size = 'lg', ...props }: RootProps) => {
   return (
     <RootContext.Provider value={{ size }}>
-      <div {...props} className={cx('mx-auto flex w-full max-w-lg flex-col items-center justify-center', props.className)} />
+      <div {...props} className={cx('mx-auto flex w-full max-w-lg flex-col', props.className)} />
     </RootContext.Provider>
   )
 }
@@ -66,6 +68,7 @@ const FileTypeIcon = ({ type = 'folder', theme = 'solid', ...props }: FileTypeIc
 }
 
 interface HeaderProps extends ComponentPropsWithRef<'div'> {
+  children?: ReactNode
   pattern?: 'none' | BackgroundPatternProps['pattern']
   patternSize?: 'sm' | 'md' | 'lg'
 }
@@ -78,7 +81,7 @@ const Header = ({ pattern = 'circle', patternSize = 'md', ...props }: HeaderProp
   return (
     <header
       {...props}
-      className={cx('relative mb-4', (size === 'md' || size === 'lg') && 'mb-5', hasIllustration && size === 'lg' && 'mb-6!', props.className)}
+      className={cx('relative mx-auto mb-4 flex flex-col items-center', (size === 'md' || size === 'lg') && 'mb-5', hasIllustration && size === 'lg' && 'mb-6!', props.className)}
     >
       {pattern !== 'none' && (
         <BackgroundPattern size={patternSize} pattern={pattern} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
@@ -92,10 +95,10 @@ const Content = (props: ComponentPropsWithRef<'div'>) => {
   const { size } = useContext(RootContext)
 
   return (
-    <main
+    <div
       {...props}
       className={cx(
-        'z-10 mb-6 flex w-full max-w-88 flex-col items-center justify-center gap-1',
+        'z-10 mx-auto mb-6 flex w-full max-w-sm flex-col gap-1',
         (size === 'md' || size === 'lg') && 'mb-8 gap-2',
         props.className,
       )}
@@ -104,7 +107,7 @@ const Content = (props: ComponentPropsWithRef<'div'>) => {
 }
 
 const Footer = (props: ComponentPropsWithRef<'div'>) => {
-  return <footer {...props} className={cx('z-10 flex gap-3', props.className)} />
+  return <footer {...props} className={cx('z-10 mx-auto flex gap-3', props.className)} />
 }
 
 const Title = (props: ComponentPropsWithRef<'h1'>) => {
@@ -114,7 +117,7 @@ const Title = (props: ComponentPropsWithRef<'h1'>) => {
     <h1
       {...props}
       className={cx(
-        'text-md font-semibold text-primary',
+        'w-full text-center text-md font-semibold text-primary',
         size === 'md' && 'text-lg font-semibold',
         size === 'lg' && 'text-xl font-semibold',
         props.className,
@@ -126,7 +129,7 @@ const Title = (props: ComponentPropsWithRef<'h1'>) => {
 const Description = (props: ComponentPropsWithRef<'p'>) => {
   const { size } = useContext(RootContext)
 
-  return <p {...props} className={cx('text-center text-sm text-tertiary', size === 'lg' && 'text-md', props.className)} />
+  return <p {...props} className={cx('w-full text-center text-sm text-tertiary', size === 'lg' && 'text-md', props.className)} />
 }
 
 const EmptyState = Root as typeof Root & {

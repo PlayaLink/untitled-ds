@@ -872,13 +872,13 @@ function generateTailwindConfig(primitiveColors, primitiveSpacing, lightSemantic
     semanticColors[key] = `var(--color-${key})`;
   }
 
-  // Build spacing object (primitive + semantic)
+  // Build spacing object (primitive only)
+  // NOTE: Semantic spacing names (sm, md, lg, xl, etc.) are intentionally excluded
+  // from the Tailwind spacing scale because they conflict with Tailwind v4's derived
+  // utilities (max-w-sm, min-w-lg, etc.). Semantic spacing is still available via
+  // CSS variables (--spacing-sm, --spacing-lg) generated in tokens.css.
   const spacing = {};
   for (const [key, value] of Object.entries(primitiveSpacing)) {
-    spacing[key] = value;
-  }
-  // Add semantic spacing names
-  for (const [key, value] of Object.entries(semanticSpacing)) {
     spacing[key] = value;
   }
 

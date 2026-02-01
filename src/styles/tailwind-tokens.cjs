@@ -1020,24 +1020,7 @@ module.exports = {
   '0.5': '2px',
   '1.5': '6px',
   '2.5': '10px',
-  '3.5': '14px',
-  none: '0px',
-  xxs: '2px',
-  xs: '4px',
-  sm: '6px',
-  md: '8px',
-  lg: '12px',
-  xl: '16px',
-  '2xl': '20px',
-  '3xl': '24px',
-  '4xl': '32px',
-  '5xl': '40px',
-  '6xl': '48px',
-  '7xl': '64px',
-  '8xl': '80px',
-  '9xl': '96px',
-  '10xl': '128px',
-  '11xl': '160px'
+  '3.5': '14px'
 },
 
   borderRadius: {
@@ -1101,20 +1084,6 @@ module.exports = {
   },
 
   maxWidth: {
-  // Standard Tailwind max-width scale (must be explicit since spacing overrides defaults)
-  xs: '20rem',    // 320px
-  sm: '24rem',    // 384px
-  md: '28rem',    // 448px
-  lg: '32rem',    // 512px
-  xl: '36rem',    // 576px
-  '2xl': '42rem', // 672px
-  '3xl': '48rem', // 768px
-  '4xl': '56rem', // 896px
-  '5xl': '64rem', // 1024px
-  '6xl': '72rem', // 1152px
-  '7xl': '80rem', // 1280px
-  prose: '65ch',
-  // Custom container tokens from Figma
   'container-padding-mobile': '16px',
   'container-padding-desktop': '32px',
   'container-max-width-desktop': '1280px'

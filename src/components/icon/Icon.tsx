@@ -33,6 +33,7 @@ import {
   faCheck,
   faXmark,
   faEllipsisVertical,
+  faEllipsis,
   faCircle,
   faPlus,
   faArrowRight,
@@ -87,6 +88,7 @@ const iconMap = {
   'check': faCheck, // no regular version
   'x-close': faXmark, // no regular version
   'dots-vertical': faEllipsisVertical, // no regular version
+  'dots-horizontal': faEllipsis, // no regular version
   'circle': faCircleRegular,
   'circle-solid': faCircle, // keep solid for filled dots
   'square': faSquareRegular,

@@ -307,13 +307,13 @@ const CarouselIndicatorGroup = ({ children, ...props }: CarouselIndicatorGroupPr
 }
 
 export interface CarouselComponent {
-  Root: (props: CarouselRootProps) => ReactElement
-  Content: (props: CarouselContentProps) => ReactElement
-  Item: (props: CarouselItemProps) => ReactElement
-  PrevTrigger: (props: Omit<TriggerProps, 'direction'>) => ReactElement
-  NextTrigger: (props: Omit<TriggerProps, 'direction'>) => ReactElement
-  IndicatorGroup: (props: CarouselIndicatorGroupProps) => ReactElement
-  Indicator: (props: CarouselIndicatorProps) => ReactElement
+  Root: typeof CarouselRoot
+  Content: typeof CarouselContent
+  Item: typeof CarouselItem
+  PrevTrigger: typeof CarouselPrevTrigger
+  NextTrigger: typeof CarouselNextTrigger
+  IndicatorGroup: typeof CarouselIndicatorGroup
+  Indicator: typeof CarouselIndicator
 }
 
 export const Carousel: CarouselComponent = {

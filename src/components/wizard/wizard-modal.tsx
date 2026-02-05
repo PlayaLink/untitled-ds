@@ -6,7 +6,7 @@
  */
 
 import type { ComponentPropsWithRef, ReactNode } from 'react'
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ModalOverlay, Modal, Dialog } from '@/components/modal'
 import { Button } from '@/components/button'
 import { CloseButton } from '@/components/close-button'
@@ -163,7 +163,10 @@ export function WizardModalProgress({ showNumbers = true, showTitles = false, cl
 export function WizardModalStep({ id, title, description, index, children, className, ...props }: WizardModalStepProps) {
   const { currentStepIndex, registerStep } = useWizardModal()
 
-  useMemo(() => {
+  // Register step on mount and when dependencies change
+  // useEffect is required here instead of useMemo because registerStep
+  // triggers setState, which cannot be called during render
+  useEffect(() => {
     registerStep({ id, title, description }, index)
   }, [id, title, description, index, registerStep])
 

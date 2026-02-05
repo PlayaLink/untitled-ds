@@ -19,6 +19,8 @@ import {
   faFileCode as faFileCodeRegular,
   faFilePdf as faFilePdfRegular,
   faFileZipper as faFileZipperRegular,
+  faStar as faStarRegular,
+  faBuilding as faBuildingRegular,
 } from '@fortawesome/free-regular-svg-icons'
 // Solid icons - for icons without regular alternatives
 import {
@@ -30,6 +32,7 @@ import {
   faChevronDown,
   faChevronRight,
   faChevronLeft,
+  faChevronUp,
   faCheck,
   faXmark,
   faEllipsisVertical,
@@ -53,10 +56,24 @@ import {
   faFileZipper,
   faCircleXmark,
   faBox,
+  faBoxOpen,
+  faBoxArchive,
   faCreditCard,
   faFileAlt,
   faSpinner,
   faCircleNotch,
+  faPhone,
+  faGlobe,
+  faHouse,
+  faUsers,
+  faCartShopping,
+  faStar,
+  faCube,
+  faLayerGroup,
+  faTriangleExclamation,
+  faBuilding,
+  faClipboardCheck,
+  faWarehouse,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faCcVisa,
@@ -77,11 +94,14 @@ const iconMap = {
   'help-circle': faCircleQuestionRegular,
   'info-circle': faCircleInfo, // no regular version available
   'alert-circle': faCircleExclamation, // no regular version
+  'alert-triangle': faTriangleExclamation, // no regular version
   'check-circle': faCircleCheck, // no regular version
   'mail': faEnvelopeRegular,
+  'phone': faPhone, // no regular version
   'search': faMagnifyingGlass, // no regular version
   'dollar-sign': faDollarSign, // no regular version
   'chevron-down': faChevronDown, // no regular version
+  'chevron-up': faChevronUp, // no regular version
   'chevron-right': faChevronRight, // no regular version
   'chevron-left': faChevronLeft, // no regular version
   'calendar': faCalendar, // no regular version
@@ -99,6 +119,7 @@ const iconMap = {
   'arrow-up': faArrowUp, // no regular version
   'arrow-down': faArrowDown, // no regular version
   'user': faUserRegular,
+  'users': faUsers, // no regular version
   'settings': faGear, // no regular version
   'trash': faTrashCanRegular,
   'edit': faPenToSquareRegular,
@@ -124,7 +145,20 @@ const iconMap = {
   'x-circle': faCircleXmark, // no regular version
   // Object Icons
   'box': faBox, // no regular version
+  'package': faBoxOpen, // no regular version
+  'archive': faBoxArchive, // no regular version
+  'building': faBuildingRegular,
+  'building-solid': faBuilding,
+  'home': faHouse, // no regular version
+  'globe': faGlobe, // no regular version
+  'cube': faCube, // no regular version
+  'layers': faLayerGroup, // no regular version
+  'star': faStarRegular,
+  'star-solid': faStar,
+  'shopping-cart': faCartShopping, // no regular version
   'credit-card': faCreditCard, // no regular version
+  'clipboard-check': faClipboardCheck, // no regular version
+  'warehouse': faWarehouse, // no regular version
   'document': faFileAlt, // no regular version
   // Loading/Spinner Icons
   'loader': faCircleNotch, // commonly used for loading spinners

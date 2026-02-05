@@ -6,7 +6,7 @@
  */
 
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { cx } from '@/utils/cx'
 
 // =============================================================================
@@ -189,8 +189,10 @@ export interface WizardStepProps extends ComponentPropsWithRef<'div'> {
 const Step = ({ id, title, description, index = 0, children, className, ...props }: WizardStepProps) => {
   const { currentStepIndex, registerStep } = useWizard()
 
-  // Register step on mount
-  useMemo(() => {
+  // Register step on mount and when dependencies change
+  // useEffect is required here instead of useMemo because registerStep
+  // triggers setState, which cannot be called during render
+  useEffect(() => {
     registerStep({ id, title, description }, index)
   }, [id, title, description, index, registerStep])
 

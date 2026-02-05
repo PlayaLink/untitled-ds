@@ -4,7 +4,7 @@
  */
 'use client'
 
-import { type ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { cx, sortCx } from '@/utils/cx'
 import { AppNavMenuButton } from './app-nav-menu-button'
 
@@ -30,6 +30,14 @@ export interface SidebarNavigationProps {
   footer?: ReactNode
   /** Additional className */
   className?: string
+  /** Collapse to slim style when not hovered (desktop only) */
+  collapseOnIdle?: boolean
+  /** Width when collapsed (default: '64px') */
+  collapsedWidth?: string
+  /** Width when expanded (default: '296px') */
+  expandedWidth?: string
+  /** Callback when collapsed state changes */
+  onCollapsedChange?: (isCollapsed: boolean) => void
 }
 
 export const sidebarNavigationStyles = sortCx({
@@ -45,6 +53,8 @@ export const sidebarNavigationStyles = sortCx({
     base: 'flex h-full flex-col border-r border-secondary bg-primary',
     simple: 'w-[296px]',
     slim: 'w-16 items-center',
+    // Hover-to-expand variant
+    hoverToExpand: 'transition-[width] duration-300 ease-out overflow-hidden',
   },
   // Mobile sidebar panel
   mobileSidebar: 'flex h-full w-[280px] flex-col bg-primary shadow-xl',
@@ -56,6 +66,9 @@ export const sidebarNavigationStyles = sortCx({
     desktop: 'px-4 pt-6',
     mobile: 'px-4 pt-4',
     slim: 'items-center px-3 pt-5',
+    // Consistent padding for hover-to-expand (no shift during animation)
+    hoverToExpandCollapsed: 'items-center px-3 pt-5',
+    hoverToExpandExpanded: 'px-3 pt-5',
   },
   header: {
     desktop: 'px-1.5',
@@ -69,6 +82,9 @@ export const sidebarNavigationStyles = sortCx({
     desktop: 'px-4 pb-6',
     mobile: 'px-4 pb-4',
     slim: 'items-center px-3 pb-5',
+    // Consistent padding for hover-to-expand (no shift during animation)
+    hoverToExpandCollapsed: 'items-center px-3 pb-5',
+    hoverToExpandExpanded: 'px-3 pb-5',
   },
   footerNav: 'flex flex-col',
   // Mobile close button position
@@ -85,7 +101,22 @@ export function SidebarNavigation({
   footerNav,
   footer,
   className,
+  collapseOnIdle = false,
+  collapsedWidth = '64px',
+  expandedWidth = '296px',
+  onCollapsedChange,
 }: SidebarNavigationProps) {
+  // Hover state for collapse-on-idle behavior
+  const [isHovered, setIsHovered] = useState(false)
+  const isCollapsed = collapseOnIdle && !isHovered
+
+  // Notify parent when collapsed state changes
+  useEffect(() => {
+    if (collapseOnIdle) {
+      onCollapsedChange?.(isCollapsed)
+    }
+  }, [collapseOnIdle, isCollapsed, onCollapsedChange])
+
   // Close on escape key
   useEffect(() => {
     if (breakpoint !== 'mobile' || !isOpen) return
@@ -122,6 +153,9 @@ export function SidebarNavigation({
   const handleBackdropClick = () => {
     onOpenChange?.(false)
   }
+
+  // Determine effective style for rendering
+  const effectiveStyle = collapseOnIdle && isCollapsed ? 'slim' : style
 
   // Mobile: Closed state - just show header bar
   if (breakpoint === 'mobile' && !isOpen) {
@@ -175,8 +209,54 @@ export function SidebarNavigation({
     )
   }
 
+  // Desktop: Hover-to-expand mode
+  if (collapseOnIdle) {
+    return (
+      <div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{ width: isCollapsed ? collapsedWidth : expandedWidth }}
+        className={cx(
+          sidebarNavigationStyles.desktopSidebar.base,
+          sidebarNavigationStyles.desktopSidebar.hoverToExpand,
+          className
+        )}
+      >
+        <div className={sidebarNavigationStyles.content}>
+          {/* Navigation - use consistent padding to avoid shifts during animation */}
+          <div className={cx(
+            sidebarNavigationStyles.navigation.base,
+            isCollapsed
+              ? sidebarNavigationStyles.navigation.hoverToExpandCollapsed
+              : sidebarNavigationStyles.navigation.hoverToExpandExpanded
+          )}>
+            {header && (
+              <div className={sidebarNavigationStyles.header.slim}>
+                {header}
+              </div>
+            )}
+            <div className={sidebarNavigationStyles.navSection}>{children}</div>
+          </div>
+
+          {/* Footer - use consistent padding to avoid shifts during animation */}
+          <div className={cx(
+            sidebarNavigationStyles.footer.base,
+            isCollapsed
+              ? sidebarNavigationStyles.footer.hoverToExpandCollapsed
+              : sidebarNavigationStyles.footer.hoverToExpandExpanded
+          )}>
+            {footerNav && (
+              <div className={sidebarNavigationStyles.footerNav}>{footerNav}</div>
+            )}
+            {footer}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // Desktop: Slim style (collapsed)
-  if (style === 'slim') {
+  if (effectiveStyle === 'slim') {
     return (
       <div
         className={cx(

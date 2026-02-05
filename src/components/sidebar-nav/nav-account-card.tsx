@@ -34,6 +34,10 @@ export interface NavAccountCardProps {
   onLogout?: () => void
   /** Custom action button (replaces default logout) */
   actionButton?: ReactNode
+  /** Custom collapsed content (icon button) for crossfade mode */
+  collapsedContent?: ReactNode
+  /** Enable crossfade animation between collapsed/expanded states */
+  crossfade?: boolean
   /** Additional className */
   className?: string
 }
@@ -50,6 +54,16 @@ export const navAccountCardStyles = sortCx({
   email: 'truncate text-sm text-tertiary',
   actionButton: 'absolute right-2 top-4 flex items-center justify-center rounded-md p-1.5 text-fg-quaternary transition-colors hover:bg-secondary hover:text-fg-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-focus-ring',
   actionIcon: 'size-4',
+  // Crossfade animation styles
+  crossfade: {
+    root: 'relative overflow-hidden',
+    collapsed: 'absolute inset-0 flex items-center justify-center transition-opacity duration-50 ease-out',
+    collapsedVisible: 'opacity-100 delay-200',
+    collapsedHidden: 'opacity-0 pointer-events-none',
+    expanded: 'absolute left-0 right-0 top-0 flex items-center gap-2 transition-opacity ease-out',
+    expandedVisible: 'opacity-100 duration-50',
+    expandedHidden: 'opacity-0 duration-200 pointer-events-none',
+  },
 })
 
 export function NavAccountCard({
@@ -61,10 +75,74 @@ export function NavAccountCard({
   breakpoint = 'desktop',
   onLogout,
   actionButton,
+  collapsedContent,
+  crossfade = false,
   className,
 }: NavAccountCardProps) {
   const showAction = isOpen && breakpoint === 'desktop' && (onLogout || actionButton)
+  const isCollapsed = !showDetails
 
+  // Crossfade mode: render both states with opacity transitions
+  if (crossfade && collapsedContent) {
+    return (
+      <div
+        className={cx(
+          navAccountCardStyles.root,
+          navAccountCardStyles.padding[breakpoint],
+          navAccountCardStyles.crossfade.root,
+          className
+        )}
+      >
+        {/* Collapsed state - avatar icon button */}
+        <div
+          className={cx(
+            navAccountCardStyles.crossfade.collapsed,
+            isCollapsed
+              ? navAccountCardStyles.crossfade.collapsedVisible
+              : navAccountCardStyles.crossfade.collapsedHidden
+          )}
+        >
+          {collapsedContent}
+        </div>
+
+        {/* Expanded state - full content */}
+        <div
+          className={cx(
+            navAccountCardStyles.crossfade.expanded,
+            navAccountCardStyles.padding[breakpoint],
+            isCollapsed
+              ? navAccountCardStyles.crossfade.expandedHidden
+              : navAccountCardStyles.crossfade.expandedVisible
+          )}
+        >
+          <Avatar
+            src={avatarSrc}
+            initials={name.charAt(0).toUpperCase()}
+            size="md"
+            status="online"
+          />
+          <div className={cx(navAccountCardStyles.textGroup, 'min-w-[180px]')}>
+            <span className={navAccountCardStyles.name}>{name}</span>
+            {email && <span className={navAccountCardStyles.email}>{email}</span>}
+          </div>
+          {showAction && (
+            actionButton ?? (
+              <button
+                type="button"
+                onClick={onLogout}
+                aria-label="Log out"
+                className={cx(navAccountCardStyles.actionButton, 'static')}
+              >
+                <LogOutIcon className={navAccountCardStyles.actionIcon} />
+              </button>
+            )
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Default mode: single state rendering
   return (
     <div
       className={cx(

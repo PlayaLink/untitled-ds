@@ -2,6 +2,7 @@
  * SidebarNav Stories
  * @figma https://www.figma.com/design/6DBbF2pyMBtjTKeyg461vn/CUSTOM-COMPONENTS?node-id=1-7112
  */
+import * as React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import {
   SidebarNavigation,
@@ -401,6 +402,101 @@ export const Props: Story = {
       <SidebarNavigation {...args} />
     </div>
   ),
+}
+
+// =============================================================================
+// HOVER TO EXPAND
+// =============================================================================
+
+export const HoverToExpand: StoryObj = {
+  name: 'Hover to Expand',
+  render: () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [isCollapsed, setIsCollapsed] = React.useState(true)
+
+    // Avatar button for collapsed state
+    const AvatarButton = () => (
+      <NavItemButton
+        icon={({ className }) => (
+          <img
+            src="https://randomuser.me/api/portraits/women/44.jpg"
+            alt="Olivia Rhye"
+            className={`${className} size-full rounded-full object-cover`}
+          />
+        )}
+        aria-label="Olivia Rhye"
+        size="md"
+      />
+    )
+
+    return (
+      <div className="flex min-h-screen bg-secondary">
+        <div className="h-screen">
+          <SidebarNavigation
+            breakpoint="desktop"
+            collapseOnIdle={true}
+            collapsedWidth="68px"
+            expandedWidth="280px"
+            onCollapsedChange={setIsCollapsed}
+            header={
+              isCollapsed ? <LogoMark /> : <Logo />
+            }
+            footerNav={
+              isCollapsed ? (
+                <>
+                  <NavItemButton icon={SettingsIcon} aria-label="Settings" />
+                  <NavItemButton icon={GlobeIcon} aria-label="Language" />
+                </>
+              ) : (
+                <>
+                  <NavItem iconLeading={SettingsIcon}>Settings</NavItem>
+                  <NavItem iconLeading={GlobeIcon}>English</NavItem>
+                </>
+              )
+            }
+            footer={
+              <NavAccountCard
+                name="Olivia Rhye"
+                email="olivia@untitledui.com"
+                avatarSrc="https://randomuser.me/api/portraits/women/44.jpg"
+                showDetails={!isCollapsed}
+                isOpen={!isCollapsed}
+                breakpoint="desktop"
+                crossfade={true}
+                collapsedContent={<AvatarButton />}
+                onLogout={() => console.log('logout')}
+              />
+            }
+          >
+            {isCollapsed ? (
+              <>
+                <NavItemButton icon={CubeIcon} aria-label="SKUs" />
+                <NavItemButton icon={LayersIcon} aria-label="Collections" />
+                <NavItemButton icon={CameraLensIcon} aria-label="In Production" isCurrent />
+                <NavItemButton icon={UsersIcon} aria-label="Team" />
+              </>
+            ) : (
+              <>
+                <NavItem iconLeading={CubeIcon}>SKUs</NavItem>
+                <NavItem iconLeading={LayersIcon}>Collections</NavItem>
+                <NavItem iconLeading={CameraLensIcon} isCurrent>In Production</NavItem>
+                <NavItem iconLeading={UsersIcon}>Team</NavItem>
+              </>
+            )}
+          </SidebarNavigation>
+        </div>
+        <div className="flex flex-1 flex-col p-8">
+          <h1 className="text-2xl font-bold text-primary">Hover to Expand</h1>
+          <p className="mt-2 text-tertiary">
+            Hover over the sidebar to expand it. Move your mouse away to collapse it back.
+          </p>
+          <p className="mt-4 text-sm text-tertiary">
+            Current state: <span className="font-semibold text-primary">{isCollapsed ? 'Collapsed' : 'Expanded'}</span>
+          </p>
+        </div>
+      </div>
+    )
+  },
 }
 
 // =============================================================================

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import type { ColumnFiltersState } from '@tanstack/react-table'
+import type { ColumnFiltersState, ColumnOrderState } from '@tanstack/react-table'
 import { DataTable } from './data-table'
 import { createColumn, createSelectColumn } from './column-helpers'
 import { Button } from '../button'
@@ -74,6 +74,11 @@ const meta: Meta<typeof DataTable> = {
       description: 'When to update column sizes',
       table: { category: 'Behavior' },
     },
+    enableColumnReorder: {
+      control: 'boolean',
+      description: 'Enable drag-and-drop column reordering',
+      table: { category: 'Behavior' },
+    },
     // Advanced
     columns: {
       control: false,
@@ -91,12 +96,21 @@ const meta: Meta<typeof DataTable> = {
       control: false,
       table: { category: 'Advanced' },
     },
+    columnOrder: {
+      control: false,
+      table: { category: 'Advanced' },
+    },
+    onColumnOrderChange: {
+      control: false,
+      table: { category: 'Advanced' },
+    },
   },
   args: {
     maxHeight: 500,
     rowHeight: 72,
     isLoading: false,
     enableColumnResizing: true,
+    enableColumnReorder: false,
   },
 }
 
@@ -213,10 +227,64 @@ export const Overview: Story = {
         />
       </div>
 
-      {/* Controlled State */}
+      {/* Column Reordering */}
+      <div className="flex flex-col gap-4">
+        <div>
+          <h3 className="text-lg font-semibold text-primary">Column Reordering</h3>
+          <p className="text-sm text-tertiary">
+            Drag the grip handle on the left side of column headers to reorder. Select and actions
+            columns are not reorderable.
+          </p>
+        </div>
+        <DataTable
+          columns={filterableColumns}
+          data={sampleData}
+          getRowId={(row) => row.id}
+          enableColumnReorder
+          maxHeight={400}
+        />
+      </div>
+
+      {/* Controlled Column Order */}
+      <ControlledColumnOrderExample />
+
+      {/* Controlled Filter State */}
       <ControlledExample />
     </div>
   ),
+}
+
+function ControlledColumnOrderExample() {
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([
+    'select',
+    'name',
+    'status',
+    'category',
+    'price',
+  ])
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h3 className="text-lg font-semibold text-primary">Controlled Column Order</h3>
+        <p className="text-sm text-tertiary">
+          Pass columnOrder and onColumnOrderChange for controlled mode (useful for persistence)
+        </p>
+      </div>
+      <div className="rounded-lg bg-secondary p-3 font-mono text-xs">
+        columnOrder: {JSON.stringify(columnOrder)}
+      </div>
+      <DataTable
+        columns={filterableColumns}
+        data={sampleData}
+        getRowId={(row) => row.id}
+        enableColumnReorder
+        columnOrder={columnOrder}
+        onColumnOrderChange={setColumnOrder}
+        maxHeight={300}
+      />
+    </div>
+  )
 }
 
 function ControlledExample() {
@@ -258,6 +326,7 @@ export const Props: Story = {
     rowHeight: 72,
     isLoading: false,
     enableColumnResizing: true,
+    enableColumnReorder: false,
   },
   render: (args) => (
     <DataTable

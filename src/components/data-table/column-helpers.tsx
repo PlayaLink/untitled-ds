@@ -26,6 +26,7 @@ declare module '@tanstack/react-table' {
     filterable?: boolean
     filterOptions?: FilterOption[]
     filterMode?: 'select' | 'multiSelect'
+    reorderable?: boolean
   }
 }
 
@@ -184,7 +185,7 @@ export function createSelectColumn<TData>(width = 80): ColumnDef<TData, unknown>
     maxSize: width,
     enableResizing: false,
     enableSorting: false,
-    meta: { width },
+    meta: { width, reorderable: false },
   }
 }
 
@@ -204,6 +205,6 @@ export function createActionsColumn<TData>(
     maxSize: width,
     enableResizing: false,
     enableSorting: false,
-    meta: { width },
+    meta: { width, reorderable: false },
   }
 }

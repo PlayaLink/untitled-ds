@@ -67,6 +67,8 @@ export default defineConfig({
         '@tanstack/react-table',
         '@tanstack/react-virtual',
         'motion/react',
+        '@dnd-kit/core',
+        '@dnd-kit/sortable',
       ],
       output: {
         globals: {

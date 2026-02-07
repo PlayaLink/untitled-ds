@@ -67,6 +67,7 @@ import {
   faGlobe,
   faHouse,
   faUsers,
+  faUserPlus,
   faCartShopping,
   faStar,
   faCube,
@@ -77,6 +78,7 @@ import {
   faWarehouse,
   faDownload,
   faArrowUpRightFromSquare,
+  faGripVertical,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faCcVisa,
@@ -123,6 +125,7 @@ const iconMap = {
   'arrow-down': faArrowDown, // no regular version
   'user': faUserRegular,
   'users': faUsers, // no regular version
+  'user-plus': faUserPlus, // no regular version
   'settings': faGear, // no regular version
   'trash': faTrashCanRegular,
   'edit': faPenToSquareRegular,
@@ -166,6 +169,7 @@ const iconMap = {
   'document': faFileAlt, // no regular version
   'download': faDownload, // no regular version
   'link-external': faArrowUpRightFromSquare, // no regular version
+  'grip-vertical': faGripVertical, // no regular version
   // Loading/Spinner Icons
   'loader': faCircleNotch, // commonly used for loading spinners
   'spinner': faSpinner, // alternative spinner icon

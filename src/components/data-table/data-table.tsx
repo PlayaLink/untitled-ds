@@ -5,7 +5,7 @@
  * @docs https://www.untitledui.com/components/table
  */
 
-import { useRef, useEffect, useState, type ReactNode } from 'react'
+import { useRef, useEffect, useState, useCallback, type ReactNode } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -17,16 +17,32 @@ import {
   type SortingState,
   type ColumnSizingState,
   type ColumnFiltersState,
+  type ColumnOrderState,
   type Updater,
   type FilterFn,
+  type Table as ReactTable,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type Modifier,
+  type SensorDescriptor,
+  type SensorOptions,
+} from '@dnd-kit/core'
+import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { cx } from '@/utils/cx'
 import { Checkbox } from '@/components/checkbox'
 import { Icon } from '@/components/icon'
 import { Pagination } from '@/components/pagination'
 import { TableActionsBar, type TableAction } from './table-actions-bar'
 import { ColumnFilterDropdown } from './column-filter-dropdown'
+import { DraggableHeaderCell } from './draggable-header-cell'
 
 export interface PaginationConfig {
   currentPage: number
@@ -65,6 +81,14 @@ export interface DataTableProps<TData> {
   onColumnFiltersChange?: (
     filtersOrUpdater: ColumnFiltersState | ((prev: ColumnFiltersState) => ColumnFiltersState)
   ) => void
+  /** Enable drag-and-drop column reordering via grip handles */
+  enableColumnReorder?: boolean
+  /** Controlled column order state (array of column IDs) */
+  columnOrder?: ColumnOrderState
+  /** Callback when column order changes */
+  onColumnOrderChange?: (
+    orderOrUpdater: ColumnOrderState | ((prev: ColumnOrderState) => ColumnOrderState)
+  ) => void
 }
 
 export function DataTable<TData>({
@@ -84,6 +108,9 @@ export function DataTable<TData>({
   pagination,
   columnFilters: controlledColumnFilters,
   onColumnFiltersChange,
+  enableColumnReorder = false,
+  columnOrder: controlledColumnOrder,
+  onColumnOrderChange,
 }: DataTableProps<TData>) {
   const tableContainerRef = useRef<HTMLDivElement>(null)
 
@@ -95,11 +122,20 @@ export function DataTable<TData>({
   const [internalColumnSizing, setInternalColumnSizing] = useState<ColumnSizingState>({})
   // Internal column filters state (used when uncontrolled)
   const [internalColumnFilters, setInternalColumnFilters] = useState<ColumnFiltersState>([])
+  // Internal column order state (used when uncontrolled) — eagerly initialize from column IDs
+  const [internalColumnOrder, setInternalColumnOrder] = useState<ColumnOrderState>(() =>
+    enableColumnReorder ? columns.map((c) => c.id!) : []
+  )
 
   // Use controlled or uncontrolled column sizing
   const columnSizing = controlledColumnSizing ?? internalColumnSizing
   // Use controlled or uncontrolled column filters
   const columnFilters = controlledColumnFilters ?? internalColumnFilters
+  // Use controlled or uncontrolled column order
+  // Treat empty array as "no custom order" — fall through to internal state (eagerly initialized from column IDs)
+  const columnOrder = (controlledColumnOrder && controlledColumnOrder.length > 0)
+    ? controlledColumnOrder
+    : internalColumnOrder
 
   // Handler for column sizing changes - wraps external callback or uses internal state
   const handleColumnSizingChange = (updaterOrValue: Updater<ColumnSizingState>) => {
@@ -121,6 +157,54 @@ export function DataTable<TData>({
     }
   }
 
+  // Ref to always hold the latest effective column order (avoids stale closures in callbacks)
+  const columnOrderRef = useRef(columnOrder)
+  columnOrderRef.current = columnOrder
+
+  // Handler for column order changes - wraps external callback or uses internal state
+  // Resolves updater functions against the effective column order to handle empty controlled state
+  const handleColumnOrderChange = useCallback(
+    (updaterOrValue: Updater<ColumnOrderState>) => {
+      const newValue = typeof updaterOrValue === 'function'
+        ? updaterOrValue(columnOrderRef.current)
+        : updaterOrValue
+
+      // Always update internal state so DnD context stays in sync
+      setInternalColumnOrder(newValue)
+
+      if (onColumnOrderChange) {
+        onColumnOrderChange(newValue)
+      }
+    },
+    [onColumnOrderChange]
+  )
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor)
+  )
+
+  // Restrict drag to horizontal axis only (avoids adding @dnd-kit/modifiers dependency)
+  const restrictToHorizontalAxis: Modifier = useCallback(({ transform }) => {
+    return { ...transform, y: 0 }
+  }, [])
+
+  // Handle drag end - reorder columns
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event
+      if (over && active.id !== over.id) {
+        handleColumnOrderChange((prev) => {
+          const oldIndex = prev.indexOf(active.id as string)
+          const newIndex = prev.indexOf(over.id as string)
+          return arrayMove(prev, oldIndex, newIndex)
+        })
+      }
+    },
+    [handleColumnOrderChange]
+  )
+
   // Custom filter function for multi-select
   const multiSelectFilterFn: FilterFn<TData> = (row, columnId, filterValue: string[]) => {
     if (!filterValue?.length) return true
@@ -140,11 +224,13 @@ export function DataTable<TData>({
       sorting,
       columnSizing,
       columnFilters,
+      ...(enableColumnReorder ? { columnOrder } : {}),
     },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnSizingChange: handleColumnSizingChange,
     onColumnFiltersChange: handleColumnFiltersChange,
+    ...(enableColumnReorder ? { onColumnOrderChange: handleColumnOrderChange } : {}),
     enableRowSelection: true,
     enableSorting: true,
     enableColumnResizing,
@@ -231,78 +317,16 @@ export function DataTable<TData>({
       >
         {/* Sticky header - scrolls horizontally with body, stays pinned vertically */}
         <div className="sticky top-0 z-10">
-          <div className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
-            {table.getHeaderGroups().map((headerGroup) =>
-              headerGroup.headers.map((header) => {
-                const canSort = header.column.getCanSort()
-                const sortDirection = header.column.getIsSorted()
-                const canResize = enableColumnResizing && header.column.getCanResize()
-                const isResizing = header.column.getIsResizing()
-                const filterMeta = header.column.columnDef.meta
-                const canFilter = filterMeta?.filterable && filterMeta?.filterOptions
-
-                // Get width: prefer dynamic size from columnSizing, fall back to meta width
-                const dynamicWidth = columnSizing[header.id]
-                const metaWidth = header.column.columnDef.meta?.width
-                const width = dynamicWidth ?? metaWidth
-                const hasExplicitWidth = width !== undefined
-
-                return (
-                  <div
-                    key={header.id}
-                    className={cx(
-                      'relative flex h-full items-center gap-1 px-6 py-3',
-                      hasExplicitWidth ? 'shrink-0' : 'flex-1',
-                      canSort && 'cursor-pointer select-none hover:bg-secondary-hover'
-                    )}
-                    style={{
-                      width: hasExplicitWidth ? (dynamicWidth ?? header.getSize()) : undefined,
-                      flexShrink: hasExplicitWidth ? 0 : undefined,
-                    }}
-                    onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                    {canSort && sortDirection && (
-                      <span className="ml-1">
-                        {sortDirection === 'asc' ? (
-                          <Icon name="arrow-up" size="sm" className="text-quaternary" />
-                        ) : (
-                          <Icon name="arrow-down" size="sm" className="text-quaternary" />
-                        )}
-                      </span>
-                    )}
-                    {/* Filter dropdown */}
-                    {canFilter && (
-                      <ColumnFilterDropdown
-                        columnId={header.id}
-                        options={filterMeta.filterOptions!}
-                        mode={filterMeta.filterMode ?? 'select'}
-                        currentValue={header.column.getFilterValue()}
-                        onFilterChange={(value) => header.column.setFilterValue(value)}
-                        onClearFilter={() => header.column.setFilterValue(undefined)}
-                      />
-                    )}
-                    {/* Resize handle */}
-                    {canResize && (
-                      <div
-                        onMouseDown={header.getResizeHandler()}
-                        onTouchStart={header.getResizeHandler()}
-                        onClick={(e) => e.stopPropagation()}
-                        className={cx(
-                          'absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none',
-                          'hover:bg-brand-500 active:bg-brand-600',
-                          'dark:hover:bg-brand-400 dark:active:bg-brand-500',
-                          isResizing && 'bg-brand-500 dark:bg-brand-400'
-                        )}
-                      />
-                    )}
-                  </div>
-                )
-              })
-            )}
-          </div>
+          <HeaderRow
+            table={table}
+            columnSizing={columnSizing}
+            enableColumnResizing={enableColumnResizing}
+            enableColumnReorder={enableColumnReorder}
+            sensors={sensors}
+            columnOrder={columnOrder}
+            restrictToHorizontalAxis={restrictToHorizontalAxis}
+            handleDragEnd={handleDragEnd}
+          />
         </div>
 
         {/* Table body */}
@@ -364,6 +388,147 @@ export function DataTable<TData>({
           label={pagination.label}
         />
       )}
+    </div>
+  )
+}
+
+// =============================================================================
+// HeaderRow — extracted to avoid conditional hook calls in DataTable
+// =============================================================================
+
+interface HeaderRowProps<TData> {
+  table: ReactTable<TData>
+  columnSizing: ColumnSizingState
+  enableColumnResizing: boolean
+  enableColumnReorder: boolean
+  sensors: SensorDescriptor<SensorOptions>[]
+  columnOrder: ColumnOrderState
+  restrictToHorizontalAxis: Modifier
+  handleDragEnd: (event: DragEndEvent) => void
+}
+
+function HeaderRow<TData>({
+  table,
+  columnSizing,
+  enableColumnResizing,
+  enableColumnReorder,
+  sensors,
+  columnOrder,
+  restrictToHorizontalAxis,
+  handleDragEnd,
+}: HeaderRowProps<TData>) {
+  const headerCells = table.getHeaderGroups().flatMap((headerGroup) =>
+    headerGroup.headers.map((header) => {
+      const canSort = header.column.getCanSort()
+      const sortDirection = header.column.getIsSorted()
+      const canResize = enableColumnResizing && header.column.getCanResize()
+      const isResizing = header.column.getIsResizing()
+      const filterMeta = header.column.columnDef.meta
+      const canFilter = filterMeta?.filterable && filterMeta?.filterOptions
+      const isReorderable = enableColumnReorder && header.column.columnDef.meta?.reorderable !== false
+
+      // Get width: prefer dynamic size from columnSizing, fall back to meta width
+      const dynamicWidth = columnSizing[header.id]
+      const metaWidth = header.column.columnDef.meta?.width
+      const width = dynamicWidth ?? metaWidth
+      const hasExplicitWidth = width !== undefined
+
+      const cellClassName = cx(
+        'relative flex h-full items-center gap-1 px-6 py-3',
+        hasExplicitWidth ? 'shrink-0' : 'flex-1',
+        canSort && 'cursor-pointer select-none hover:bg-secondary-hover'
+      )
+      const cellStyle = {
+        width: hasExplicitWidth ? (dynamicWidth ?? header.getSize()) : undefined,
+        flexShrink: hasExplicitWidth ? 0 : undefined,
+      }
+      const cellOnClick = canSort ? header.column.getToggleSortingHandler() : undefined
+
+      const cellContent = (
+        <>
+          {header.isPlaceholder
+            ? null
+            : flexRender(header.column.columnDef.header, header.getContext())}
+          {canSort && sortDirection && (
+            <span className="ml-1">
+              {sortDirection === 'asc' ? (
+                <Icon name="arrow-up" size="sm" className="text-quaternary" />
+              ) : (
+                <Icon name="arrow-down" size="sm" className="text-quaternary" />
+              )}
+            </span>
+          )}
+          {/* Filter dropdown */}
+          {canFilter && (
+            <ColumnFilterDropdown
+              columnId={header.id}
+              options={filterMeta.filterOptions!}
+              mode={filterMeta.filterMode ?? 'select'}
+              currentValue={header.column.getFilterValue()}
+              onFilterChange={(value) => header.column.setFilterValue(value)}
+              onClearFilter={() => header.column.setFilterValue(undefined)}
+            />
+          )}
+          {/* Resize handle */}
+          {canResize && (
+            <div
+              onMouseDown={header.getResizeHandler()}
+              onTouchStart={header.getResizeHandler()}
+              onClick={(e) => e.stopPropagation()}
+              className={cx(
+                'absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none',
+                'hover:bg-brand-500 active:bg-brand-600',
+                'dark:hover:bg-brand-400 dark:active:bg-brand-500',
+                isResizing && 'bg-brand-500 dark:bg-brand-400'
+              )}
+            />
+          )}
+        </>
+      )
+
+      if (enableColumnReorder) {
+        return (
+          <DraggableHeaderCell
+            key={header.id}
+            id={header.id}
+            isDraggable={isReorderable}
+            className={cellClassName}
+            style={cellStyle}
+            onClick={cellOnClick}
+          >
+            {cellContent}
+          </DraggableHeaderCell>
+        )
+      }
+
+      return (
+        <div key={header.id} className={cellClassName} style={cellStyle} onClick={cellOnClick}>
+          {cellContent}
+        </div>
+      )
+    })
+  )
+
+  if (enableColumnReorder) {
+    return (
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToHorizontalAxis]}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
+          <div className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
+            {headerCells}
+          </div>
+        </SortableContext>
+      </DndContext>
+    )
+  }
+
+  return (
+    <div className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
+      {headerCells}
     </div>
   )
 }

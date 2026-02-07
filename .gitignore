@@ -9,6 +9,9 @@ node_modules/
 .env.*.local
 .envrc
 
+# npm auth tokens
+.npmrc
+
 # Build outputs
 dist/
 build/

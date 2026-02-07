@@ -11,8 +11,22 @@
       "import": "./dist/index.es.js",
       "require": "./dist/index.cjs.js"
     },
-    "./styles/tokens": "./dist/styles/tokens.css",
-    "./styles/globals": "./dist/styles/globals.css",
+    "./styles/tokens": {
+      "style": "./dist/styles/tokens.css",
+      "default": "./dist/styles/tokens.css"
+    },
+    "./dist/styles/tokens.css": {
+      "style": "./dist/styles/tokens.css",
+      "default": "./dist/styles/tokens.css"
+    },
+    "./styles/globals": {
+      "style": "./dist/styles/globals.css",
+      "default": "./dist/styles/globals.css"
+    },
+    "./dist/styles/globals.css": {
+      "style": "./dist/styles/globals.css",
+      "default": "./dist/styles/globals.css"
+    },
     "./tailwind.config": "./tailwind.config.cjs"
   },
   "files": [

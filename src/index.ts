@@ -148,6 +148,9 @@ export {
 // Modal
 export { DialogTrigger, ModalOverlay, Modal, Dialog, type DialogProps, type ModalOverlayProps } from './components/modal'
 
+// Slideout Menu
+export { SlideoutMenu, slideoutMenuStyles, type SlideoutMenuProps, type SlideoutMenuPosition } from './components/slideout-menu'
+
 // Carousel
 export {
   Carousel,

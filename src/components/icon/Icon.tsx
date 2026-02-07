@@ -75,6 +75,8 @@ import {
   faBuilding,
   faClipboardCheck,
   faWarehouse,
+  faDownload,
+  faArrowUpRightFromSquare,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faCcVisa,
@@ -162,6 +164,8 @@ const iconMap = {
   'clipboard-check': faClipboardCheck, // no regular version
   'warehouse': faWarehouse, // no regular version
   'document': faFileAlt, // no regular version
+  'download': faDownload, // no regular version
+  'link-external': faArrowUpRightFromSquare, // no regular version
   // Loading/Spinner Icons
   'loader': faCircleNotch, // commonly used for loading spinners
   'spinner': faSpinner, // alternative spinner icon

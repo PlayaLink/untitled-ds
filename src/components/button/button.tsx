@@ -138,6 +138,8 @@ export interface ButtonProps extends Omit<AriaButtonProps, 'className' | 'childr
   className?: string
   /** href makes the button render as a link */
   href?: string
+  /** Target for the link (e.g., "_blank" for new tab) */
+  target?: string
   /** Button content */
   children?: ReactNode
 }
@@ -153,6 +155,7 @@ export function Button({
   isLoading,
   showTextWhileLoading,
   href,
+  target,
   ...props
 }: ButtonProps) {
   const isIcon = (IconLeading || IconTrailing) && !children
@@ -210,6 +213,7 @@ export function Button({
     return (
       <AriaLink
         href={isDisabled ? undefined : href}
+        target={target}
         data-loading={isLoading ? true : undefined}
         data-icon-only={isIcon ? true : undefined}
         isDisabled={isDisabled || isLoading}

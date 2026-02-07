@@ -10,12 +10,15 @@ import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
+  getFilteredRowModel,
   flexRender,
   type ColumnDef,
   type RowSelectionState,
   type SortingState,
   type ColumnSizingState,
+  type ColumnFiltersState,
   type Updater,
+  type FilterFn,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { cx } from '@/utils/cx'
@@ -23,6 +26,7 @@ import { Checkbox } from '@/components/checkbox'
 import { Icon } from '@/components/icon'
 import { Pagination } from '@/components/pagination'
 import { TableActionsBar, type TableAction } from './table-actions-bar'
+import { ColumnFilterDropdown } from './column-filter-dropdown'
 
 export interface PaginationConfig {
   currentPage: number
@@ -55,6 +59,12 @@ export interface DataTableProps<TData> {
   selectionActions?: (selectedRows: TData[]) => TableAction[]
   /** Pagination configuration. When provided, renders pagination footer. */
   pagination?: PaginationConfig
+  /** Controlled column filters state (for persistence) */
+  columnFilters?: ColumnFiltersState
+  /** Callback when column filters change */
+  onColumnFiltersChange?: (
+    filtersOrUpdater: ColumnFiltersState | ((prev: ColumnFiltersState) => ColumnFiltersState)
+  ) => void
 }
 
 export function DataTable<TData>({
@@ -66,12 +76,14 @@ export function DataTable<TData>({
   rowHeight = 72,
   maxHeight = 600,
   getRowId,
-  enableColumnResizing = false,
+  enableColumnResizing = true,
   columnSizing: controlledColumnSizing,
   onColumnSizingChange,
   columnResizeMode = 'onChange',
   selectionActions,
   pagination,
+  columnFilters: controlledColumnFilters,
+  onColumnFiltersChange,
 }: DataTableProps<TData>) {
   const tableContainerRef = useRef<HTMLDivElement>(null)
 
@@ -81,9 +93,13 @@ export function DataTable<TData>({
   const [sorting, setSorting] = useState<SortingState>([])
   // Internal column sizing state (used when uncontrolled)
   const [internalColumnSizing, setInternalColumnSizing] = useState<ColumnSizingState>({})
+  // Internal column filters state (used when uncontrolled)
+  const [internalColumnFilters, setInternalColumnFilters] = useState<ColumnFiltersState>([])
 
   // Use controlled or uncontrolled column sizing
   const columnSizing = controlledColumnSizing ?? internalColumnSizing
+  // Use controlled or uncontrolled column filters
+  const columnFilters = controlledColumnFilters ?? internalColumnFilters
 
   // Handler for column sizing changes - wraps external callback or uses internal state
   const handleColumnSizingChange = (updaterOrValue: Updater<ColumnSizingState>) => {
@@ -96,24 +112,46 @@ export function DataTable<TData>({
     }
   }
 
+  // Handler for column filters changes - wraps external callback or uses internal state
+  const handleColumnFiltersChange = (updaterOrValue: Updater<ColumnFiltersState>) => {
+    if (onColumnFiltersChange) {
+      onColumnFiltersChange(updaterOrValue)
+    } else {
+      setInternalColumnFilters(updaterOrValue)
+    }
+  }
+
+  // Custom filter function for multi-select
+  const multiSelectFilterFn: FilterFn<TData> = (row, columnId, filterValue: string[]) => {
+    if (!filterValue?.length) return true
+    const cellValue = row.getValue(columnId)
+    return filterValue.includes(String(cellValue))
+  }
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getRowId: getRowId ?? ((row, index) => String(index)),
     state: {
       rowSelection,
       sorting,
       columnSizing,
+      columnFilters,
     },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnSizingChange: handleColumnSizingChange,
+    onColumnFiltersChange: handleColumnFiltersChange,
     enableRowSelection: true,
     enableSorting: true,
     enableColumnResizing,
     columnResizeMode,
+    filterFns: {
+      multiSelect: multiSelectFilterFn,
+    },
   })
 
   // Notify parent of selection changes
@@ -200,6 +238,8 @@ export function DataTable<TData>({
                 const sortDirection = header.column.getIsSorted()
                 const canResize = enableColumnResizing && header.column.getCanResize()
                 const isResizing = header.column.getIsResizing()
+                const filterMeta = header.column.columnDef.meta
+                const canFilter = filterMeta?.filterable && filterMeta?.filterOptions
 
                 // Get width: prefer dynamic size from columnSizing, fall back to meta width
                 const dynamicWidth = columnSizing[header.id]
@@ -232,6 +272,17 @@ export function DataTable<TData>({
                           <Icon name="arrow-down" size="sm" className="text-quaternary" />
                         )}
                       </span>
+                    )}
+                    {/* Filter dropdown */}
+                    {canFilter && (
+                      <ColumnFilterDropdown
+                        columnId={header.id}
+                        options={filterMeta.filterOptions!}
+                        mode={filterMeta.filterMode ?? 'select'}
+                        currentValue={header.column.getFilterValue()}
+                        onFilterChange={(value) => header.column.setFilterValue(value)}
+                        onClearFilter={() => header.column.setFilterValue(undefined)}
+                      />
                     )}
                     {/* Resize handle */}
                     {canResize && (

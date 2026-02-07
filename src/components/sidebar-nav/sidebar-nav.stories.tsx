@@ -512,7 +512,7 @@ export const SourceCodeAndDesign: StoryObj = {
         <div className="flex gap-4">
           <a
             href="https://github.com/playalink/untitled-ds/tree/main/src/components/sidebar-nav"
-            target="_blank"
+          target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-lg border border-secondary px-4 py-2 hover:bg-secondary"
           >
@@ -528,7 +528,7 @@ export const SourceCodeAndDesign: StoryObj = {
         <div className="flex flex-wrap justify-center gap-4">
           <a
             href="https://www.figma.com/design/6DBbF2pyMBtjTKeyg461vn/CUSTOM-COMPONENTS?node-id=1-7112"
-            target="_blank"
+          target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-lg border border-secondary px-4 py-2 hover:bg-secondary"
           >
@@ -543,7 +543,7 @@ export const SourceCodeAndDesign: StoryObj = {
           </a>
           <a
             href="https://www.figma.com/design/6DBbF2pyMBtjTKeyg461vn/CUSTOM-COMPONENTS?node-id=3-756"
-            target="_blank"
+          target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-lg border border-secondary px-4 py-2 hover:bg-secondary"
           >
@@ -558,7 +558,7 @@ export const SourceCodeAndDesign: StoryObj = {
           </a>
           <a
             href="https://www.figma.com/design/6DBbF2pyMBtjTKeyg461vn/CUSTOM-COMPONENTS?node-id=3-837"
-            target="_blank"
+          target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-lg border border-secondary px-4 py-2 hover:bg-secondary"
           >

@@ -1,5 +1,6 @@
 export { DataTable, Checkbox } from './data-table'
 export type { DataTableProps, PaginationConfig } from './data-table'
 export { createColumn, createSelectColumn, createActionsColumn } from './column-helpers'
+export type { FilterOption } from './column-helpers'
 export { TableActionsBar } from './table-actions-bar'
 export type { TableAction, TableActionsBarProps } from './table-actions-bar'

@@ -6,15 +6,26 @@
  */
 
 import { type ReactNode } from 'react'
-import { type ColumnDef, type Row } from '@tanstack/react-table'
+import { type ColumnDef, type Row, type FilterFnOption } from '@tanstack/react-table'
 import { Checkbox } from '@/components/checkbox'
 
-// Extend column meta to support width
+/**
+ * Filter option for column dropdown filters
+ */
+export interface FilterOption {
+  value: string
+  label: string
+}
+
+// Extend column meta to support width and filtering
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData, TValue> {
     width?: number
     isPrimary?: boolean
+    filterable?: boolean
+    filterOptions?: FilterOption[]
+    filterMode?: 'select' | 'multiSelect'
   }
 }
 
@@ -36,6 +47,14 @@ interface CreateColumnOptions<TData> {
   sortingFn?: 'auto' | 'alphanumeric' | 'datetime' | 'basic'
   /** Enable resizing for this column (default: true) */
   enableResizing?: boolean
+  /** Enable filtering for this column (default: false) */
+  filterable?: boolean
+  /** Dropdown filter options (required when filterable is true) */
+  filterOptions?: FilterOption[]
+  /** Filter mode: single select or multi-select (default: 'select') */
+  filterMode?: 'select' | 'multiSelect'
+  /** Extract filterable value (use when accessor returns ReactNode) */
+  filterValue?: keyof TData | ((row: TData) => string | number | null)
 }
 
 /**
@@ -53,6 +72,10 @@ export function createColumn<TData>({
   sortable = true,
   sortingFn,
   enableResizing = true,
+  filterable = false,
+  filterOptions,
+  filterMode = 'select',
+  filterValue,
 }: CreateColumnOptions<TData>): ColumnDef<TData, unknown> {
   const isAccessorKey = typeof accessor !== 'function'
 
@@ -70,6 +93,28 @@ export function createColumn<TData>({
     }
     // Function accessor without sortValue - sorting may not work as expected
     return { accessorFn: accessor as (row: TData) => unknown }
+  }
+
+  // Determine the filter function based on mode
+  // Note: 'multiSelect' is a custom filter registered in DataTable
+  const getFilterFn = (): FilterFnOption<TData> | undefined => {
+    if (!filterable) return undefined
+    return filterMode === 'multiSelect' ? ('multiSelect' as FilterFnOption<TData>) : 'equals'
+  }
+
+  // Get the accessor function for filtering
+  // Priority: filterValue > accessor (if it's a key)
+  const getFilterAccessorFn = () => {
+    if (filterValue) {
+      if (typeof filterValue === 'function') {
+        return filterValue as (row: TData) => unknown
+      }
+      return (row: TData) => row[filterValue]
+    }
+    if (typeof accessor !== 'function') {
+      return (row: TData) => row[accessor]
+    }
+    return undefined
   }
 
   return {
@@ -97,7 +142,17 @@ export function createColumn<TData>({
     enableResizing,
     enableSorting: sortable,
     sortingFn: sortingFn ?? 'auto',
-    meta: { width, isPrimary },
+    enableColumnFilter: filterable,
+    filterFn: getFilterFn(),
+    // Override accessorFn for filtering if filterValue is provided
+    ...(filterable && filterValue ? { accessorFn: getFilterAccessorFn() } : {}),
+    meta: {
+      width,
+      isPrimary,
+      filterable,
+      filterOptions,
+      filterMode,
+    },
   }
 }
 

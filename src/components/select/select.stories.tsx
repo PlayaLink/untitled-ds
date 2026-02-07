@@ -205,6 +205,7 @@ export const SourceCodeAndDesign: Story = {
       <div className="flex gap-4">
         <Button
           href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/select"
+          target="_blank"
           iconLeading={GitHubIcon}
           color="secondary"
         >
@@ -212,6 +213,7 @@ export const SourceCodeAndDesign: Story = {
         </Button>
         <Button
           href="https://www.figma.com/design/fDxXGrTItVnXVTWhtx7yuQ/%E2%9D%96-BASE-COMPONENTS?node-id=19483-13525"
+          target="_blank"
           iconLeading={FigmaIcon}
           color="primary"
         >

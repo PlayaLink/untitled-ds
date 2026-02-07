@@ -47,6 +47,7 @@ import {
   faRightFromBracket,
   faCalendar,
   faCloudArrowUp,
+  faFilter,
   faFolder,
   faFile,
   faFileLines,
@@ -125,6 +126,7 @@ const iconMap = {
   'edit': faPenToSquareRegular,
   'copy': faCopyRegular,
   'log-out': faRightFromBracket, // no regular version
+  'filter': faFilter, // no regular version
   // File/Folder Icons
   'upload-cloud': faCloudArrowUp, // no regular version
   'folder': faFolderRegular,

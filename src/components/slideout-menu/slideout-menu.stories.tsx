@@ -21,6 +21,27 @@ const meta: Meta<typeof SlideoutMenu> = {
       description: 'Which edge the slideout opens from (Figma: Position)',
       table: { category: 'Appearance' },
     },
+    // Resize
+    resizable: {
+      control: 'boolean',
+      description: 'Enable drag-to-resize on the inner edge',
+      table: { category: 'Resize' },
+    },
+    defaultWidth: {
+      control: { type: 'number', min: 200, max: 1200, step: 10 },
+      description: 'Fallback width when no controlled value is provided',
+      table: { category: 'Resize' },
+    },
+    minWidth: {
+      control: { type: 'number', min: 200, max: 600, step: 10 },
+      description: 'Minimum resize width in px',
+      table: { category: 'Resize' },
+    },
+    maxWidth: {
+      control: { type: 'number', min: 400, max: 1600, step: 10 },
+      description: 'Maximum resize width in px',
+      table: { category: 'Resize' },
+    },
     // Behavior
     isDismissable: {
       control: 'boolean',
@@ -47,6 +68,9 @@ const meta: Meta<typeof SlideoutMenu> = {
     position: 'right',
     isDismissable: true,
     isKeyboardDismissDisabled: false,
+    resizable: false,
+    defaultWidth: 500,
+    minWidth: 320,
   },
 }
 
@@ -170,9 +194,13 @@ export const Props: Story = {
     position: 'right',
     isDismissable: true,
     isKeyboardDismissDisabled: false,
+    resizable: false,
+    defaultWidth: 500,
+    minWidth: 320,
   },
   render: (args) => {
     const [isOpen, setIsOpen] = useState(false)
+    const [width, setWidth] = useState(args.defaultWidth ?? 500)
 
     return (
       <>
@@ -185,6 +213,12 @@ export const Props: Story = {
           isDismissable={args.isDismissable}
           isKeyboardDismissDisabled={args.isKeyboardDismissDisabled}
           position={args.position}
+          resizable={args.resizable}
+          width={args.resizable ? width : undefined}
+          onWidthChange={args.resizable ? setWidth : undefined}
+          defaultWidth={args.defaultWidth}
+          minWidth={args.minWidth}
+          maxWidth={args.maxWidth}
         >
           {({ close }) => (
             <>

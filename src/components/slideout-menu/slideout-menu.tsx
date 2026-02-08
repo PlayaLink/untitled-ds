@@ -15,7 +15,7 @@
  * - Type       → consumer renders content via `children`
  */
 
-import { type ComponentPropsWithRef, type ReactNode, type RefAttributes } from 'react'
+import { type ComponentPropsWithRef, type ReactNode, type RefAttributes, type CSSProperties } from 'react'
 import type {
   DialogProps as AriaDialogProps,
   ModalOverlayProps as AriaModalOverlayProps,
@@ -29,6 +29,7 @@ import {
 } from 'react-aria-components'
 import { CloseButton } from '@/components/close-button'
 import { sortCx, cx } from '@/utils/cx'
+import { useSlideoutResize } from './use-slideout-resize'
 
 // =============================================================================
 // TYPES
@@ -43,6 +44,18 @@ export interface SlideoutMenuProps extends Omit<AriaModalOverlayProps, 'children
   dialogClassName?: string
   /** Which edge the slideout opens from */
   position?: SlideoutMenuPosition
+  /** Enable drag-to-resize on the inner edge */
+  resizable?: boolean
+  /** Controlled width in px (used with onWidthChange) */
+  width?: number
+  /** Callback when the user resizes the panel */
+  onWidthChange?: (width: number) => void
+  /** Fallback width when no controlled value is provided (default 500) */
+  defaultWidth?: number
+  /** Minimum resize width in px (default 320) */
+  minWidth?: number
+  /** Maximum resize width in px (default 90vw) */
+  maxWidth?: number
 }
 
 interface SlideoutHeaderProps extends ComponentPropsWithRef<'header'> {
@@ -82,6 +95,13 @@ export const styles = sortCx({
   header: 'relative z-1 w-full px-4 pt-6 md:px-6',
   headerCloseButton: 'absolute top-3 right-3 shrink-0',
   footer: 'w-full border-t border-secondary p-4 md:px-6',
+  resizeHandle: {
+    base: 'absolute top-0 z-10 h-full w-1 cursor-col-resize select-none touch-none bg-transparent transition-colors hover:bg-brand-500 active:bg-brand-600 dark:hover:bg-brand-400 dark:active:bg-brand-500',
+    position: {
+      left: 'right-0',
+      right: 'left-0',
+    },
+  },
 })
 
 // =============================================================================
@@ -103,12 +123,20 @@ const SlideoutMenuOverlay = ({ position = 'right', ...props }: AriaModalOverlayP
   />
 )
 
-const SlideoutMenuModal = ({ position = 'right', ...props }: AriaModalOverlayProps & RefAttributes<HTMLDivElement> & { position?: SlideoutMenuPosition }) => (
+interface SlideoutMenuModalProps extends AriaModalOverlayProps, RefAttributes<HTMLDivElement> {
+  position?: SlideoutMenuPosition
+  isDragging?: boolean
+  widthStyle?: CSSProperties
+}
+
+const SlideoutMenuModal = ({ position = 'right', isDragging, widthStyle, ...props }: SlideoutMenuModalProps) => (
   <AriaModal
     {...props}
+    style={widthStyle}
     className={(state) =>
       cx(
         styles.modal.base,
+        isDragging && '!transition-none',
         state.isEntering && styles.modal.position[position].entering,
         state.isExiting && styles.modal.position[position].exiting,
         typeof props.className === 'function' ? props.className(state) : props.className,
@@ -121,17 +149,61 @@ const SlideoutMenuDialog = (props: AriaDialogProps & RefAttributes<HTMLElement>)
   <AriaDialog role="dialog" {...props} className={cx(styles.dialog, props.className)} />
 )
 
-const Menu = ({ children, dialogClassName, position = 'right', ...props }: SlideoutMenuProps) => (
-  <SlideoutMenuOverlay position={position} {...props}>
-    <SlideoutMenuModal position={position}>
-      {(state) => (
-        <SlideoutMenuDialog className={dialogClassName}>
-          {({ close }) => (typeof children === 'function' ? children({ ...state, close }) : children)}
-        </SlideoutMenuDialog>
-      )}
-    </SlideoutMenuModal>
-  </SlideoutMenuOverlay>
+const ResizeEdge = ({ position, ...props }: { position: SlideoutMenuPosition } & React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    {...props}
+    className={cx(styles.resizeHandle.base, styles.resizeHandle.position[position])}
+    aria-hidden
+  />
 )
+
+const DEFAULT_WIDTH = 500
+const DEFAULT_MIN_WIDTH = 320
+
+const Menu = ({
+  children,
+  dialogClassName,
+  position = 'right',
+  resizable = false,
+  width: controlledWidth,
+  onWidthChange,
+  defaultWidth = DEFAULT_WIDTH,
+  minWidth = DEFAULT_MIN_WIDTH,
+  maxWidth: maxWidthProp,
+  ...props
+}: SlideoutMenuProps) => {
+  const effectiveWidth = controlledWidth ?? defaultWidth
+  const effectiveMaxWidth = maxWidthProp ?? (typeof window !== 'undefined' ? window.innerWidth * 0.9 : 1200)
+
+  const { isDragging, resizeHandleProps } = useSlideoutResize({
+    position,
+    width: effectiveWidth,
+    onWidthChange: onWidthChange ?? (() => {}),
+    minWidth,
+    maxWidth: effectiveMaxWidth,
+  })
+
+  const widthStyle: CSSProperties | undefined = resizable
+    ? { maxWidth: effectiveWidth, width: effectiveWidth }
+    : undefined
+
+  return (
+    <SlideoutMenuOverlay position={position} {...props}>
+      <SlideoutMenuModal position={position} isDragging={resizable && isDragging} widthStyle={widthStyle}>
+        {(state) => (
+          <SlideoutMenuDialog className={dialogClassName}>
+            {({ close }) => (
+              <>
+                {resizable && <ResizeEdge position={position} {...resizeHandleProps} />}
+                {typeof children === 'function' ? children({ ...state, close }) : children}
+              </>
+            )}
+          </SlideoutMenuDialog>
+        )}
+      </SlideoutMenuModal>
+    </SlideoutMenuOverlay>
+  )
+}
 
 const Content = ({ role = 'main', ...props }: ComponentPropsWithRef<'div'>) => (
   <div role={role} {...props} className={cx(styles.content, props.className)} />

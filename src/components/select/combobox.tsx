@@ -48,7 +48,7 @@ const ComboBoxValue = ({ size, icon, shortcut, placeholder, shortcutClassName, .
         cx(
           'relative flex w-full items-center gap-2 rounded-lg bg-primary shadow-xs ring-1 ring-border-primary outline-hidden transition-shadow duration-100 ease-linear ring-inset',
           isDisabled && 'cursor-not-allowed bg-disabled-subtle',
-          isFocusWithin && 'ring-2 ring-brand',
+          isFocusWithin && 'ring-2 ring-brand-500',
           selectSizes[size].root,
         )
       }
@@ -67,7 +67,7 @@ const ComboBoxValue = ({ size, icon, shortcut, placeholder, shortcutClassName, .
 
             <AriaInput
               placeholder={placeholder}
-              className="z-10 w-full appearance-none bg-transparent text-md text-transparent caret-alpha-alpha-black-90 placeholder:text-placeholder focus:outline-hidden disabled:cursor-not-allowed disabled:text-disabled disabled:placeholder:text-disabled"
+              className="z-10 w-full appearance-none bg-transparent text-md text-transparent caret-[var(--color-fg-primary)] placeholder:text-placeholder focus:outline-hidden disabled:cursor-not-allowed disabled:text-disabled disabled:placeholder:text-disabled"
             />
           </div>
 

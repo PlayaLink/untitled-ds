@@ -379,7 +379,7 @@ function extractSemanticColors(modeTokens, primitives, mode = 'light') {
   const colors = {};
 
   // Categories where the token keys already include the type prefix
-  const selfPrefixedCategories = ['text', 'border', 'foreground', 'background'];
+  const selfPrefixedCategories = ['text', 'border', 'foreground', 'background', 'alpha'];
 
   // Helper to check if a key starts with a known semantic prefix
   function hasSemanticPrefix(key) {
@@ -387,7 +387,8 @@ function extractSemanticColors(modeTokens, primitives, mode = 'light') {
     return sanitized.startsWith('text-') ||
            sanitized.startsWith('border-') ||
            sanitized.startsWith('fg-') ||
-           sanitized.startsWith('bg-');
+           sanitized.startsWith('bg-') ||
+           sanitized.startsWith('alpha-');
   }
 
   // Helper to recursively extract tokens

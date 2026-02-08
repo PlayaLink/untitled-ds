@@ -322,7 +322,7 @@ const InnerMultiSelect = ({ isDisabled, shortcut, shortcutClassName, placeholder
           placeholder={placeholder}
           onKeyDown={handleInputKeyDown}
           onMouseDown={handleInputMouseDown}
-          className="w-full flex-[1_0_0] appearance-none bg-transparent text-md text-ellipsis text-primary caret-alpha-black/90 outline-none placeholder:text-placeholder focus:outline-hidden disabled:cursor-not-allowed disabled:text-disabled disabled:placeholder:text-disabled"
+          className="w-full flex-[1_0_0] appearance-none bg-transparent text-md text-ellipsis text-primary caret-[var(--color-fg-primary)] outline-none placeholder:text-placeholder focus:outline-hidden disabled:cursor-not-allowed disabled:text-disabled disabled:placeholder:text-disabled"
         />
 
         {shortcut && (
@@ -367,7 +367,7 @@ export const MultiSelectTagsValue = ({
         cx(
           'relative flex w-full items-center gap-2 rounded-lg bg-primary shadow-xs ring-1 ring-border-primary outline-hidden transition duration-100 ease-linear ring-inset',
           isDisabled && 'cursor-not-allowed bg-disabled-subtle',
-          isFocusWithin && 'ring-2 ring-brand',
+          isFocusWithin && 'ring-2 ring-brand-500',
           selectSizes[size].root,
         )
       }

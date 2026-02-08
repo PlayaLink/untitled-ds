@@ -86,7 +86,7 @@ export const sm = ({
             {children && (
                 <span
                     className={cx(
-                        "absolute inset-x-13 bottom-2 z-10 flex size-12 items-center justify-center rounded-full bg-alpha-black/20 text-fg-white backdrop-blur-xs",
+                        "absolute inset-x-13 bottom-2 z-10 flex size-12 items-center justify-center rounded-full bg-alpha-black-20 text-fg-white backdrop-blur-xs",
                         childrenClassName,
                     )}
                 >
@@ -167,7 +167,7 @@ export const md = ({
             {children && (
                 <span
                     className={cx(
-                        "absolute bottom-3 left-1/2 z-10 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-alpha-black/20 text-fg-white backdrop-blur-xs",
+                        "absolute bottom-3 left-1/2 z-10 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-alpha-black-20 text-fg-white backdrop-blur-xs",
                         childrenClassName,
                     )}
                 >
@@ -241,7 +241,7 @@ export const lg = ({
             {children && (
                 <span
                     className={cx(
-                        "absolute bottom-5 left-1/2 z-10 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-alpha-black/20 text-fg-white backdrop-blur-xs",
+                        "absolute bottom-5 left-1/2 z-10 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-alpha-black-20 text-fg-white backdrop-blur-xs",
                         childrenClassName,
                     )}
                 >

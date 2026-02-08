@@ -13,6 +13,7 @@ import { SelectPopover } from './select-popover'
 import { type CommonSelectProps, SelectContext, type SelectItemType, selectSizes } from './select-context'
 
 interface ComboBoxProps extends Omit<AriaComboBoxProps<SelectItemType>, 'children' | 'items'>, RefAttributes<HTMLDivElement>, CommonSelectProps {
+  icon?: boolean
   shortcut?: boolean
   items?: SelectItemType[]
   popoverClassName?: string
@@ -22,6 +23,7 @@ interface ComboBoxProps extends Omit<AriaComboBoxProps<SelectItemType>, 'childre
 
 interface ComboBoxValueProps extends AriaGroupProps {
   size: 'sm' | 'md'
+  icon: boolean
   shortcut: boolean
   placeholder?: string
   shortcutClassName?: string
@@ -30,7 +32,7 @@ interface ComboBoxValueProps extends AriaGroupProps {
   ref?: RefObject<HTMLDivElement | null>
 }
 
-const ComboBoxValue = ({ size, shortcut, placeholder, shortcutClassName, ...otherProps }: ComboBoxValueProps) => {
+const ComboBoxValue = ({ size, icon, shortcut, placeholder, shortcutClassName, ...otherProps }: ComboBoxValueProps) => {
   const state = useContext(ComboBoxStateContext)
 
   const value = state?.selectedItem?.value || null
@@ -53,7 +55,7 @@ const ComboBoxValue = ({ size, shortcut, placeholder, shortcutClassName, ...othe
     >
       {({ isDisabled }) => (
         <>
-          <Icon name="search" className="pointer-events-none size-5 shrink-0 text-fg-quaternary" />
+          {icon && <Icon name="search" className="pointer-events-none size-5 shrink-0 text-fg-quaternary" />}
 
           <div className="relative flex w-full items-center gap-2">
             {inputValue && (
@@ -65,7 +67,7 @@ const ComboBoxValue = ({ size, shortcut, placeholder, shortcutClassName, ...othe
 
             <AriaInput
               placeholder={placeholder}
-              className="z-10 w-full appearance-none bg-transparent text-md text-transparent caret-alpha-black/90 placeholder:text-placeholder focus:outline-hidden disabled:cursor-not-allowed disabled:text-disabled disabled:placeholder:text-disabled"
+              className="z-10 w-full appearance-none bg-transparent text-md text-transparent caret-alpha-alpha-black-90 placeholder:text-placeholder focus:outline-hidden disabled:cursor-not-allowed disabled:text-disabled disabled:placeholder:text-disabled"
             />
           </div>
 
@@ -95,7 +97,7 @@ const ComboBoxValue = ({ size, shortcut, placeholder, shortcutClassName, ...othe
   )
 }
 
-export const ComboBox = ({ placeholder = 'Search', shortcut = true, size = 'sm', children, items, shortcutClassName, ...otherProps }: ComboBoxProps) => {
+export const ComboBox = ({ placeholder = 'Search', icon = true, shortcut = true, size = 'sm', children, items, shortcutClassName, ...otherProps }: ComboBoxProps) => {
   const placeholderRef = useRef<HTMLDivElement>(null)
   const [popoverWidth, setPopoverWidth] = useState('')
 
@@ -128,6 +130,7 @@ export const ComboBox = ({ placeholder = 'Search', shortcut = true, size = 'sm',
             <ComboBoxValue
               ref={placeholderRef}
               placeholder={placeholder}
+              icon={icon}
               shortcut={shortcut}
               shortcutClassName={shortcutClassName}
               size={size}

@@ -65,7 +65,7 @@ export const styles = sortCx({
     },
   },
   modal: {
-    base: 'h-full w-full max-w-100 shadow-xl transition',
+    base: 'h-full w-full max-w-[500px] shadow-xl transition',
     position: {
       left: {
         entering: 'duration-300 animate-in slide-in-from-left',

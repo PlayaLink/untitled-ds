@@ -79,6 +79,8 @@ import {
   faDownload,
   faArrowUpRightFromSquare,
   faGripVertical,
+  faLink,
+  faLinkSlash,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faCcVisa,
@@ -168,6 +170,8 @@ const iconMap = {
   'warehouse': faWarehouse, // no regular version
   'document': faFileAlt, // no regular version
   'download': faDownload, // no regular version
+  'link': faLink, // no regular version
+  'link-broken': faLinkSlash, // no regular version
   'link-external': faArrowUpRightFromSquare, // no regular version
   'grip-vertical': faGripVertical, // no regular version
   // Loading/Spinner Icons

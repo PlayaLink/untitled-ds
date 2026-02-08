@@ -11,6 +11,7 @@ import { ModalOverlay, Modal, Dialog } from '@/components/modal'
 import { Button } from '@/components/button'
 import { CloseButton } from '@/components/close-button'
 import { FeaturedIcon, type FeaturedIconProps } from '@/components/featured-icon'
+import { createIcon } from '@/components/icon'
 import { cx } from '@/utils/cx'
 
 // =============================================================================
@@ -60,6 +61,7 @@ export interface WizardModalProps {
   description?: string
   icon?: FeaturedIconProps['icon']
   iconColor?: FeaturedIconProps['color']
+  showProgress?: boolean
   children: ReactNode
   className?: string
 }
@@ -183,7 +185,7 @@ export function WizardModalStep({ id, title, description, index, children, class
 
 export function WizardModalFooter({ children, className, ...props }: WizardModalFooterProps) {
   return (
-    <div className={cx('flex items-center justify-end gap-3 border-t border-secondary px-4 py-4 sm:px-6', className)} {...props}>
+    <div className={cx('flex items-center justify-between gap-3 border-t border-secondary px-4 py-4 sm:px-6', className)} {...props}>
       {children}
     </div>
   )
@@ -194,9 +196,16 @@ export function WizardModalBackButton({ children, onClick, isDisabled }: WizardM
 
   const handleClick = onClick ?? (isFirstStep ? onClose : goBack)
   const label = children ?? (isFirstStep ? 'Cancel' : 'Back')
+  const showBackIcon = !isFirstStep && !children
 
   return (
-    <Button color="secondary" size="lg" onClick={handleClick} isDisabled={isDisabled || isSubmitting}>
+    <Button
+      color="secondary"
+      size="lg"
+      onClick={handleClick}
+      isDisabled={isDisabled || isSubmitting}
+      iconLeading={showBackIcon ? createIcon('arrow-left') : undefined}
+    >
       {label}
     </Button>
   )
@@ -235,6 +244,7 @@ export function WizardModal({
   description,
   icon,
   iconColor = 'brand',
+  showProgress = true,
   children,
   className,
 }: WizardModalProps) {
@@ -316,7 +326,7 @@ export function WizardModal({
               </div>
 
               {/* Progress indicator */}
-              <WizardModalProgress />
+              {showProgress && <WizardModalProgress />}
 
               {/* Steps */}
               <div className="flex-1 px-4 py-5 sm:px-6">{children}</div>

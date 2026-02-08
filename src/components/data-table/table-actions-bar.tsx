@@ -32,7 +32,7 @@ export interface TableActionsBarProps {
 
 export function TableActionsBar({ selectedCount, actions, selectedText }: TableActionsBarProps) {
   return (
-    <div className="flex items-center gap-12 border border-brand-600 bg-secondary px-6 py-2 dark:border-brand-500">
+    <div className="flex items-center gap-12 border-b border-b-brand-600 bg-secondary px-6 py-2 dark:border-b-brand-500">
       {/* Selected count */}
       <span className="shrink-0 text-sm font-semibold text-tertiary">
         {selectedText ?? `${selectedCount} selected`}

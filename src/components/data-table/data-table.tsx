@@ -81,6 +81,8 @@ export interface DataTableProps<TData> {
   onColumnFiltersChange?: (
     filtersOrUpdater: ColumnFiltersState | ((prev: ColumnFiltersState) => ColumnFiltersState)
   ) => void
+  /** Change this value to reset row selection (e.g. after bulk delete). */
+  selectionKey?: string | number
   /** Enable drag-and-drop column reordering via grip handles */
   enableColumnReorder?: boolean
   /** Controlled column order state (array of column IDs) */
@@ -105,6 +107,7 @@ export function DataTable<TData>({
   onColumnSizingChange,
   columnResizeMode = 'onChange',
   selectionActions,
+  selectionKey,
   pagination,
   columnFilters: controlledColumnFilters,
   onColumnFiltersChange,
@@ -116,6 +119,10 @@ export function DataTable<TData>({
 
   // Row selection state
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  // Reset selection when selectionKey changes
+  useEffect(() => {
+    setRowSelection({})
+  }, [selectionKey])
   // Sorting state
   const [sorting, setSorting] = useState<SortingState>([])
   // Internal column sizing state (used when uncontrolled)

@@ -42,7 +42,7 @@ export function DraggableHeaderCell({
   return (
     <div
       ref={setNodeRef}
-      className={className}
+      className={cx('group/header', className)}
       style={{
         ...style,
         transform: transformStyle,
@@ -52,11 +52,13 @@ export function DraggableHeaderCell({
       }}
       onClick={onClick}
     >
+      {children}
       {isDraggable && (
         <button
           ref={setActivatorNodeRef}
           className={cx(
-            'flex shrink-0 cursor-grab items-center text-quaternary',
+            'ml-auto flex shrink-0 cursor-grab items-center text-quaternary',
+            'opacity-0 transition-opacity group-hover/header:opacity-100',
             'hover:text-tertiary active:cursor-grabbing'
           )}
           {...attributes}
@@ -68,7 +70,6 @@ export function DraggableHeaderCell({
           <Icon name="grip-vertical" size="sm" />
         </button>
       )}
-      {children}
     </div>
   )
 }

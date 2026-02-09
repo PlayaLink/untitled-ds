@@ -81,6 +81,7 @@ import {
   faGripVertical,
   faLink,
   faLinkSlash,
+  faCamera,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faCcVisa,
@@ -173,6 +174,7 @@ const iconMap = {
   'link': faLink, // no regular version
   'link-broken': faLinkSlash, // no regular version
   'link-external': faArrowUpRightFromSquare, // no regular version
+  'camera': faCamera, // no regular version
   'grip-vertical': faGripVertical, // no regular version
   // Loading/Spinner Icons
   'loader': faCircleNotch, // commonly used for loading spinners

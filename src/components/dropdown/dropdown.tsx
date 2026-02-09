@@ -185,7 +185,6 @@ const DropdownMenu = <T extends object>(props: DropdownMenuProps<T>) => {
   return (
     <AriaMenu
       disallowEmptySelection
-      selectionMode="single"
       {...props}
       className={(state) =>
         cx(

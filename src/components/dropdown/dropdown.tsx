@@ -125,6 +125,26 @@ const DropdownItem = ({ label, children, addon, icon: ItemIcon, unstyled, ...pro
             state.isFocusVisible && styles.item.innerFocusVisible
           )}
         >
+          {state.selectionMode !== 'none' && (
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 16 16"
+              className={cx(
+                'mr-2 size-4 shrink-0',
+                state.isSelected ? 'text-fg-brand-primary' : 'text-transparent'
+              )}
+            >
+              <path
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.25 4.75 6 12 2.75 8.75"
+              />
+            </svg>
+          )}
+
           {ItemIcon && (
             <ItemIcon
               aria-hidden="true"

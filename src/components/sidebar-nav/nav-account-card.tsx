@@ -53,6 +53,7 @@ export const navAccountCardStyles = sortCx({
   name: 'truncate text-sm font-semibold text-primary',
   email: 'truncate text-sm text-tertiary',
   actionButton: 'absolute right-2 top-4 flex items-center justify-center rounded-md p-1.5 text-fg-quaternary transition-colors hover:bg-secondary hover:text-fg-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-focus-ring',
+  actionButtonInline: 'flex shrink-0 items-center justify-center rounded-md p-1.5 text-fg-quaternary transition-colors hover:bg-secondary hover:text-fg-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-focus-ring',
   actionIcon: 'size-4',
   // Crossfade animation styles
   crossfade: {
@@ -109,7 +110,6 @@ export function NavAccountCard({
         <div
           className={cx(
             navAccountCardStyles.crossfade.expanded,
-            navAccountCardStyles.padding[breakpoint],
             isCollapsed
               ? navAccountCardStyles.crossfade.expandedHidden
               : navAccountCardStyles.crossfade.expandedVisible
@@ -121,7 +121,7 @@ export function NavAccountCard({
             size="md"
             status="online"
           />
-          <div className={cx(navAccountCardStyles.textGroup, 'min-w-[180px]')}>
+          <div className={cx(navAccountCardStyles.textGroup, 'flex-1')}>
             <span className={navAccountCardStyles.name}>{name}</span>
             {email && <span className={navAccountCardStyles.email}>{email}</span>}
           </div>
@@ -131,7 +131,7 @@ export function NavAccountCard({
                 type="button"
                 onClick={onLogout}
                 aria-label="Log out"
-                className={cx(navAccountCardStyles.actionButton, 'static')}
+                className={navAccountCardStyles.actionButtonInline}
               >
                 <LogOutIcon className={navAccountCardStyles.actionIcon} />
               </button>

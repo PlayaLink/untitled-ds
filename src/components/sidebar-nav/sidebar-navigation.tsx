@@ -54,7 +54,9 @@ export const sidebarNavigationStyles = sortCx({
     simple: 'w-[296px]',
     slim: 'w-16 items-center',
     // Hover-to-expand variant
-    hoverToExpand: 'transition-[width] duration-300 ease-out overflow-hidden',
+    hoverToExpand: 'transition-[width,box-shadow] duration-300 ease-out overflow-hidden',
+    hoverToExpandSpacer: 'relative h-full flex-shrink-0',
+    hoverToExpandOverlay: 'absolute inset-y-0 left-0 z-40',
   },
   // Mobile sidebar panel
   mobileSidebar: 'flex h-full w-[280px] flex-col bg-primary shadow-xl',
@@ -213,42 +215,51 @@ export function SidebarNavigation({
   if (collapseOnIdle) {
     return (
       <div
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        style={{ width: isCollapsed ? collapsedWidth : expandedWidth }}
+        style={{ width: collapsedWidth, minWidth: collapsedWidth }}
         className={cx(
-          sidebarNavigationStyles.desktopSidebar.base,
-          sidebarNavigationStyles.desktopSidebar.hoverToExpand,
+          sidebarNavigationStyles.desktopSidebar.hoverToExpandSpacer,
           className
         )}
       >
-        <div className={sidebarNavigationStyles.content}>
-          {/* Navigation - use consistent padding to avoid shifts during animation */}
-          <div className={cx(
-            sidebarNavigationStyles.navigation.base,
-            isCollapsed
-              ? sidebarNavigationStyles.navigation.hoverToExpandCollapsed
-              : sidebarNavigationStyles.navigation.hoverToExpandExpanded
-          )}>
-            {header && (
-              <div className={sidebarNavigationStyles.header.slim}>
-                {header}
-              </div>
-            )}
-            <div className={sidebarNavigationStyles.navSection}>{children}</div>
-          </div>
+        <div
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={{ width: isCollapsed ? collapsedWidth : expandedWidth }}
+          className={cx(
+            sidebarNavigationStyles.desktopSidebar.base,
+            sidebarNavigationStyles.desktopSidebar.hoverToExpand,
+            sidebarNavigationStyles.desktopSidebar.hoverToExpandOverlay,
+            !isCollapsed && 'shadow-xl'
+          )}
+        >
+          <div className={sidebarNavigationStyles.content}>
+            {/* Navigation - use consistent padding to avoid shifts during animation */}
+            <div className={cx(
+              sidebarNavigationStyles.navigation.base,
+              isCollapsed
+                ? sidebarNavigationStyles.navigation.hoverToExpandCollapsed
+                : sidebarNavigationStyles.navigation.hoverToExpandExpanded
+            )}>
+              {header && (
+                <div className={sidebarNavigationStyles.header.slim}>
+                  {header}
+                </div>
+              )}
+              <div className={sidebarNavigationStyles.navSection}>{children}</div>
+            </div>
 
-          {/* Footer - use consistent padding to avoid shifts during animation */}
-          <div className={cx(
-            sidebarNavigationStyles.footer.base,
-            isCollapsed
-              ? sidebarNavigationStyles.footer.hoverToExpandCollapsed
-              : sidebarNavigationStyles.footer.hoverToExpandExpanded
-          )}>
-            {footerNav && (
-              <div className={sidebarNavigationStyles.footerNav}>{footerNav}</div>
-            )}
-            {footer}
+            {/* Footer - use consistent padding to avoid shifts during animation */}
+            <div className={cx(
+              sidebarNavigationStyles.footer.base,
+              isCollapsed
+                ? sidebarNavigationStyles.footer.hoverToExpandCollapsed
+                : sidebarNavigationStyles.footer.hoverToExpandExpanded
+            )}>
+              {footerNav && (
+                <div className={sidebarNavigationStyles.footerNav}>{footerNav}</div>
+              )}
+              {footer}
+            </div>
           </div>
         </div>
       </div>

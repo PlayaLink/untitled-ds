@@ -5,6 +5,7 @@ export { CloseButton, type CloseButtonProps, type CloseButtonSize, styles as clo
 export { ButtonUtility, type ButtonUtilityProps, type ButtonUtilityColor, type ButtonUtilitySize, styles as buttonUtilityStyles } from './components/button-utility'
 export { ButtonGroup, ButtonGroupItem, type ButtonGroupProps, type ButtonGroupItemProps, type ButtonGroupSize, styles as buttonGroupStyles } from './components/button-group'
 export { Badge, type BadgeProps, type BadgeButtonProps, type BadgeSize, type BadgeType, type BadgeColor, styles as badgeStyles } from './components/badge'
+export { CircleBadge, type CircleBadgeProps, type CircleBadgeSize, type CircleBadgeColor, circleBadgeStyles } from './components/circle-badge'
 export { Tag, type TagProps, type TagSize, styles as tagStyles } from './components/tag'
 export { TabDetailHeader, type TabDetailHeaderProps } from './components/tab-detail-header'
 export { Select, type SelectProps, type SelectOption, type SelectSize, styles as selectStyles } from './components/select'

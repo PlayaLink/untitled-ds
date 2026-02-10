@@ -61,7 +61,7 @@ export const navAccountCardStyles = sortCx({
     collapsed: 'absolute inset-0 flex items-center justify-center transition-opacity duration-50 ease-out',
     collapsedVisible: 'opacity-100 delay-200',
     collapsedHidden: 'opacity-0 pointer-events-none',
-    expanded: 'flex items-center gap-2 transition-opacity ease-out',
+    expanded: 'flex flex-1 min-w-0 items-center gap-2 transition-opacity ease-out',
     expandedVisible: 'opacity-100 duration-50',
     expandedHidden: 'opacity-0 duration-200 pointer-events-none',
   },

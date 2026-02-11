@@ -42,7 +42,7 @@ export interface SidebarNavigationProps {
 
 export const sidebarNavigationStyles = sortCx({
   // Mobile wrapper
-  mobileWrapper: 'fixed inset-0 z-50',
+  mobileWrapper: 'fixed inset-0 z-50 flex justify-end',
   // Backdrop overlay
   backdrop: 'absolute inset-0 bg-primary/70 backdrop-blur-md',
   // Mobile header bar (when closed)
@@ -59,7 +59,7 @@ export const sidebarNavigationStyles = sortCx({
     hoverToExpandOverlay: 'absolute inset-y-0 left-0 z-40',
   },
   // Mobile sidebar panel
-  mobileSidebar: 'flex h-full w-[280px] flex-col bg-primary shadow-xl',
+  mobileSidebar: 'relative flex h-full w-[280px] flex-col bg-primary shadow-xl',
   // Content sections
   content: 'flex flex-1 flex-col justify-between',
   // Navigation area

@@ -24,6 +24,7 @@
 'use client'
 
 import type { FC } from 'react'
+import type { ComponentProps } from 'react'
 import type {
   MenuItemProps as AriaMenuItemProps,
   MenuProps as AriaMenuProps,
@@ -95,6 +96,8 @@ export interface DropdownMenuProps<T extends object> extends AriaMenuProps<T> {}
 export interface DropdownPopoverProps extends AriaPopoverProps {}
 
 export interface DropdownSeparatorProps extends AriaSeparatorProps {}
+
+export type DropdownSectionHeaderProps = ComponentProps<typeof AriaHeader>
 
 // =============================================================================
 // Components
@@ -213,6 +216,10 @@ const DropdownPopover = (props: DropdownPopoverProps) => {
   )
 }
 
+const DropdownSectionHeader = (props: DropdownSectionHeaderProps) => {
+  return <AriaHeader {...props} />
+}
+
 const DropdownSeparator = (props: DropdownSeparatorProps) => {
   return <AriaSeparator {...props} className={cx(styles.separator, props.className)} />
 }
@@ -247,7 +254,7 @@ export const Dropdown = {
   /** Group related items together with a header. */
   Section: AriaMenuSection,
   /** Header text for a Section. */
-  SectionHeader: AriaHeader,
+  SectionHeader: DropdownSectionHeader,
   /** Individual menu item with optional icon, label, and addon. */
   Item: DropdownItem,
   /** Visual separator between items. */

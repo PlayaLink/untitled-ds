@@ -31,6 +31,7 @@ export { Breadcrumbs, BreadcrumbItem, type BreadcrumbsProps, type BreadcrumbItem
 export { Pagination, type PaginationProps, styles as paginationStyles } from './components/pagination'
 export { FeaturedIcon, type FeaturedIconProps, type FeaturedIconSize, type FeaturedIconColor, type FeaturedIconTheme, styles as featuredIconStyles } from './components/featured-icon'
 export { TextArea, TextAreaBase, type TextAreaProps, type TextAreaBaseProps, styles as textAreaStyles } from './components/textarea'
+export { MetricItem, type MetricItemProps, type MetricItemType, MetricChange, type MetricChangeProps, type MetricChangeType, type MetricChangeTrend, styles as metricItemStyles, changeStyles as metricChangeStyles } from './components/metric-item'
 
 // RadioGroup
 export {

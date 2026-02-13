@@ -46,7 +46,7 @@ export const navItemStyles = sortCx({
     current: 'text-fg-secondary',
   },
   text: {
-    base: 'text-md font-semibold',
+    base: 'text-md font-semibold whitespace-nowrap',
     default: 'text-tertiary',
     current: 'text-secondary',
   },

@@ -11,6 +11,7 @@ import {
   faUser as faUserRegular,
   faTrashCan as faTrashCanRegular,
   faCopy as faCopyRegular,
+  faFlag as faFlagRegular,
   faPenToSquare as faPenToSquareRegular,
   faFolder as faFolderRegular,
   faFile as faFileRegular,
@@ -82,6 +83,7 @@ import {
   faLink,
   faLinkSlash,
   faCamera,
+  faFlag,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faCcVisa,
@@ -135,6 +137,8 @@ const iconMap = {
   'copy': faCopyRegular,
   'log-out': faRightFromBracket, // no regular version
   'filter': faFilter, // no regular version
+  'flag': faFlagRegular,
+  'flag-solid': faFlag,
   // File/Folder Icons
   'upload-cloud': faCloudArrowUp, // no regular version
   'folder': faFolderRegular,

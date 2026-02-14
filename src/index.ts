@@ -24,6 +24,7 @@ export { Toggle, ToggleBase, type ToggleProps, type ToggleSize, type ToggleType,
 export { Checkbox, CheckboxBase, type CheckboxProps, type CheckboxSize, type CheckboxType, styles as checkboxStyles } from './components/checkbox'
 export { ColorSelect, type ColorSelectProps, styles as colorSelectStyles } from './components/color-select'
 export { ProgressBar, type ProgressBarProps, type ProgressBarLabelPosition, styles as progressBarStyles } from './components/progress-bar'
+export { ProgressSteps, type ProgressStepsProps, type ProgressStepItem, type ProgressStepsSize, type ProgressStepsType, type ProgressStepsOrientation, styles as progressStepsStyles } from './components/progress-steps'
 export { Slider, type SliderProps, type SliderLabelPosition, styles as sliderStyles } from './components/slider'
 export { ProgressCircle, type ProgressCircleProps, type ProgressCircleSize, type ProgressCircleShape, styles as progressCircleStyles } from './components/progress-circle'
 export { Tabs, TabList, TabPanel, Tab, type TabsProps, type TabPanelProps, type TabComponentProps, type TabType, type TabSize, styles as tabsStyles } from './components/tabs'

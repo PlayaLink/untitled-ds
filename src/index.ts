@@ -32,6 +32,7 @@ export { Pagination, type PaginationProps, styles as paginationStyles } from './
 export { FeaturedIcon, type FeaturedIconProps, type FeaturedIconSize, type FeaturedIconColor, type FeaturedIconTheme, styles as featuredIconStyles } from './components/featured-icon'
 export { TextArea, TextAreaBase, type TextAreaProps, type TextAreaBaseProps, styles as textAreaStyles } from './components/textarea'
 export { MetricItem, type MetricItemProps, type MetricItemType, MetricChange, type MetricChangeProps, type MetricChangeType, type MetricChangeTrend, styles as metricItemStyles, changeStyles as metricChangeStyles } from './components/metric-item'
+export { LoadingIndicator, type LoadingIndicatorProps, type LoadingIndicatorSize, type LoadingIndicatorVariant, styles as loadingIndicatorStyles } from './components/loading-indicator'
 
 // RadioGroup
 export {

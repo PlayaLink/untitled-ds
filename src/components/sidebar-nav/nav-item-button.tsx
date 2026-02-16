@@ -7,6 +7,7 @@
 import { type FC } from 'react'
 import { Link } from 'react-aria-components'
 import { cx, sortCx } from '@/utils/cx'
+import { type NavItemColorScheme } from './nav-item'
 
 export type NavItemButtonSize = 'md' | 'lg'
 
@@ -25,6 +26,8 @@ export interface NavItemButtonProps {
   'aria-label': string
   /** Additional className */
   className?: string
+  /** Color scheme for active/hover states */
+  colorScheme?: NavItemColorScheme
 }
 
 export const navItemButtonStyles = sortCx({
@@ -48,6 +51,15 @@ export const navItemButtonStyles = sortCx({
       current: 'text-fg-secondary',
     },
   },
+  brand: {
+    states: {
+      current: 'bg-brand-primary-alt',
+      hover: 'hover:bg-brand-primary-alt',
+    },
+    icon: {
+      current: 'text-brand-secondary',
+    },
+  },
 })
 
 export function NavItemButton({
@@ -58,12 +70,17 @@ export function NavItemButton({
   onClick,
   'aria-label': ariaLabel,
   className,
+  colorScheme = 'gray',
 }: NavItemButtonProps) {
+  const isBrand = colorScheme === 'brand'
+
   const sharedClassName = cx(
     navItemButtonStyles.base,
     navItemButtonStyles.sizes[size],
-    isCurrent ? navItemButtonStyles.states.current : navItemButtonStyles.states.default,
-    !isCurrent && navItemButtonStyles.states.hover,
+    isCurrent
+      ? (isBrand ? navItemButtonStyles.brand.states.current : navItemButtonStyles.states.current)
+      : navItemButtonStyles.states.default,
+    !isCurrent && (isBrand ? navItemButtonStyles.brand.states.hover : navItemButtonStyles.states.hover),
     className
   )
 
@@ -72,7 +89,7 @@ export function NavItemButton({
       className={cx(
         navItemButtonStyles.icon.sizes[size],
         isCurrent
-          ? navItemButtonStyles.icon.colors.current
+          ? (isBrand ? navItemButtonStyles.brand.icon.current : navItemButtonStyles.icon.colors.current)
           : navItemButtonStyles.icon.colors.default
       )}
     />

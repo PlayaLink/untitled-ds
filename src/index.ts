@@ -105,6 +105,7 @@ export {
   navItemStyles,
   type NavItemProps,
   type NavItemState,
+  type NavItemColorScheme,
   NavItemButton,
   navItemButtonStyles,
   type NavItemButtonProps,
@@ -242,6 +243,9 @@ export {
   type WizardModalBackButtonProps,
   type WizardModalNextButtonProps,
 } from './components/wizard'
+
+// Fullscreen Overlay
+export { FullscreenOverlay, type FullscreenOverlayProps } from './components/fullscreen-overlay'
 
 // Hooks
 export { useResizeObserver, useBreakpoint } from './hooks'

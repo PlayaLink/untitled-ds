@@ -22,6 +22,8 @@ import {
   faFileZipper as faFileZipperRegular,
   faStar as faStarRegular,
   faBuilding as faBuildingRegular,
+  faMoon as faMoonRegular,
+  faLightbulb as faLightbulbRegular,
 } from '@fortawesome/free-regular-svg-icons'
 // Solid icons - for icons without regular alternatives
 import {
@@ -193,6 +195,9 @@ const iconMap = {
   'mastercard': faCcMastercard,
   'amex': faCcAmex,
   'discover': faCcDiscover,
+  // Theme Icons
+  'moon': faMoonRegular,
+  'lightbulb': faLightbulbRegular,
   // Brand Icons
   'figma': faFigma,
   'github': faGithub,

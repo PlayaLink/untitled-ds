@@ -8,6 +8,7 @@ import { type FC, type ReactNode } from 'react'
 import { cx, sortCx } from '@/utils/cx'
 
 export type NavItemState = 'default' | 'hover' | 'focused'
+export type NavItemColorScheme = 'gray' | 'brand'
 
 export interface NavItemProps {
   /** Text label for the nav item */
@@ -28,6 +29,8 @@ export interface NavItemProps {
   className?: string
   /** Render as a different element */
   as?: 'button' | 'a' | 'div'
+  /** Color scheme for active/hover states */
+  colorScheme?: NavItemColorScheme
 }
 
 export const navItemStyles = sortCx({
@@ -51,6 +54,19 @@ export const navItemStyles = sortCx({
     current: 'text-secondary',
   },
   badge: 'shrink-0',
+  brand: {
+    content: {
+      current: 'bg-brand-primary-alt',
+      hover: 'hover:bg-brand-primary-alt',
+    },
+    icon: {
+      current: 'text-brand-secondary',
+    },
+    text: {
+      current: 'text-brand-secondary',
+      hover: 'hover:text-brand-secondary',
+    },
+  },
 })
 
 export function NavItem({
@@ -63,8 +79,10 @@ export function NavItem({
   href,
   className,
   as,
+  colorScheme = 'gray',
 }: NavItemProps) {
   const Element = as ?? (href ? 'a' : onClick ? 'button' : 'div')
+  const isBrand = colorScheme === 'brand'
 
   const elementProps = {
     className: cx(navItemStyles.root, className),
@@ -78,21 +96,29 @@ export function NavItem({
       <span
         className={cx(
           navItemStyles.content.base,
-          isCurrent ? navItemStyles.content.current : navItemStyles.content.default,
-          !isCurrent && navItemStyles.content.hover,
+          isCurrent
+            ? (isBrand ? navItemStyles.brand.content.current : navItemStyles.content.current)
+            : navItemStyles.content.default,
+          !isCurrent && (isBrand ? navItemStyles.brand.content.hover : navItemStyles.content.hover),
           navItemStyles.content.focused
         )}
       >
         <span className={navItemStyles.textAndIcon}>
           {IconLeading && (
             <IconLeading
-              className={cx(navItemStyles.icon.leading, isCurrent && navItemStyles.icon.current)}
+              className={cx(
+                navItemStyles.icon.leading,
+                isCurrent && (isBrand ? navItemStyles.brand.icon.current : navItemStyles.icon.current)
+              )}
             />
           )}
           <span
             className={cx(
               navItemStyles.text.base,
-              isCurrent ? navItemStyles.text.current : navItemStyles.text.default
+              isCurrent
+                ? (isBrand ? navItemStyles.brand.text.current : navItemStyles.text.current)
+                : navItemStyles.text.default,
+              !isCurrent && isBrand && navItemStyles.brand.text.hover
             )}
           >
             {children}
@@ -101,7 +127,10 @@ export function NavItem({
         {badge && <span className={navItemStyles.badge}>{badge}</span>}
         {IconTrailing && (
           <IconTrailing
-            className={cx(navItemStyles.icon.trailing, isCurrent && navItemStyles.icon.current)}
+            className={cx(
+              navItemStyles.icon.trailing,
+              isCurrent && (isBrand ? navItemStyles.brand.icon.current : navItemStyles.icon.current)
+            )}
           />
         )}
       </span>

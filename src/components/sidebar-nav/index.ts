@@ -11,6 +11,7 @@ export {
   navItemStyles,
   type NavItemProps,
   type NavItemState,
+  type NavItemColorScheme,
 } from './nav-item'
 
 export {

@@ -6,7 +6,7 @@
 
 import { type FC, type ReactNode, useState } from 'react'
 import { cx, sortCx } from '@/utils/cx'
-import { NavItem } from './nav-item'
+import { NavItem, type NavItemColorScheme } from './nav-item'
 
 // Chevron icons
 const ChevronDownIcon = ({ className }: { className?: string }) => (
@@ -51,6 +51,8 @@ export interface NavItemDropdownProps {
   items: NavItemDropdownItem[]
   /** Additional className */
   className?: string
+  /** Color scheme for active/hover states */
+  colorScheme?: NavItemColorScheme
 }
 
 export const navItemDropdownStyles = sortCx({
@@ -70,6 +72,7 @@ export function NavItemDropdown({
   iconLeading,
   items,
   className,
+  colorScheme = 'gray',
 }: NavItemDropdownProps) {
   const [uncontrolledIsOpen, setUncontrolledIsOpen] = useState(defaultOpen)
 
@@ -92,6 +95,7 @@ export function NavItemDropdown({
         iconTrailing={isOpen ? ChevronUpIcon : ChevronDownIcon}
         onClick={handleToggle}
         as="button"
+        colorScheme={colorScheme}
       >
         {children}
       </NavItem>
@@ -105,6 +109,7 @@ export function NavItemDropdown({
               onClick={item.onClick}
               href={item.href}
               className={navItemDropdownStyles.menuItem.content}
+              colorScheme={colorScheme}
             >
               {item.label}
             </NavItem>

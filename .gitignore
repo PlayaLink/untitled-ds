@@ -55,3 +55,13 @@ AGENTS.md
 .claude/skills/
 .claude/commands/
 .ai-guidelines-manifest
+
+# BEGIN: ai-guidelines sync (generated)
+AGENTS.md
+.agents/skills/
+.cursor/rules/
+.claude/rules/
+.claude/skills/
+.claude/commands/
+.ai-guidelines-manifest
+# END: ai-guidelines sync (generated)

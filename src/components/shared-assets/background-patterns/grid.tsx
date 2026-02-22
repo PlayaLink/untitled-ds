@@ -7,7 +7,7 @@ export const Grid = (props: Omit<SVGProps<SVGSVGElement>, "size"> & { size?: "sm
     const { size = "lg", className } = props;
     const Pattern = sizes[size];
 
-    return <Pattern className={className} />;
+    return (<Pattern className={className} data-untitled-ds='Grid' />);
 };
 
 const lg = (props: SVGProps<SVGSVGElement>) => {

@@ -117,7 +117,7 @@ export const ToggleBase = ({
         isFocusVisible && styles.common.trackFocused,
         className,
       )}
-    >
+      data-untitled-ds='ToggleBase'>
       <div
         style={{
           transition:
@@ -131,10 +131,9 @@ export const ToggleBase = ({
           isSlim && styles.types.slim.thumb,
           isSlim && isSelected && styles.types.slim.thumbSelected,
           isSlim && isSelected && isHovered && styles.types.slim.thumbSelectedHover,
-        )}
-      />
+        )} />
     </div>
-  )
+  );
 }
 
 export interface ToggleProps extends AriaSwitchProps {
@@ -160,7 +159,7 @@ export function Toggle({ label, hint, className, size = 'sm', type = 'default', 
           typeof className === 'function' ? className(renderProps) : className,
         )
       }
-    >
+      data-untitled-ds='Toggle'>
       {({ isSelected, isDisabled, isFocusVisible, isHovered }) => (
         <>
           <ToggleBase
@@ -177,7 +176,9 @@ export function Toggle({ label, hint, className, size = 'sm', type = 'default', 
             <div className={cx('flex flex-col', textStyles.wrapper)}>
               {label && <p className={cx('select-none text-secondary', textStyles.label)}>{label}</p>}
               {hint && (
-                <span className={cx('text-tertiary', textStyles.hint)} onClick={(event) => event.stopPropagation()}>
+                <span
+                  className={cx('text-tertiary', textStyles.hint)}
+                  onClick={(event) => event.stopPropagation()}>
                   {hint}
                 </span>
               )}
@@ -186,5 +187,5 @@ export function Toggle({ label, hint, className, size = 'sm', type = 'default', 
         </>
       )}
     </AriaSwitch>
-  )
+  );
 }

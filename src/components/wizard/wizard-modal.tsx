@@ -120,7 +120,10 @@ export function WizardModalProgress({ showNumbers = true, showTitles = false, cl
   if (steps.length <= 1) return null
 
   return (
-    <div className={cx('flex items-center justify-center gap-2 border-b border-secondary px-4 py-3', className)} {...props}>
+    <div
+      className={cx('flex items-center justify-center gap-2 border-b border-secondary px-4 py-3', className)}
+      {...props}
+      data-untitled-ds='WizardModalProgress'>
       {steps.map((step, index) => {
         const isActive = index === currentStepIndex
         const isCompleted = index < currentStepIndex
@@ -128,7 +131,8 @@ export function WizardModalProgress({ showNumbers = true, showTitles = false, cl
         return (
           <div key={step.id} className="flex items-center gap-2">
             {index > 0 && (
-              <div className={cx('h-px w-6 sm:w-8', isCompleted ? 'bg-brand-500' : 'bg-border-secondary')} />
+              <div
+                className={cx('h-px w-6 sm:w-8', isCompleted ? 'bg-brand-500' : 'bg-border-secondary')} />
             )}
             <div className="flex flex-col items-center gap-1">
               <div
@@ -138,8 +142,7 @@ export function WizardModalProgress({ showNumbers = true, showTitles = false, cl
                   isActive && 'bg-brand-500 text-white',
                   isCompleted && 'bg-brand-500 text-white',
                   !isActive && !isCompleted && 'bg-bg-tertiary text-fg-quaternary'
-                )}
-              >
+                )}>
                 {showNumbers && index + 1}
               </div>
               {showTitles && (
@@ -156,10 +159,10 @@ export function WizardModalProgress({ showNumbers = true, showTitles = false, cl
               )}
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
 export function WizardModalStep({ id, title, description, index, children, className, ...props }: WizardModalStepProps) {
@@ -177,18 +180,24 @@ export function WizardModalStep({ id, title, description, index, children, class
   }
 
   return (
-    <div className={cx('flex flex-col', className)} {...props}>
+    <div
+      className={cx('flex flex-col', className)}
+      {...props}
+      data-untitled-ds='WizardModalStep'>
       {children}
     </div>
-  )
+  );
 }
 
 export function WizardModalFooter({ children, className, ...props }: WizardModalFooterProps) {
   return (
-    <div className={cx('flex items-center justify-between gap-3 border-t border-secondary px-4 py-4 sm:px-6', className)} {...props}>
+    <div
+      className={cx('flex items-center justify-between gap-3 border-t border-secondary px-4 py-4 sm:px-6', className)}
+      {...props}
+      data-untitled-ds='WizardModalFooter'>
       {children}
     </div>
-  )
+  );
 }
 
 export function WizardModalBackButton({ children, onClick, isDisabled }: WizardModalBackButtonProps) {
@@ -205,10 +214,10 @@ export function WizardModalBackButton({ children, onClick, isDisabled }: WizardM
       onClick={handleClick}
       isDisabled={isDisabled || isSubmitting}
       iconLeading={showBackIcon ? createIcon('arrow-left') : undefined}
-    >
+      data-untitled-ds='WizardModalBackButton'>
       {label}
     </Button>
-  )
+  );
 }
 
 export function WizardModalNextButton({ children, onClick, isDisabled, isLoading }: WizardModalNextButtonProps) {
@@ -224,10 +233,10 @@ export function WizardModalNextButton({ children, onClick, isDisabled, isLoading
       onClick={handleClick}
       isDisabled={isDisabled || isSubmitting}
       isLoading={isLoading || isSubmitting}
-    >
+      data-untitled-ds='WizardModalNextButton'>
       {label}
     </Button>
-  )
+  );
 }
 
 // =============================================================================
@@ -302,7 +311,11 @@ export function WizardModal({
   )
 
   return (
-    <ModalOverlay isOpen={isOpen} onOpenChange={(open) => !open && handleClose()} isDismissable={!isSubmitting}>
+    <ModalOverlay
+      isOpen={isOpen}
+      onOpenChange={(open) => !open && handleClose()}
+      isDismissable={!isSubmitting}
+      data-untitled-ds='WizardModal'>
       <Modal>
         <Dialog>
           <WizardModalContext.Provider value={contextValue}>
@@ -311,10 +324,10 @@ export function WizardModal({
                 'relative flex w-full flex-col overflow-hidden rounded-2xl bg-primary shadow-xl',
                 sizeClasses[size],
                 className
-              )}
-            >
+              )}>
               {/* Header */}
-              <div className="flex items-start gap-4 border-b border-secondary px-4 py-5 sm:px-6">
+              <div
+                className="flex items-start gap-4 border-b border-secondary px-4 py-5 sm:px-6">
                 {icon && (
                   <FeaturedIcon icon={icon} color={iconColor} size="lg" theme="modern" className="max-sm:hidden" />
                 )}
@@ -335,7 +348,7 @@ export function WizardModal({
         </Dialog>
       </Modal>
     </ModalOverlay>
-  )
+  );
 }
 
 // Attach sub-components for convenience (not using compound pattern)

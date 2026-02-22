@@ -21,11 +21,9 @@ export const Label = ({ isRequired, tooltip, tooltipDescription, className, ...p
             data-label="true"
             {...props}
             className={cx("flex cursor-default items-center gap-0.5 text-sm font-medium text-secondary", className)}
-        >
+            data-untitled-ds='Label'>
             {props.children}
-
             <span className={cx("hidden text-brand-tertiary", isRequired && "block", typeof isRequired === "undefined" && "group-required:block")}>*</span>
-
             {/* TODO: Add tooltip support */}
         </AriaLabel>
     );

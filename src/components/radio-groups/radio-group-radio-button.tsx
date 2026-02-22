@@ -21,7 +21,10 @@ export interface RadioGroupRadioButtonProps extends RadioGroupProps {
 
 export const RadioGroupRadioButton = ({ items, size = 'sm', className, ...props }: RadioGroupRadioButtonProps) => {
   return (
-    <AriaRadioGroup {...props} className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}>
+    <AriaRadioGroup
+      {...props}
+      className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}
+      data-untitled-ds='RadioGroupRadioButton'>
       {items.map((plan) => (
         <AriaRadio
           isDisabled={plan.disabled}
@@ -46,16 +49,14 @@ export const RadioGroupRadioButton = ({ items, size = 'sm', className, ...props 
                   isSelected ? 'bg-brand-solid' : 'ring-1 ring-border-primary',
                   isDisabled && 'bg-disabled-subtle ring-1 ring-border-disabled',
                   isFocusVisible && 'outline-2 outline-offset-2 outline-focus-ring',
-                )}
-              >
+                )}>
                 <div
                   className={cx(
                     'absolute rounded-full bg-fg-white opacity-0',
                     size === 'md' ? 'size-2' : 'size-1.5',
                     isSelected ? 'opacity-100' : 'opacity-0',
                     isDisabled && 'bg-fg-disabled-subtle',
-                  )}
-                />
+                  )} />
               </div>
 
               <div className={cx('flex flex-col', size === 'md' ? 'gap-0.5' : '')}>
@@ -74,5 +75,5 @@ export const RadioGroupRadioButton = ({ items, size = 'sm', className, ...props 
         </AriaRadio>
       ))}
     </AriaRadioGroup>
-  )
+  );
 }

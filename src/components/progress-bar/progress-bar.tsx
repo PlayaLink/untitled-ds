@@ -96,8 +96,7 @@ export function ProgressBar({
         aria-valuenow={clampedValue}
         aria-valuemin={0}
         aria-valuemax={max}
-        aria-label={`${percentage}% complete`}
-      />
+        aria-label={`${percentage}% complete`} />
     </div>
   )
 
@@ -105,7 +104,7 @@ export function ProgressBar({
     <div
       className={cx(styles.root, styles.layout[labelPosition], className)}
       {...props}
-    >
+      data-untitled-ds='ProgressBar'>
       {isFloating ? (
         <div className={styles.floatingContainer}>
           {labelPosition === 'top-floating' && label}
@@ -119,5 +118,5 @@ export function ProgressBar({
         </>
       )}
     </div>
-  )
+  );
 }

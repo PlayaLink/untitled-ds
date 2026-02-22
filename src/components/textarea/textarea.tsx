@@ -88,7 +88,7 @@ export function TextAreaBase({ className, ...props }: TextAreaBaseProps) {
                     typeof className === "function" ? className(state) : className,
                 )
             }
-        />
+            data-untitled-ds='TextAreaBase' />
     );
 }
 
@@ -113,7 +113,7 @@ export function TextArea({
             className={(state) =>
                 cx(styles.wrapper, typeof className === "function" ? className(state) : className)
             }
-        >
+            data-untitled-ds='TextArea'>
             {({ isInvalid, isRequired }) => (
                 <>
                     {label && (

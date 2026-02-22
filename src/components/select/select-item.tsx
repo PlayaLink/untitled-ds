@@ -50,7 +50,7 @@ export const SelectItem = ({
       isDisabled={isDisabled}
       {...props}
       className={(state) => cx('w-full px-1.5 py-px outline-hidden', typeof className === 'function' ? className(state) : className)}
-    >
+      data-untitled-ds='SelectItem'>
       {(state) => (
         <div
           className={cx(
@@ -65,8 +65,7 @@ export const SelectItem = ({
             state.isDisabled && '*:data-icon:text-fg-disabled',
 
             sizes[size],
-          )}
-        >
+          )}>
           {avatarUrl ? (
             <Avatar aria-hidden="true" size="xs" src={avatarUrl} alt={label} />
           ) : isReactComponent(ItemIcon) ? (
@@ -104,5 +103,5 @@ export const SelectItem = ({
         </div>
       )}
     </AriaListBoxItem>
-  )
+  );
 }

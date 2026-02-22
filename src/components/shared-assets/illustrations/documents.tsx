@@ -13,7 +13,7 @@ interface IllustrationProps extends HTMLAttributes<HTMLDivElement> {
 export const DocumentsIllustration = ({ size = "lg", ...otherProps }: IllustrationProps) => {
     const Pattern = sizes[size];
 
-    return <Pattern {...otherProps} />;
+    return (<Pattern {...otherProps} data-untitled-ds='DocumentsIllustration' />);
 };
 
 export const sm = ({
@@ -173,7 +173,6 @@ export const sm = ({
                     </linearGradient>
                 </defs>
             </svg>
-
             {children && (
                 <span
                     className={cx(
@@ -345,7 +344,6 @@ export const md = ({
                     </linearGradient>
                 </defs>
             </svg>
-
             {children && (
                 <span
                     className={cx(
@@ -518,7 +516,6 @@ export const lg = ({
                     </linearGradient>
                 </defs>
             </svg>
-
             {children && (
                 <span
                     className={cx(

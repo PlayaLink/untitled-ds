@@ -57,11 +57,10 @@ export function ColorSelect({
       )}
       style={style}
       {...buttonProps}
-    >
+      data-untitled-ds='ColorSelect'>
       <div
         className={styles.common.swatch}
-        style={{ backgroundColor: color } as CSSProperties}
-      />
+        style={{ backgroundColor: color } as CSSProperties} />
     </button>
-  )
+  );
 }

@@ -10,7 +10,15 @@ import { Avatar } from '@/components/avatar'
 
 // Logout icon
 const LogOutIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    data-untitled-ds='LogOutIcon'>
     <path d="M10.667 11.333L14 8M14 8L10.667 4.667M14 8H6M6 14H4C3.46957 14 2.96086 13.7893 2.58579 13.4142C2.21071 13.0391 2 12.5304 2 12V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H6" />
   </svg>
 )
@@ -93,7 +101,7 @@ export function NavAccountCard({
           navAccountCardStyles.crossfade.root,
           className
         )}
-      >
+        data-untitled-ds='NavAccountCard'>
         {/* Collapsed state - avatar icon button */}
         <div
           className={cx(
@@ -101,11 +109,9 @@ export function NavAccountCard({
             isCollapsed
               ? navAccountCardStyles.crossfade.collapsedVisible
               : navAccountCardStyles.crossfade.collapsedHidden
-          )}
-        >
+          )}>
           {collapsedContent}
         </div>
-
         {/* Expanded state - full content */}
         <div
           className={cx(
@@ -113,8 +119,7 @@ export function NavAccountCard({
             isCollapsed
               ? navAccountCardStyles.crossfade.expandedHidden
               : navAccountCardStyles.crossfade.expandedVisible
-          )}
-        >
+          )}>
           <Avatar
             src={avatarSrc}
             initials={name.charAt(0).toUpperCase()}
@@ -131,15 +136,14 @@ export function NavAccountCard({
                 type="button"
                 onClick={onLogout}
                 aria-label="Log out"
-                className={navAccountCardStyles.actionButtonInline}
-              >
+                className={navAccountCardStyles.actionButtonInline}>
                 <LogOutIcon className={navAccountCardStyles.actionIcon} />
               </button>
             )
           )}
         </div>
       </div>
-    )
+    );
   }
 
   // Default mode: single state rendering
@@ -150,7 +154,7 @@ export function NavAccountCard({
         navAccountCardStyles.padding[breakpoint],
         className
       )}
-    >
+      data-untitled-ds='NavAccountCard'>
       <div className={navAccountCardStyles.content}>
         <Avatar
           src={avatarSrc}
@@ -165,19 +169,17 @@ export function NavAccountCard({
           </div>
         )}
       </div>
-
       {showAction && (
         actionButton ?? (
           <button
             type="button"
             onClick={onLogout}
             aria-label="Log out"
-            className={navAccountCardStyles.actionButton}
-          >
+            className={navAccountCardStyles.actionButton}>
             <LogOutIcon className={navAccountCardStyles.actionIcon} />
           </button>
         )
       )}
     </div>
-  )
+  );
 }

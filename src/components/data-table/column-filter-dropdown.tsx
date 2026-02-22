@@ -111,7 +111,10 @@ export function ColumnFilterDropdown({
   }
 
   return (
-    <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
+    <DialogTrigger
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      data-untitled-ds='ColumnFilterDropdown'>
       <AriaButton
         aria-label={`Filter ${columnId}`}
         className={cx(
@@ -127,11 +130,7 @@ export function ColumnFilterDropdown({
           <div className={styles.header}>
             <span className={styles.headerTitle}>Filter by</span>
             {hasActiveFilter && (
-              <button
-                type="button"
-                className={styles.clearButton}
-                onClick={handleClear}
-              >
+              <button type="button" className={styles.clearButton} onClick={handleClear}>
                 Clear
               </button>
             )}
@@ -145,8 +144,7 @@ export function ColumnFilterDropdown({
                   className={styles.option.wrapper}
                   onClick={() => handleOptionToggle(option.value)}
                   role="option"
-                  aria-selected={isSelected}
-                >
+                  aria-selected={isSelected}>
                   <Checkbox
                     size="md"
                     isSelected={isSelected}
@@ -155,11 +153,11 @@ export function ColumnFilterDropdown({
                   />
                   <span className={styles.option.label}>{option.label}</span>
                 </div>
-              )
+              );
             })}
           </div>
         </Dialog>
       </Popover>
     </DialogTrigger>
-  )
+  );
 }

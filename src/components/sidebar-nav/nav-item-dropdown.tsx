@@ -10,13 +10,29 @@ import { NavItem, type NavItemColorScheme } from './nav-item'
 
 // Chevron icons
 const ChevronDownIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    data-untitled-ds='ChevronDownIcon'>
     <path d="M4 6L8 10L12 6" />
   </svg>
 )
 
 const ChevronUpIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    data-untitled-ds='ChevronUpIcon'>
     <path d="M4 10L8 6L12 10" />
   </svg>
 )
@@ -88,7 +104,9 @@ export function NavItemDropdown({
   }
 
   return (
-    <div className={cx(navItemDropdownStyles.root, className)}>
+    <div
+      className={cx(navItemDropdownStyles.root, className)}
+      data-untitled-ds='NavItemDropdown'>
       <NavItem
         isCurrent={isCurrent}
         iconLeading={iconLeading}
@@ -99,7 +117,6 @@ export function NavItemDropdown({
       >
         {children}
       </NavItem>
-
       {isOpen && (
         <div className={navItemDropdownStyles.menu}>
           {items.map((item) => (
@@ -117,5 +134,5 @@ export function NavItemDropdown({
         </div>
       )}
     </div>
-  )
+  );
 }

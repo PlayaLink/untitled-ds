@@ -7,7 +7,7 @@ export const Circle = (props: Omit<SVGProps<SVGSVGElement>, 'size'> & { size?: '
   const { size = 'lg', className } = props
   const Pattern = sizes[size]
 
-  return <Pattern className={className} />
+  return (<Pattern className={className} data-untitled-ds='Circle' />);
 }
 
 const lg = (props: SVGProps<SVGSVGElement>) => {

@@ -167,26 +167,39 @@ function StepIndicator({ type, status, size, stepNumber, icon }: StepIndicatorPr
   if (type === 'icon') {
     const featuredSize: FeaturedIconSize = size === 'sm' ? 'sm' : 'md'
     const featuredColor: FeaturedIconColor = status === 'incomplete' ? 'gray' : 'brand'
-    return <FeaturedIcon icon={icon} size={featuredSize} color={featuredColor} theme="light" />
+    return (
+      <FeaturedIcon
+        icon={icon}
+        size={featuredSize}
+        color={featuredColor}
+        theme="light"
+        data-untitled-ds='StepIndicator' />
+    );
   }
 
   if (type === 'check') {
     return (
-      <div className={cx(styles.indicator, getIndicatorClasses('check', status, size))}>
+      <div
+        className={cx(styles.indicator, getIndicatorClasses('check', status, size))}
+        data-untitled-ds='StepIndicator'>
         {status === 'complete' && <Icon name="check" size={size === 'sm' ? 'sm' : 'md'} className="text-fg-white" />}
         {status === 'current' && (
-          <div className={cx(size === 'sm' ? 'size-2' : 'size-2.5', 'rounded-full bg-fg-white')} />
+          <div
+            className={cx(size === 'sm' ? 'size-2' : 'size-2.5', 'rounded-full bg-fg-white')} />
         )}
         {status === 'incomplete' && (
-          <div className={cx(size === 'sm' ? 'size-2' : 'size-2.5', 'rounded-full bg-fg-quaternary')} />
+          <div
+            className={cx(size === 'sm' ? 'size-2' : 'size-2.5', 'rounded-full bg-fg-quaternary')} />
         )}
       </div>
-    )
+    );
   }
 
   // Number type
   return (
-    <div className={cx(styles.indicator, getIndicatorClasses('number', status, size))}>
+    <div
+      className={cx(styles.indicator, getIndicatorClasses('number', status, size))}
+      data-untitled-ds='StepIndicator'>
       {status === 'complete' ? (
         <Icon name="check" size={size === 'sm' ? 'sm' : 'md'} className="text-fg-white" />
       ) : (
@@ -201,7 +214,7 @@ function StepIndicator({ type, status, size, stepNumber, icon }: StepIndicatorPr
         </span>
       )}
     </div>
-  )
+  );
 }
 
 interface ConnectorProps {
@@ -219,8 +232,8 @@ function StepConnector({ orientation, size, isComplete }: ConnectorProps) {
         isComplete ? styles.connectorComplete : styles.connectorIncomplete,
       )}
       aria-hidden="true"
-    />
-  )
+      data-untitled-ds='StepConnector' />
+  );
 }
 
 // =============================================================================
@@ -237,7 +250,12 @@ export function ProgressSteps({
   ...props
 }: ProgressStepsProps) {
   return (
-    <div className={cx(styles.root[orientation], className)} role="list" aria-label="Progress" {...props}>
+    <div
+      className={cx(styles.root[orientation], className)}
+      role="list"
+      aria-label="Progress"
+      {...props}
+      data-untitled-ds='ProgressSteps'>
       {steps.map((step, index) => {
         const status = getStepStatus(index, currentStep)
         const isFirst = index === 0
@@ -264,33 +282,33 @@ export function ProgressSteps({
                   <StepConnector orientation="horizontal" size={size} isComplete={index < currentStep} />
                 )}
               </div>
-
               {/* Text content */}
               <div
                 className={cx(
                   styles.content.horizontal,
                   styles.contentSpacing.horizontal[size],
                   type === 'icon' && status === 'complete' && 'opacity-60',
-                )}
-              >
+                )}>
                 <p className={cx(styles.title[size], styles.titleColor[status])}>{step.title}</p>
                 {step.description && (
                   <p className={cx(styles.description[size], styles.descriptionColor[status])}>{step.description}</p>
                 )}
               </div>
             </div>
-          )
+          );
         }
 
         // Vertical orientation
         return (
-          <div key={index} className={cx(styles.step.vertical, styles.verticalStepGap[size])} role="listitem">
+          <div
+            key={index}
+            className={cx(styles.step.vertical, styles.verticalStepGap[size])}
+            role="listitem">
             {/* Indicator column with vertical connector */}
             <div className={cx(styles.indicatorColumn, styles.indicatorColumnGap[size])}>
               <StepIndicator type={type} status={status} size={size} stepNumber={index + 1} icon={step.icon} />
               {!isLast && <StepConnector orientation="vertical" size={size} isComplete={index < currentStep} />}
             </div>
-
             {/* Text content */}
             <div
               className={cx(
@@ -298,18 +316,17 @@ export function ProgressSteps({
                 styles.contentSpacing.vertical[size],
                 isLast && 'pb-0',
                 type === 'icon' && status === 'complete' && 'opacity-60',
-              )}
-            >
+              )}>
               <p className={cx(styles.title[size], styles.titleColor[status])}>{step.title}</p>
               {step.description && (
                 <p className={cx(styles.description[size], styles.descriptionColor[status])}>{step.description}</p>
               )}
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
 ProgressSteps.displayName = 'ProgressSteps'

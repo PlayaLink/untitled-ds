@@ -109,8 +109,8 @@ export function CloseButton({
         className
       )}
       {...props}
-    >
+      data-untitled-ds='CloseButton'>
       <Icon name="x-close" size={iconSizeMap[size]} />
     </AriaButton>
-  )
+  );
 }

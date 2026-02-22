@@ -168,11 +168,11 @@ export function Select<T extends object = SelectOption>({
         {renderIcon(option.iconLeading, selectSize)}
         <span className="truncate">{option.label}</span>
       </>
-    )
+    );
   }
 
   return (
-    <AriaSelect {...props}>
+    <AriaSelect {...props} data-untitled-ds='Select'>
       {({ isOpen }) => (
         <>
           {label && <AriaLabel className={styles.label.base}>{label}</AriaLabel>}
@@ -224,5 +224,5 @@ export function Select<T extends object = SelectOption>({
         </>
       )}
     </AriaSelect>
-  )
+  );
 }

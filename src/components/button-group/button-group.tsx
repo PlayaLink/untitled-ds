@@ -73,12 +73,12 @@ export function ButtonGroup({
       }}
       isDisabled={isDisabled}
       className={cx(styles.group, className)}
-    >
+      data-untitled-ds='ButtonGroup'>
       <ButtonGroupContext.Provider value={{ selectedValue: value }}>
         {children}
       </ButtonGroupContext.Provider>
     </AriaToggleButtonGroup>
-  )
+  );
 }
 
 export interface ButtonGroupItemProps extends Omit<ToggleButtonProps, 'className' | 'children'> {
@@ -118,7 +118,7 @@ export function ButtonGroupItem({
         )
       }
       {...props}
-    >
+      data-untitled-ds='ButtonGroupItem'>
       {({ isSelected }) => (
         <>
           {/* Dot indicator */}
@@ -140,7 +140,7 @@ export function ButtonGroupItem({
         </>
       )}
     </ToggleButton>
-  )
+  );
 }
 
 export type ButtonGroupSize = 'sm' | 'md' | 'lg'

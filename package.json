@@ -47,7 +47,8 @@
     "build:lib": "vite build",
     "build:tokens": "node scripts/build-tokens.js",
     "lint:tokens": "./scripts/check-token-naming.sh",
-    "lint": "npm run lint:tokens"
+    "lint": "npm run lint:tokens",
+    "enforce:semantic-markup": "node scripts/enforce-semantic-markup.cjs"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",

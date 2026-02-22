@@ -106,7 +106,7 @@ export const InputBase = ({
                     wrapperClassName,
                 )
             }
-        >
+            data-untitled-ds='InputBase'>
             {/* Leading icon and Payment icon */}
             {Icon && (
                 <Icon
@@ -119,7 +119,6 @@ export const InputBase = ({
                     )}
                 />
             )}
-
             {/* Input field */}
             <AriaInput
                 {...(inputProps as AriaInputProps)}
@@ -133,9 +132,7 @@ export const InputBase = ({
                     inputClassName,
                 )}
             />
-
             {/* TODO: Add tooltip support */}
-
             {/* Invalid icon */}
             {isInvalid && (
                 <IconComponent
@@ -149,15 +146,13 @@ export const InputBase = ({
                     )}
                 />
             )}
-
             {/* Shortcut */}
             {shortcut && (
                 <div
                     className={cx(
                         "pointer-events-none absolute inset-y-0.5 right-0.5 z-10 flex items-center rounded-r-[inherit] bg-linear-to-r from-transparent to-bg-primary to-40% pl-8",
                         sizes[inputSize].shortcut,
-                    )}
-                >
+                    )}>
                     <span
                         className={cx(
                             "pointer-events-none rounded px-1 py-px text-xs font-medium text-quaternary ring-1 ring-border-secondary select-none ring-inset",
@@ -193,7 +188,7 @@ const TextFieldContext = createContext<TextFieldProps>({});
 
 export const TextField = ({ className, ...props }: TextFieldProps) => {
     return (
-        <TextFieldContext.Provider value={props}>
+        <TextFieldContext.Provider value={props} data-untitled-ds='TextField'>
             <AriaTextField
                 {...props}
                 data-input-wrapper
@@ -231,7 +226,11 @@ export const Input = ({
     ...props
 }: InputProps) => {
     return (
-        <TextField aria-label={!label ? placeholder : undefined} {...props} className={className}>
+        <TextField
+            aria-label={!label ? placeholder : undefined}
+            {...props}
+            className={className}
+            data-untitled-ds='Input'>
             {({ isRequired, isInvalid }) => (
                 <>
                     {label && <Label isRequired={hideRequiredIndicator ? !hideRequiredIndicator : isRequired}>{label}</Label>}

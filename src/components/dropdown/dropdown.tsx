@@ -105,7 +105,7 @@ export type DropdownSectionHeaderProps = ComponentProps<typeof AriaHeader>
 
 const DropdownItem = ({ label, children, addon, icon: ItemIcon, unstyled, ...props }: DropdownItemProps) => {
   if (unstyled) {
-    return <AriaMenuItem id={label} textValue={label} {...props} />
+    return (<AriaMenuItem id={label} textValue={label} {...props} data-untitled-ds='DropdownItem' />);
   }
 
   return (
@@ -118,7 +118,7 @@ const DropdownItem = ({ label, children, addon, icon: ItemIcon, unstyled, ...pro
           typeof props.className === 'function' ? props.className(state) : props.className
         )
       }
-    >
+      data-untitled-ds='DropdownItem'>
       {(state) => (
         <div
           className={cx(
@@ -126,8 +126,7 @@ const DropdownItem = ({ label, children, addon, icon: ItemIcon, unstyled, ...pro
             !state.isDisabled && styles.item.innerHover,
             state.isFocused && styles.item.innerFocused,
             state.isFocusVisible && styles.item.innerFocusVisible
-          )}
-        >
+          )}>
           {state.selectionMode !== 'none' && (
             <svg
               aria-hidden="true"
@@ -181,7 +180,7 @@ const DropdownItem = ({ label, children, addon, icon: ItemIcon, unstyled, ...pro
         </div>
       )}
     </AriaMenuItem>
-  )
+  );
 }
 
 const DropdownMenu = <T extends object>(props: DropdownMenuProps<T>) => {
@@ -195,8 +194,8 @@ const DropdownMenu = <T extends object>(props: DropdownMenuProps<T>) => {
           typeof props.className === 'function' ? props.className(state) : props.className
         )
       }
-    />
-  )
+      data-untitled-ds='DropdownMenu' />
+  );
 }
 
 const DropdownPopover = (props: DropdownPopoverProps) => {
@@ -210,18 +209,23 @@ const DropdownPopover = (props: DropdownPopoverProps) => {
           typeof props.className === 'function' ? props.className(state) : props.className
         )
       }
-    >
+      data-untitled-ds='DropdownPopover'>
       {props.children}
     </AriaPopover>
-  )
+  );
 }
 
 const DropdownSectionHeader = (props: DropdownSectionHeaderProps) => {
-  return <AriaHeader {...props} />
+  return (<AriaHeader {...props} data-untitled-ds='DropdownSectionHeader' />);
 }
 
 const DropdownSeparator = (props: DropdownSeparatorProps) => {
-  return <AriaSeparator {...props} className={cx(styles.separator, props.className)} />
+  return (
+    <AriaSeparator
+      {...props}
+      className={cx(styles.separator, props.className)}
+      data-untitled-ds='DropdownSeparator' />
+  );
 }
 
 // =============================================================================

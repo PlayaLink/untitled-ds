@@ -24,7 +24,7 @@ export const HintText = ({ isInvalid, className, ...props }: HintTextProps) => {
 
                 className,
             )}
-        />
+            data-untitled-ds='HintText' />
     );
 };
 

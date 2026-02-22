@@ -17,7 +17,7 @@ import { Calendar } from './calendar'
 
 const highlightedDates = [today(getLocalTimeZone())]
 
-const CalendarIcon = () => <Icon name="calendar" size="md" />
+const CalendarIcon = () => <Icon name="calendar" size="md" data-untitled-ds='CalendarIcon' />
 
 interface DatePickerProps extends AriaDatePickerProps<DateValue> {
   /** The function to call when the apply button is clicked. */
@@ -37,7 +37,12 @@ export const DatePicker = ({ value: valueProp, defaultValue, onChange, onApply, 
   const formattedDate = value ? formatter.format(value.toDate(getLocalTimeZone())) : 'Select date'
 
   return (
-    <AriaDatePicker shouldCloseOnSelect={false} {...props} value={value} onChange={setValue}>
+    <AriaDatePicker
+      shouldCloseOnSelect={false}
+      {...props}
+      value={value}
+      onChange={setValue}
+      data-untitled-ds='DatePicker'>
       <AriaGroup>
         <Button size="md" color="secondary" iconLeading={CalendarIcon}>
           {formattedDate}
@@ -89,7 +94,7 @@ export const DatePicker = ({ value: valueProp, defaultValue, onChange, onApply, 
         </AriaDialog>
       </AriaPopover>
     </AriaDatePicker>
-  )
+  );
 }
 
 export type { DatePickerProps }

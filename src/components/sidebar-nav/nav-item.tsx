@@ -92,7 +92,7 @@ export function NavItem({
   }
 
   return (
-    <Element {...elementProps}>
+    <Element {...elementProps} data-untitled-ds='NavItem'>
       <span
         className={cx(
           navItemStyles.content.base,
@@ -135,5 +135,5 @@ export function NavItem({
         )}
       </span>
     </Element>
-  )
+  );
 }

@@ -24,7 +24,9 @@ export const TabDetailHeader: FC<TabDetailHeaderProps> = ({
   actions,
   className,
 }) => (
-  <div className={cx('flex items-start justify-between', className)}>
+  <div
+    className={cx('flex items-start justify-between', className)}
+    data-untitled-ds='TabDetailHeader'>
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-2">
         <h3 className="text-lg font-semibold text-primary">{title}</h3>

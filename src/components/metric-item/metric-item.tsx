@@ -97,7 +97,7 @@ export function MetricChange({
         changeStyles.types[type].root,
         className,
       )}
-    >
+      data-untitled-ds='MetricChange'>
       <IconComponent
         className={cx(
           isBadge
@@ -117,7 +117,7 @@ export function MetricChange({
         {value}
       </span>
     </span>
-  )
+  );
 }
 
 MetricChange.displayName = 'MetricChange'
@@ -211,10 +211,10 @@ function MenuButton({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       className={styles.common.menuButton}
       aria-label="More options"
-    >
+      data-untitled-ds='MenuButton'>
       <DotsVerticalIcon />
     </button>
-  )
+  );
 }
 
 // =============================================================================
@@ -232,37 +232,31 @@ function Footer({
 }) {
   if (variant === 'chart-04') {
     return (
-      <div className="flex items-center justify-between px-6 pb-5">
+      <div
+        className="flex items-center justify-between px-6 pb-5"
+        data-untitled-ds='Footer'>
         {typeof action === 'string' ? (
-          <button
-            type="button"
-            onClick={onAction}
-            className={styles.common.footerLink}
-          >
+          <button type="button" onClick={onAction} className={styles.common.footerLink}>
             {action}
           </button>
         ) : (
           action
         )}
       </div>
-    )
+    );
   }
 
   return (
-    <div className={styles.common.footer}>
+    <div className={styles.common.footer} data-untitled-ds='Footer'>
       {typeof action === 'string' ? (
-        <button
-          type="button"
-          onClick={onAction}
-          className={styles.common.footerLink}
-        >
+        <button type="button" onClick={onAction} className={styles.common.footerLink}>
           {action}
         </button>
       ) : (
         action
       )}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -276,7 +270,9 @@ function SimpleLayout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex flex-col px-6 pt-6 pb-6">
+    <div
+      className="relative flex flex-col px-6 pt-6 pb-6"
+      data-untitled-ds='SimpleLayout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       <span className="text-sm font-medium text-tertiary">{label}</span>
       <div className="flex items-end gap-4 mt-2">
@@ -284,7 +280,7 @@ function SimpleLayout({
         {change}
       </div>
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -300,7 +296,9 @@ function Icon01Layout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex flex-col gap-4 px-6 pt-6 pb-6">
+    <div
+      className="relative flex flex-col gap-4 px-6 pt-6 pb-6"
+      data-untitled-ds='Icon01Layout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       {renderIcon(icon, 'icon-01', iconColor)}
       <div className="flex flex-col">
@@ -311,7 +309,7 @@ function Icon01Layout({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -328,7 +326,9 @@ function Icon02Layout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex flex-col px-6 pt-6 pb-6">
+    <div
+      className="relative flex flex-col px-6 pt-6 pb-6"
+      data-untitled-ds='Icon02Layout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       <div className="flex items-center gap-4">
         {renderIcon(icon, 'icon-02', iconColor)}
@@ -344,7 +344,7 @@ function Icon02Layout({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -361,7 +361,9 @@ function Icon03Layout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex flex-col gap-4 px-6 pt-6 pb-6">
+    <div
+      className="relative flex flex-col gap-4 px-6 pt-6 pb-6"
+      data-untitled-ds='Icon03Layout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       {renderIcon(icon, 'icon-03', iconColor)}
       <div className="flex flex-col gap-2">
@@ -379,7 +381,7 @@ function Icon03Layout({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -395,7 +397,9 @@ function Icon04Layout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex items-start gap-4 px-6 pt-6 pb-6">
+    <div
+      className="relative flex items-start gap-4 px-6 pt-6 pb-6"
+      data-untitled-ds='Icon04Layout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       {renderIcon(icon, 'icon-04', iconColor)}
       <div className="flex flex-col flex-1 min-w-0">
@@ -406,7 +410,7 @@ function Icon04Layout({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -422,7 +426,9 @@ function Chart01Layout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex flex-col px-6 pt-6 pb-6">
+    <div
+      className="relative flex flex-col px-6 pt-6 pb-6"
+      data-untitled-ds='Chart01Layout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       <span className="text-md font-semibold text-primary">{label}</span>
       <div className="flex items-end justify-between mt-5">
@@ -440,7 +446,7 @@ function Chart01Layout({
         {chart && <div className="shrink-0">{chart}</div>}
       </div>
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -457,7 +463,9 @@ function Chart02Layout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex flex-col px-6 pt-6 pb-6">
+    <div
+      className="relative flex flex-col px-6 pt-6 pb-6"
+      data-untitled-ds='Chart02Layout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       <div className="flex items-center gap-4">
         {renderIcon(icon, 'chart-02', iconColor)}
@@ -471,7 +479,7 @@ function Chart02Layout({
         {chart && <div className="shrink-0">{chart}</div>}
       </div>
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -487,7 +495,9 @@ function Chart03Layout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex flex-col px-6 pt-6 pb-0 overflow-hidden">
+    <div
+      className="relative flex flex-col px-6 pt-6 pb-0 overflow-hidden"
+      data-untitled-ds='Chart03Layout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       <span className="text-sm font-medium text-tertiary">{label}</span>
       <div className="flex items-center justify-between mt-2">
@@ -503,7 +513,7 @@ function Chart03Layout({
       </div>
       {chart && <div className="mt-5 -mx-px -mb-px">{chart}</div>}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -519,7 +529,9 @@ function Chart04Layout({
   onMenuClick,
 }: MetricItemProps) {
   return (
-    <div className="relative flex flex-col overflow-hidden">
+    <div
+      className="relative flex flex-col overflow-hidden"
+      data-untitled-ds='Chart04Layout'>
       {onMenuClick && <MenuButton onClick={onMenuClick} />}
       <div className="flex flex-col gap-2 px-6 pt-6">
         <div className="flex items-center justify-between">
@@ -537,7 +549,7 @@ function Chart04Layout({
       </div>
       {chart && <div className="mt-3 -mb-px">{chart}</div>}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -570,7 +582,9 @@ export function MetricItem({
   const Layout = layoutMap[type]
 
   return (
-    <div className={cx(styles.common.root, className)}>
+    <div
+      className={cx(styles.common.root, className)}
+      data-untitled-ds='MetricItem'>
       <Layout type={type} action={action} onAction={onAction} {...props} />
       {action && (
         <Footer
@@ -580,7 +594,7 @@ export function MetricItem({
         />
       )}
     </div>
-  )
+  );
 }
 
 MetricItem.displayName = 'MetricItem'

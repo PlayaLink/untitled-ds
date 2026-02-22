@@ -22,7 +22,10 @@ export interface RadioGroupCheckboxProps extends RadioGroupProps {
 
 export const RadioGroupCheckbox = ({ items, size = 'sm', className, ...props }: RadioGroupCheckboxProps) => {
   return (
-    <AriaRadioGroup {...props} className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}>
+    <AriaRadioGroup
+      {...props}
+      className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}
+      data-untitled-ds='RadioGroupCheckbox'>
       {items.map((plan) => (
         <AriaRadio
           isDisabled={plan.disabled}
@@ -53,8 +56,7 @@ export const RadioGroupCheckbox = ({ items, size = 'sm', className, ...props }: 
                   'flex flex-col',
 
                   size === 'md' ? 'gap-0.5' : '',
-                )}
-              >
+                )}>
                 <AriaLabel className={cx('pointer-events-none flex', size === 'md' ? 'gap-1.5' : 'gap-1')}>
                   <span className={cx('text-secondary', size === 'md' ? 'text-md font-medium' : 'text-sm font-medium')}>{plan.title}</span>
                   <span className={cx('text-tertiary', size === 'md' ? 'text-md' : 'text-sm')}>{plan.secondaryTitle}</span>
@@ -68,5 +70,5 @@ export const RadioGroupCheckbox = ({ items, size = 'sm', className, ...props }: 
         </AriaRadio>
       ))}
     </AriaRadioGroup>
-  )
+  );
 }

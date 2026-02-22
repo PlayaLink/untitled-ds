@@ -97,7 +97,7 @@ const SlashDivider = ({ className }: { className?: string }) => (
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
-    >
+        data-untitled-ds='SlashDivider'>
         <path
             d="M12.5 3.333 7.5 16.667"
             stroke="currentColor"
@@ -144,7 +144,7 @@ const BreadcrumbBase = ({
                 !href && !otherProps.onClick && "cursor-default",
                 className
             )}
-        >
+            data-untitled-ds='BreadcrumbBase'>
             {isReactComponent(IconProp) && (
                 <IconProp
                     className={cx(
@@ -155,7 +155,6 @@ const BreadcrumbBase = ({
                 />
             )}
             {isValidElement(IconProp) && IconProp}
-
             {children && (
                 <span
                     className={cx(
@@ -214,7 +213,7 @@ export const BreadcrumbItem = ({
                 styles.item.base,
                 type === "text" || type === "text-line" ? styles.item.text : styles.item.button
             )}
-        >
+            data-untitled-ds='BreadcrumbItem'>
             {({ isCurrent }) => (
                 <>
                     {isEllipsis ? (
@@ -305,7 +304,10 @@ export const Breadcrumbs = ({
     })();
 
     return (
-        <nav aria-label="Breadcrumbs" className={cx("min-w-0", className)}>
+        <nav
+            aria-label="Breadcrumbs"
+            className={cx("min-w-0", className)}
+            data-untitled-ds='Breadcrumbs'>
             <BreadcrumbsContext.Provider value={{ divider, type }}>
                 <AriaBreadcrumbs className={cx(styles.breadcrumbs.base, styles.breadcrumbs[type])}>
                     {visibleItems}

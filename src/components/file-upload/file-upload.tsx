@@ -225,11 +225,10 @@ export const FileUploadDropZone = ({
         isDisabled && 'cursor-not-allowed bg-disabled_subtle ring-disabled_subtle',
         className
       )}
-    >
+      data-untitled-ds='FileUploadDropZone'>
       <FeaturedIcon color="gray" theme="modern" size="md">
         <Icon name="upload-cloud" size="lg" />
       </FeaturedIcon>
-
       <div className="flex flex-col gap-1 text-center">
         <div className="flex justify-center gap-1 text-center">
           <input
@@ -240,8 +239,7 @@ export const FileUploadDropZone = ({
             disabled={isDisabled}
             accept={accept}
             multiple={allowsMultiple}
-            onChange={handleInputFileChange}
-          />
+            onChange={handleInputFileChange} />
           <label htmlFor={id} className="flex cursor-pointer">
             <Button color="link-color" size="md" isDisabled={isDisabled} onPress={() => inputRef.current?.click()}>
               Click to upload <span className="md:hidden">and attach files</span>
@@ -254,7 +252,7 @@ export const FileUploadDropZone = ({
         </p>
       </div>
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -303,7 +301,7 @@ export const FileListItemProgressBar = ({
         failed && 'ring-2 ring-error',
         className
       )}
-    >
+      data-untitled-ds='FileListItemProgressBar'>
       <FileTypeIcon
         className="size-10 shrink-0 dark:hidden"
         type={type ?? 'empty'}
@@ -316,7 +314,6 @@ export const FileListItemProgressBar = ({
         theme="dark"
         variant={fileIconVariant ?? 'default'}
       />
-
       <div className="flex min-w-0 flex-1 flex-col items-start">
         <div className="flex w-full max-w-full min-w-0 flex-1">
           <div className="min-w-0 flex-1">
@@ -363,7 +360,7 @@ export const FileListItemProgressBar = ({
         )}
       </div>
     </motion.li>
-  )
+  );
 }
 
 export const FileListItemProgressFill = ({
@@ -380,7 +377,10 @@ export const FileListItemProgressFill = ({
   const isComplete = progress === 100
 
   return (
-    <motion.li layout="position" className={cx('relative flex gap-3 overflow-hidden rounded-xl bg-primary p-4', className)}>
+    <motion.li
+      layout="position"
+      className={cx('relative flex gap-3 overflow-hidden rounded-xl bg-primary p-4', className)}
+      data-untitled-ds='FileListItemProgressFill'>
       {/* Progress fill. */}
       <div
         style={{ transform: `translateX(-${100 - progress}%)` }}
@@ -391,15 +391,13 @@ export const FileListItemProgressFill = ({
         role="progressbar"
         aria-valuenow={progress}
         aria-valuemin={0}
-        aria-valuemax={100}
-      />
+        aria-valuemax={100} />
       {/* Inner ring. */}
       <div
         className={cx(
           'absolute inset-0 size-full rounded-[inherit] ring-1 ring-secondary transition duration-100 ease-linear ring-inset',
           failed && 'ring-2 ring-error'
-        )}
-      />
+        )} />
       <FileTypeIcon
         className="relative size-10 shrink-0 dark:hidden"
         type={type ?? 'empty'}
@@ -412,7 +410,6 @@ export const FileListItemProgressFill = ({
         theme="dark"
         variant={fileIconVariant ?? 'solid'}
       />
-
       <div className="relative flex min-w-0 flex-1">
         <div className="relative flex min-w-0 flex-1 flex-col items-start">
           <div className="w-full min-w-0 flex-1">
@@ -454,7 +451,7 @@ export const FileListItemProgressFill = ({
         />
       </div>
     </motion.li>
-  )
+  );
 }
 
 // =============================================================================
@@ -462,13 +459,19 @@ export const FileListItemProgressFill = ({
 // =============================================================================
 
 const FileUploadRoot = (props: ComponentPropsWithRef<'div'>) => (
-  <div {...props} className={cx('flex flex-col gap-4', props.className)}>
+  <div
+    {...props}
+    className={cx('flex flex-col gap-4', props.className)}
+    data-untitled-ds='FileUploadRoot'>
     {props.children}
   </div>
 )
 
 const FileUploadList = (props: ComponentPropsWithRef<'ul'>) => (
-  <ul {...props} className={cx('flex flex-col gap-3', props.className)}>
+  <ul
+    {...props}
+    className={cx('flex flex-col gap-3', props.className)}
+    data-untitled-ds='FileUploadList'>
     <AnimatePresence initial={false}>{props.children}</AnimatePresence>
   </ul>
 )

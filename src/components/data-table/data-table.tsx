@@ -273,19 +273,21 @@ export function DataTable<TData>({
       <div
         className="flex items-center justify-center rounded-xl border border-secondary bg-primary shadow-xs"
         style={{ height: typeof maxHeight === 'number' ? maxHeight : 400 }}
-      >
+        data-untitled-ds='DataTable'>
         <Icon name="loader" size="2xl" className="animate-spin text-quaternary" />
       </div>
-    )
+    );
   }
 
   // Empty state
   if (data.length === 0 && emptyState) {
     return (
-      <div className="w-full overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs">
+      <div
+        className="w-full overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs"
+        data-untitled-ds='DataTable'>
         {emptyState}
       </div>
-    )
+    );
   }
 
   const virtualRows = rowVirtualizer.getVirtualItems()
@@ -302,7 +304,7 @@ export function DataTable<TData>({
       style={{
         height: useFlexLayout ? maxHeight : undefined,
       }}
-    >
+      data-untitled-ds='DataTable'>
       {/* Selection actions bar */}
       {selectedCount > 0 && selectionActions && (
         <TableActionsBar
@@ -310,7 +312,6 @@ export function DataTable<TData>({
           actions={selectionActions(selectedRows.map((r) => r.original))}
         />
       )}
-
       {/* Scrollable container for both header and body */}
       <div
         ref={tableContainerRef}
@@ -320,8 +321,7 @@ export function DataTable<TData>({
             typeof maxHeight === 'number'
               ? maxHeight - (selectedCount > 0 && selectionActions ? 52 : 0)
               : undefined,
-        }}
-      >
+        }}>
         {/* Sticky header - scrolls horizontally with body, stays pinned vertically */}
         <div className="sticky top-0 z-10">
           <HeaderRow
@@ -352,8 +352,7 @@ export function DataTable<TData>({
                 style={{
                   height: rowHeight,
                   transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
+                }}>
                 {row.getVisibleCells().map((cell) => {
                   // Get width: prefer dynamic size from columnSizing, fall back to meta width
                   const dynamicWidth = columnSizing[cell.column.id]
@@ -371,20 +370,18 @@ export function DataTable<TData>({
                       style={{
                         width: hasExplicitWidth ? (dynamicWidth ?? cell.column.getSize()) : undefined,
                         flexShrink: hasExplicitWidth ? 0 : undefined,
-                      }}
-                    >
+                      }}>
                       <div className="w-full min-w-0">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
-            )
+            );
           })}
         </div>
       </div>
-
       {/* Pagination footer */}
       {pagination && pagination.totalPages > 1 && (
         <Pagination
@@ -396,7 +393,7 @@ export function DataTable<TData>({
         />
       )}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -487,8 +484,7 @@ function HeaderRow<TData>({
                 'hover:bg-brand-500 active:bg-brand-600',
                 'dark:hover:bg-brand-400 dark:active:bg-brand-500',
                 isResizing && 'bg-brand-500 dark:bg-brand-400'
-              )}
-            />
+              )} />
           )}
         </>
       )
@@ -509,10 +505,14 @@ function HeaderRow<TData>({
       }
 
       return (
-        <div key={header.id} className={cellClassName} style={cellStyle} onClick={cellOnClick}>
+        <div
+          key={header.id}
+          className={cellClassName}
+          style={cellStyle}
+          onClick={cellOnClick}>
           {cellContent}
         </div>
-      )
+      );
     })
   )
 
@@ -523,21 +523,24 @@ function HeaderRow<TData>({
         collisionDetection={closestCenter}
         modifiers={[restrictToHorizontalAxis]}
         onDragEnd={handleDragEnd}
-      >
+        data-untitled-ds='HeaderRow'>
         <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
-          <div className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
+          <div
+            className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
             {headerCells}
           </div>
         </SortableContext>
       </DndContext>
-    )
+    );
   }
 
   return (
-    <div className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
+    <div
+      className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary"
+      data-untitled-ds='HeaderRow'>
       {headerCells}
     </div>
-  )
+  );
 }
 
 // Re-export Checkbox for use in selection columns

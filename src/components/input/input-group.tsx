@@ -29,7 +29,7 @@ export const InputPrefix = ({ position, size = "sm", isDisabled, children, ...pr
             isDisabled && "bg-disabled-subtle text-disabled ring-border-disabled",
             props.className,
         )}
-    >
+        data-untitled-ds='InputPrefix'>
         {children}
     </span>
 );
@@ -105,7 +105,7 @@ export const InputGroup = ({ size = "sm", prefix, leadingAddon, trailingAddon, l
                 "group-disabled:group-has-[&>select]:bg-transparent",
             )}
             {...props}
-        >
+            data-untitled-ds='InputGroup'>
             {({ isDisabled, isInvalid, isRequired }) => (
                 <>
                     {label && <Label isRequired={isRequired}>{label}</Label>}
@@ -120,8 +120,7 @@ export const InputGroup = ({ size = "sm", prefix, leadingAddon, trailingAddon, l
 
                             isDisabled && "cursor-not-allowed has-[&>select]:bg-disabled-subtle has-[&>select]:ring-border-disabled",
                             isInvalid && "has-[&>select]:ring-border-error-subtle has-[&>select]:has-[input:focus]:ring-border-error",
-                        )}
-                    >
+                        )}>
                         {leadingAddon && cloneAddon(leadingAddon, "leading", size, isDisabled)}
 
                         {prefix && (

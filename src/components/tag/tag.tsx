@@ -121,7 +121,7 @@ export function Tag({
 
   const renderIcon = () => {
     if (avatar) {
-      return <img src={avatar} alt={avatarAlt} className={styles.avatar[size]} />
+      return (<img src={avatar} alt={avatarAlt} className={styles.avatar[size]} />);
     }
     if (dot) {
       return <Icon name="circle" size={iconSizeMap[size]} className={dotColor} />
@@ -161,8 +161,7 @@ export function Tag({
             onClose?.()
           }}
           className={cx(styles.closeButton, styles.size[size].closeButton)}
-          aria-label="Remove tag"
-        >
+          aria-label="Remove tag">
           <Icon name="x-close" size="sm" />
         </button>
       )}
@@ -179,15 +178,20 @@ export function Tag({
 
   if (isInteractive) {
     return (
-      <AriaButton type="button" onPress={onPress} className={sharedClassName} {...props}>
+      <AriaButton
+        type="button"
+        onPress={onPress}
+        className={sharedClassName}
+        {...props}
+        data-untitled-ds='Tag'>
         {content}
       </AriaButton>
-    )
+    );
   }
 
   return (
-    <span className={sharedClassName}>
+    <span className={sharedClassName} data-untitled-ds='Tag'>
       {content}
     </span>
-  )
+  );
 }

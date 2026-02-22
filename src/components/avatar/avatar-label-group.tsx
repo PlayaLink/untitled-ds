@@ -46,12 +46,14 @@ export interface AvatarLabelGroupProps extends Omit<AvatarProps, 'size'> {
 
 export function AvatarLabelGroup({ title, subtitle, className, size, ...props }: AvatarLabelGroupProps) {
   return (
-    <figure className={cx(labelGroupStyles.base, labelGroupStyles.sizes[size].root, className)}>
+    <figure
+      className={cx(labelGroupStyles.base, labelGroupStyles.sizes[size].root, className)}
+      data-untitled-ds='AvatarLabelGroup'>
       <Avatar {...props} size={size} />
       <figcaption className="min-w-0 flex-1">
         <p className={cx('text-primary', labelGroupStyles.sizes[size].title)}>{title}</p>
         <p className={cx('truncate text-tertiary', labelGroupStyles.sizes[size].subtitle)}>{subtitle}</p>
       </figcaption>
     </figure>
-  )
+  );
 }

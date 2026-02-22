@@ -8,14 +8,30 @@ import { cx, sortCx } from '@/utils/cx'
 
 // Menu icon (hamburger)
 const MenuIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    data-untitled-ds='MenuIcon'>
     <path d="M3 12H21M3 6H21M3 18H21" />
   </svg>
 )
 
 // Close icon (X)
 const CloseIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    data-untitled-ds='CloseIcon'>
     <path d="M18 6L6 18M6 6L18 18" />
   </svg>
 )
@@ -63,7 +79,7 @@ export function AppNavMenuButton({
         isOpen ? appNavMenuButtonStyles.states.open : appNavMenuButtonStyles.states.closed,
         className
       )}
-    >
+      data-untitled-ds='AppNavMenuButton'>
       <Icon
         className={cx(
           appNavMenuButtonStyles.icon.base,
@@ -71,5 +87,5 @@ export function AppNavMenuButton({
         )}
       />
     </button>
-  )
+  );
 }

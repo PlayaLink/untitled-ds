@@ -74,7 +74,7 @@ export function FullscreenOverlay({
   );
 
   if (animate) {
-    return <AnimatePresence>{isOpen && content}</AnimatePresence>;
+    return (<AnimatePresence data-untitled-ds='FullscreenOverlay'>{isOpen && content}</AnimatePresence>);
   }
 
   return isOpen ? content : null;

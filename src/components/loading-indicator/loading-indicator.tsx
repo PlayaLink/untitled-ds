@@ -39,7 +39,11 @@ const STROKE_WIDTH = 6
 
 function LineSimpleSpinner({ className }: { className?: string }) {
   return (
-    <svg className={cx('animate-spin', className)} viewBox={VIEWBOX} fill="none">
+    <svg
+      className={cx('animate-spin', className)}
+      viewBox={VIEWBOX}
+      fill="none"
+      data-untitled-ds='LineSimpleSpinner'>
       <circle
         cx={CENTER}
         cy={CENTER}
@@ -58,12 +62,16 @@ function LineSimpleSpinner({ className }: { className?: string }) {
         strokeDasharray="25 75"
       />
     </svg>
-  )
+  );
 }
 
 function LineSpinnerSpinner({ className }: { className?: string }) {
   return (
-    <svg className={cx('animate-spin', className)} viewBox={VIEWBOX} fill="none">
+    <svg
+      className={cx('animate-spin', className)}
+      viewBox={VIEWBOX}
+      fill="none"
+      data-untitled-ds='LineSpinnerSpinner'>
       <circle
         cx={CENTER}
         cy={CENTER}
@@ -75,7 +83,7 @@ function LineSpinnerSpinner({ className }: { className?: string }) {
         strokeDasharray="75 25"
       />
     </svg>
-  )
+  );
 }
 
 const DOT_CIRCLE_MASK = 'conic-gradient(from 0deg, transparent, black)'
@@ -87,7 +95,7 @@ function DotCircleSpinner({ className }: { className?: string }) {
       viewBox={VIEWBOX}
       fill="none"
       style={{ maskImage: DOT_CIRCLE_MASK, WebkitMaskImage: DOT_CIRCLE_MASK }}
-    >
+      data-untitled-ds='DotCircleSpinner'>
       <circle
         cx={CENTER}
         cy={CENTER}
@@ -98,7 +106,7 @@ function DotCircleSpinner({ className }: { className?: string }) {
         strokeDasharray="0.1 8"
       />
     </svg>
-  )
+  );
 }
 
 const spinnerComponents: Record<LoadingIndicatorVariant, typeof LineSimpleSpinner> = {
@@ -124,9 +132,9 @@ export function LoadingIndicator({
       role="status"
       aria-label={text || 'Loading'}
       {...props}
-    >
+      data-untitled-ds='LoadingIndicator'>
       <SpinnerComponent className={sizeStyles.spinner} />
       {text && <p className={sizeStyles.text}>{text}</p>}
     </div>
-  )
+  );
 }

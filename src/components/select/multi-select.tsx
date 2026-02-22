@@ -91,10 +91,10 @@ const TagCloseButton = ({
         sizeStyles[size].root,
         className,
       )}
-    >
+      data-untitled-ds='TagCloseButton'>
       <Icon name="x-close" size={sizeStyles[size].icon} />
     </AriaButton>
-  )
+  );
 }
 
 export const MultiSelectBase = ({
@@ -186,7 +186,7 @@ export const MultiSelectBase = ({
         onInputChange,
         onRemove,
       }}
-    >
+      data-untitled-ds='MultiSelectBase'>
       <AriaComboBox
         allowsEmptyCollection
         menuTrigger="focus"
@@ -228,7 +228,7 @@ export const MultiSelectBase = ({
         )}
       </AriaComboBox>
     </MultiSelectContext.Provider>
-  )
+  );
 }
 
 const InnerMultiSelect = ({ isDisabled, shortcut, shortcutClassName, placeholder }: Omit<MultiSelectProps, 'selectedItems' | 'children'>) => {
@@ -299,7 +299,9 @@ const InnerMultiSelect = ({ isDisabled, shortcut, shortcutClassName, placeholder
   const isSelectionEmpty = comboBoxContext?.selectedItems?.items?.length === 0
 
   return (
-    <div className="relative flex w-full flex-1 flex-row flex-wrap items-center justify-start gap-1.5">
+    <div
+      className="relative flex w-full flex-1 flex-row flex-wrap items-center justify-start gap-1.5"
+      data-untitled-ds='InnerMultiSelect'>
       {!isSelectionEmpty &&
         comboBoxContext?.selectedItems?.items?.map((value) => (
           <span key={value.id} className="flex items-center rounded-md bg-primary py-0.5 pr-1 pl-1.25 ring-1 ring-border-primary ring-inset">
@@ -316,8 +318,8 @@ const InnerMultiSelect = ({ isDisabled, shortcut, shortcutClassName, placeholder
             />
           </span>
         ))}
-
-      <div className={cx('relative flex min-w-[20%] flex-1 flex-row items-center', !isSelectionEmpty && 'ml-0.5', shortcut && 'min-w-[30%]')}>
+      <div
+        className={cx('relative flex min-w-[20%] flex-1 flex-row items-center', !isSelectionEmpty && 'ml-0.5', shortcut && 'min-w-[30%]')}>
         <AriaInput
           placeholder={placeholder}
           onKeyDown={handleInputKeyDown}
@@ -331,8 +333,7 @@ const InnerMultiSelect = ({ isDisabled, shortcut, shortcutClassName, placeholder
             className={cx(
               'absolute inset-y-0.5 right-0.5 z-10 flex items-center rounded-r-[inherit] bg-linear-to-r from-transparent to-bg-primary to-40% pl-8',
               shortcutClassName,
-            )}
-          >
+            )}>
             <span
               className={cx(
                 'pointer-events-none rounded px-1 py-px text-xs font-medium text-quaternary ring-1 ring-border-secondary select-none ring-inset',
@@ -345,10 +346,10 @@ const InnerMultiSelect = ({ isDisabled, shortcut, shortcutClassName, placeholder
         )}
       </div>
     </div>
-  )
+  );
 }
 
-const SearchIcon = ({ className }: { className?: string }) => <Icon name="search" className={className} />
+const SearchIcon = ({ className }: { className?: string }) => <Icon name="search" className={className} data-untitled-ds='SearchIcon' />
 
 export const MultiSelectTagsValue = ({
   size,
@@ -371,7 +372,7 @@ export const MultiSelectTagsValue = ({
           selectSizes[size].root,
         )
       }
-    >
+      data-untitled-ds='MultiSelectTagsValue'>
       {({ isDisabled }) => (
         <>
           {PlaceholderIcon && <PlaceholderIcon className="pointer-events-none size-5 text-fg-quaternary" />}
@@ -387,7 +388,7 @@ export const MultiSelectTagsValue = ({
         </>
       )}
     </AriaGroup>
-  )
+  );
 }
 
 const MultiSelect = MultiSelectBase as typeof MultiSelectBase & {

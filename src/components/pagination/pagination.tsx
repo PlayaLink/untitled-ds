@@ -112,24 +112,21 @@ export function Pagination({
     const pageNumbers = getPageNumbers(currentPage, totalPages);
 
     return (
-        <div className={cx(styles.root, className)}>
+        <div className={cx(styles.root, className)} data-untitled-ds='Pagination'>
             {/* Previous Button */}
             <button
                 type="button"
                 onClick={handlePrevious}
                 disabled={!canGoPrevious}
                 className={cx(styles.button.base, styles.button.nav)}
-                aria-label="Go to previous page"
-            >
+                aria-label="Go to previous page">
                 <Icon name="arrow-left" size="lg" className={styles.buttonIcon} />
                 <span className={styles.buttonText}>Previous</span>
             </button>
-
             {/* Mobile: Page X of Y */}
             <span className={styles.mobileText}>
                 Page {currentPage} of {totalPages}
             </span>
-
             {/* Desktop: Page Numbers */}
             <div className={styles.pageNumbers}>
                 {pageNumbers.map((page, index) =>
@@ -147,26 +144,22 @@ export function Pagination({
                                 page === currentPage ? styles.pageButton.current : styles.pageButton.default
                             )}
                             aria-label={`Go to page ${page}`}
-                            aria-current={page === currentPage ? "page" : undefined}
-                        >
+                            aria-current={page === currentPage ? "page" : undefined}>
                             {page}
                         </button>
                     )
                 )}
             </div>
-
             {/* Next Button */}
             <button
                 type="button"
                 onClick={handleNext}
                 disabled={!canGoNext}
                 className={cx(styles.button.base, styles.button.nav)}
-                aria-label="Go to next page"
-            >
+                aria-label="Go to next page">
                 <span className={styles.buttonText}>Next</span>
                 <Icon name="arrow-right" size="lg" className={styles.buttonIcon} />
             </button>
-
             {/* Total count (desktop only) */}
             {total !== undefined && (
                 <span className={styles.totalCount}>

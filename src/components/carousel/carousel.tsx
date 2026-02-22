@@ -142,12 +142,17 @@ const CarouselRoot = ({ orientation = 'horizontal', opts, setApi, plugins, class
         selectedIndex,
         scrollSnaps,
       }}
-    >
-      <div onKeyDownCapture={handleKeyDown} className={cx('relative', className)} role="region" aria-roledescription="carousel" {...props}>
+      data-untitled-ds='CarouselRoot'>
+      <div
+        onKeyDownCapture={handleKeyDown}
+        className={cx('relative', className)}
+        role="region"
+        aria-roledescription="carousel"
+        {...props}>
         {children}
       </div>
     </CarouselContext.Provider>
-  )
+  );
 }
 
 export interface CarouselContentProps extends ComponentPropsWithRef<'div'> {
@@ -161,16 +166,28 @@ const CarouselContent = ({ className, overflowHidden = true, ...props }: Carouse
   const { carouselRef, orientation } = useCarousel()
 
   return (
-    <div ref={carouselRef} className={cx('h-full w-full', overflowHidden && 'overflow-hidden')}>
-      <div className={cx('flex max-h-full', orientation === 'horizontal' ? '' : 'flex-col', className)} {...props} />
+    <div
+      ref={carouselRef}
+      className={cx('h-full w-full', overflowHidden && 'overflow-hidden')}
+      data-untitled-ds='CarouselContent'>
+      <div
+        className={cx('flex max-h-full', orientation === 'horizontal' ? '' : 'flex-col', className)}
+        {...props} />
     </div>
-  )
+  );
 }
 
 export type CarouselItemProps = ComponentPropsWithRef<'div'>
 
 const CarouselItem = ({ className, ...props }: CarouselItemProps) => {
-  return <div role="group" aria-roledescription="slide" className={cx('min-w-0 shrink-0 grow-0 basis-full', className)} {...props} />
+  return (
+    <div
+      role="group"
+      aria-roledescription="slide"
+      className={cx('min-w-0 shrink-0 grow-0 basis-full', className)}
+      {...props}
+      data-untitled-ds='CarouselItem' />
+  );
 }
 
 interface TriggerRenderProps {
@@ -225,15 +242,21 @@ const Trigger = ({ className, children, asChild, direction, style, ...props }: T
   }
 
   return (
-    <button aria-label={defaultAriaLabel} disabled={isDisabled} className={computedClassName} onClick={handleClick} {...props}>
+    <button
+      aria-label={defaultAriaLabel}
+      disabled={isDisabled}
+      className={computedClassName}
+      onClick={handleClick}
+      {...props}
+      data-untitled-ds='Trigger'>
       {children}
     </button>
-  )
+  );
 }
 
-const CarouselPrevTrigger = (props: Omit<TriggerProps, 'direction'>) => <Trigger {...props} direction="prev" />
+const CarouselPrevTrigger = (props: Omit<TriggerProps, 'direction'>) => <Trigger {...props} direction="prev" data-untitled-ds='CarouselPrevTrigger' />
 
-const CarouselNextTrigger = (props: Omit<TriggerProps, 'direction'>) => <Trigger {...props} direction="next" />
+const CarouselNextTrigger = (props: Omit<TriggerProps, 'direction'>) => <Trigger {...props} direction="next" data-untitled-ds='CarouselNextTrigger' />
 
 interface CarouselIndicatorRenderProps {
   isSelected: boolean
@@ -284,10 +307,15 @@ const CarouselIndicator = ({ index, isSelected = false, children, asChild, class
   }
 
   return (
-    <button aria-label={defaultAriaLabel} aria-current={isSelected ? 'true' : undefined} className={computedClassName} onClick={handleClick}>
+    <button
+      aria-label={defaultAriaLabel}
+      aria-current={isSelected ? 'true' : undefined}
+      className={computedClassName}
+      onClick={handleClick}
+      data-untitled-ds='CarouselIndicator'>
       {children}
     </button>
-  )
+  );
 }
 
 export interface CarouselIndicatorGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
@@ -300,10 +328,10 @@ const CarouselIndicatorGroup = ({ children, ...props }: CarouselIndicatorGroupPr
 
   // If the children is a render prop, we need to pass the index to the render prop.
   if (typeof children === 'function') {
-    return <nav {...props}>{scrollSnaps.map((index) => children({ index }))}</nav>
+    return (<nav {...props} data-untitled-ds='CarouselIndicatorGroup'>{scrollSnaps.map((index) => children({ index }))}</nav>);
   }
 
-  return <nav {...props}>{children}</nav>
+  return (<nav {...props} data-untitled-ds='CarouselIndicatorGroup'>{children}</nav>);
 }
 
 export interface CarouselComponent {

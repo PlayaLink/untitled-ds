@@ -105,7 +105,7 @@ export const PaymentInput = ({ onChange, value, defaultValue, className, maxLeng
             maxLength={maxLength}
             value={formatCardNumber(cardNumber)}
             onChange={setCardNumber}
-        >
+            data-untitled-ds='PaymentInput'>
             {({ isDisabled, isInvalid, isRequired }) => (
                 <>
                     {label && <Label isRequired={isRequired}>{label}</Label>}

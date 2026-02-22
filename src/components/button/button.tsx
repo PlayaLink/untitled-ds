@@ -218,10 +218,10 @@ export function Button({
         data-icon-only={isIcon ? true : undefined}
         isDisabled={isDisabled || isLoading}
         className={sharedClassName}
-      >
+        data-untitled-ds='Button'>
         {content}
       </AriaLink>
-    )
+    );
   }
 
   return (
@@ -233,8 +233,8 @@ export function Button({
       isPending={isLoading}
       className={sharedClassName}
       {...props}
-    >
+      data-untitled-ds='Button'>
       {content}
     </AriaButton>
-  )
+  );
 }

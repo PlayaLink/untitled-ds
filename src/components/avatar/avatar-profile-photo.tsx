@@ -50,7 +50,15 @@ const tickSizeMap: Record<AvatarProfilePhotoSize, VerifiedTickSize> = {
 
 // Default user icon placeholder
 const User01Icon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    data-untitled-ds='User01Icon'>
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
     <circle cx="12" cy="7" r="4" />
   </svg>
@@ -87,32 +95,34 @@ export function AvatarProfilePhoto({
             'size-full rounded-full object-cover',
             contrastBorder && 'outline-1 -outline-offset-1 outline-border-secondary',
             profilePhotoStyles.sizes[size].content,
-          )}
-        />
-      )
+          )} />
+      );
     }
 
     if (initials) {
       return (
-        <div className={cx('flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-border-secondary', profilePhotoStyles.sizes[size].content)}>
+        <div
+          className={cx('flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-border-secondary', profilePhotoStyles.sizes[size].content)}>
           <span className={cx('text-quaternary', profilePhotoStyles.sizes[size].initials)}>{initials}</span>
         </div>
-      )
+      );
     }
 
     if (PlaceholderIcon) {
       return (
-        <div className={cx('flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-border-secondary', profilePhotoStyles.sizes[size].content)}>
+        <div
+          className={cx('flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-border-secondary', profilePhotoStyles.sizes[size].content)}>
           <PlaceholderIcon className={cx('text-fg-quaternary', profilePhotoStyles.sizes[size].icon)} />
         </div>
-      )
+      );
     }
 
     return (
-      <div className={cx('flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-border-secondary', profilePhotoStyles.sizes[size].content)}>
+      <div
+        className={cx('flex size-full items-center justify-center rounded-full bg-tertiary ring-1 ring-border-secondary', profilePhotoStyles.sizes[size].content)}>
         {placeholder || <User01Icon className={cx('text-fg-quaternary', profilePhotoStyles.sizes[size].icon)} />}
       </div>
-    )
+    );
   }
 
   const renderBadgeContent = () => {
@@ -135,9 +145,9 @@ export function AvatarProfilePhoto({
         (!src || isFailed) && profilePhotoStyles.sizes[size].rootWithPlaceholder,
         className,
       )}
-    >
+      data-untitled-ds='AvatarProfilePhoto'>
       {renderMainContent()}
       {renderBadgeContent()}
     </div>
-  )
+  );
 }

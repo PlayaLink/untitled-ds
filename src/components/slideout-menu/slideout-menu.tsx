@@ -120,7 +120,7 @@ const SlideoutMenuOverlay = ({ position = 'right', ...props }: AriaModalOverlayP
         typeof props.className === 'function' ? props.className(state) : props.className,
       )
     }
-  />
+    data-untitled-ds='SlideoutMenuOverlay' />
 )
 
 interface SlideoutMenuModalProps extends AriaModalOverlayProps, RefAttributes<HTMLDivElement> {
@@ -142,11 +142,15 @@ const SlideoutMenuModal = ({ position = 'right', isDragging, widthStyle, ...prop
         typeof props.className === 'function' ? props.className(state) : props.className,
       )
     }
-  />
+    data-untitled-ds='SlideoutMenuModal' />
 )
 
 const SlideoutMenuDialog = (props: AriaDialogProps & RefAttributes<HTMLElement>) => (
-  <AriaDialog role="dialog" {...props} className={cx(styles.dialog, props.className)} />
+  <AriaDialog
+    role="dialog"
+    {...props}
+    className={cx(styles.dialog, props.className)}
+    data-untitled-ds='SlideoutMenuDialog' />
 )
 
 const ResizeEdge = ({ position, ...props }: { position: SlideoutMenuPosition } & React.HTMLAttributes<HTMLDivElement>) => (
@@ -154,7 +158,7 @@ const ResizeEdge = ({ position, ...props }: { position: SlideoutMenuPosition } &
     {...props}
     className={cx(styles.resizeHandle.base, styles.resizeHandle.position[position])}
     aria-hidden
-  />
+    data-untitled-ds='ResizeEdge' />
 )
 
 const DEFAULT_WIDTH = 500
@@ -188,7 +192,7 @@ const Menu = ({
     : undefined
 
   return (
-    <SlideoutMenuOverlay position={position} {...props}>
+    <SlideoutMenuOverlay position={position} {...props} data-untitled-ds='Menu'>
       <SlideoutMenuModal position={position} isDragging={resizable && isDragging} widthStyle={widthStyle}>
         {(state) => (
           <SlideoutMenuDialog className={dialogClassName}>
@@ -202,22 +206,32 @@ const Menu = ({
         )}
       </SlideoutMenuModal>
     </SlideoutMenuOverlay>
-  )
+  );
 }
 
 const Content = ({ role = 'main', ...props }: ComponentPropsWithRef<'div'>) => (
-  <div role={role} {...props} className={cx(styles.content, props.className)} />
+  <div
+    role={role}
+    {...props}
+    className={cx(styles.content, props.className)}
+    data-untitled-ds='Content' />
 )
 
 const Header = ({ className, children, onClose, ...props }: SlideoutHeaderProps) => (
-  <header {...props} className={cx(styles.header, className)}>
+  <header
+    {...props}
+    className={cx(styles.header, className)}
+    data-untitled-ds='Header'>
     {children}
     <CloseButton size="md" className={styles.headerCloseButton} onPress={onClose} />
   </header>
 )
 
 const Footer = (props: ComponentPropsWithRef<'footer'>) => (
-  <footer {...props} className={cx(styles.footer, props.className)} />
+  <footer
+    {...props}
+    className={cx(styles.footer, props.className)}
+    data-untitled-ds='Footer' />
 )
 
 const SlideoutMenu = Menu as typeof Menu & {

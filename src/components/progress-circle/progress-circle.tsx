@@ -109,8 +109,8 @@ export function ProgressCircle({
         valueFormatter={valueFormatter}
         className={className}
         {...props}
-      />
-    )
+        data-untitled-ds='ProgressCircle' />
+    );
   }
 
   return (
@@ -128,8 +128,8 @@ export function ProgressCircle({
       valueFormatter={valueFormatter}
       className={className}
       {...props}
-    />
-  )
+      data-untitled-ds='ProgressCircle' />
+  );
 }
 
 interface CircleInternalProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
@@ -171,15 +171,17 @@ function Circle({
   const displayValue = valueFormatter ? valueFormatter(value, percentage) : `${percentage}%`
 
   return (
-    <div className={cx(styles.root, className)} {...props}>
+    <div
+      className={cx(styles.root, className)}
+      {...props}
+      data-untitled-ds='Circle'>
       <div
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={min}
         aria-valuemax={max}
         aria-label={`${percentage}% complete`}
-        className={styles.wrapper}
-      >
+        className={styles.wrapper}>
         <svg className="-rotate-90" width={width} height={height} viewBox={viewBox}>
           {/* Background circle (track) */}
           <circle
@@ -217,10 +219,9 @@ function Circle({
           <span className={cx(styles.textContainer, valueClass)}>{displayValue}</span>
         )}
       </div>
-
       {label && size === 'xxs' && <div className={labelClass}>{label}</div>}
     </div>
-  )
+  );
 }
 
 interface HalfCircleInternalProps extends CircleInternalProps {
@@ -252,15 +253,17 @@ function HalfCircle({
   const displayValue = valueFormatter ? valueFormatter(value, percentage) : `${percentage}%`
 
   return (
-    <div className={cx(styles.root, className)} {...props}>
+    <div
+      className={cx(styles.root, className)}
+      {...props}
+      data-untitled-ds='HalfCircle'>
       <div
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={min}
         aria-valuemax={max}
         aria-label={`${percentage}% complete`}
-        className={styles.wrapper}
-      >
+        className={styles.wrapper}>
         <svg width={width} height={height} viewBox={viewBox}>
           {/* Background half-circle (track) */}
           <circle
@@ -299,8 +302,7 @@ function HalfCircle({
           <span className={cx(halfCircleTextPosition, valueClass)}>{displayValue}</span>
         )}
       </div>
-
       {label && size === 'xxs' && <div className={labelClass}>{label}</div>}
     </div>
-  )
+  );
 }

@@ -68,7 +68,7 @@ export const CalendarCell = ({ date, isHighlighted, ...props }: CalendarCellProp
             'after:absolute after:inset-0 after:-translate-x-full after:bg-gradient-to-r after:from-transparent after:to-bg-active in-[[role=gridcell]:first-child]:after:hidden',
         )
       }}
-    >
+      data-untitled-ds='CalendarCell'>
       {({ isDisabled, isFocusVisible, isSelectionStart, isSelectionEnd, isSelected, formattedDate }) => {
         const markedAsSelected = isSelectionStart || isSelectionEnd || (isSelected && !isDisabled && !isRangeCalendar)
 
@@ -86,23 +86,20 @@ export const CalendarCell = ({ date, isHighlighted, ...props }: CalendarCellProp
               // Hover state for non-selected cells.
               !isSelected && !isDisabled ? 'hover:bg-primary-hover hover:font-medium!' : '',
               !isSelected && isTodayDate ? 'bg-active font-medium hover:bg-secondary-hover' : '',
-            )}
-          >
+            )}>
             {formattedDate}
-
             {(isHighlighted || isTodayDate) && (
               <div
                 className={cx(
                   'absolute bottom-1 left-1/2 size-1.25 -translate-x-1/2 rounded-full',
                   isDisabled ? 'bg-fg-disabled' : markedAsSelected ? 'bg-fg-white' : 'bg-fg-brand-primary',
-                )}
-              />
+                )} />
             )}
           </div>
-        )
+        );
       }}
     </AriaCalendarCell>
-  )
+  );
 }
 
 export type { CalendarCellProps }

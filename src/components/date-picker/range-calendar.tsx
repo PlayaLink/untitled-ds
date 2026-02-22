@@ -25,11 +25,15 @@ export const RangeCalendarContextProvider = ({ children }: PropsWithChildren) =>
   const [value, onChange] = useState<{ start: DateValue; end: DateValue } | null>(null)
   const [focusedValue, onFocusChange] = useState<DateValue | undefined>()
 
-  return <RangeCalendarContext.Provider value={{ value, onChange, focusedValue, onFocusChange }}>{children}</RangeCalendarContext.Provider>
+  return (
+    <RangeCalendarContext.Provider
+      value={{ value, onChange, focusedValue, onFocusChange }}
+      data-untitled-ds='RangeCalendarContextProvider'>{children}</RangeCalendarContext.Provider>
+  );
 }
 
-const ChevronLeftIcon = () => <Icon name="chevron-left" size="md" />
-const ChevronRightIcon = () => <Icon name="chevron-right" size="md" />
+const ChevronLeftIcon = () => <Icon name="chevron-left" size="md" data-untitled-ds='ChevronLeftIcon' />
+const ChevronRightIcon = () => <Icon name="chevron-right" size="md" data-untitled-ds='ChevronRightIcon' />
 
 const RangeCalendarTitle = ({ part }: { part: 'start' | 'end' }) => {
   const context = useContext(RangeCalendarStateContext)
@@ -62,10 +66,10 @@ const MobilePresetButton = ({ value, children }: { value: { start: DateValue; en
         context?.setValue(value)
         context?.setFocusedDate(value.start as CalendarDate)
       }}
-    >
+      data-untitled-ds='MobilePresetButton'>
       {children}
     </Button>
-  )
+  );
 }
 
 interface RangeCalendarProps extends AriaRangeCalendarProps<DateValue> {
@@ -82,7 +86,7 @@ export const RangeCalendar = ({ presets, ...props }: RangeCalendarProps) => {
   const ContextWrapper = context ? Fragment : RangeCalendarContextProvider
 
   return (
-    <ContextWrapper>
+    <ContextWrapper data-untitled-ds='RangeCalendar'>
       <AriaRangeCalendar
         className="flex items-start"
         visibleDuration={{
@@ -123,7 +127,8 @@ export const RangeCalendar = ({ presets, ...props }: RangeCalendarProps) => {
             <AriaCalendarGridHeader>
               {(day) => (
                 <AriaCalendarHeaderCell className="border-b-4 border-transparent p-0">
-                  <div className="flex size-10 items-center justify-center text-sm font-medium text-secondary">{day.slice(0, 2)}</div>
+                  <div
+                    className="flex size-10 items-center justify-center text-sm font-medium text-secondary">{day.slice(0, 2)}</div>
                 </AriaCalendarHeaderCell>
               )}
             </AriaCalendarGridHeader>
@@ -147,7 +152,8 @@ export const RangeCalendar = ({ presets, ...props }: RangeCalendarProps) => {
               <AriaCalendarGridHeader>
                 {(day) => (
                   <AriaCalendarHeaderCell className="border-b-4 border-transparent p-0">
-                    <div className="flex size-10 items-center justify-center text-sm font-medium text-secondary">{day.slice(0, 2)}</div>
+                    <div
+                      className="flex size-10 items-center justify-center text-sm font-medium text-secondary">{day.slice(0, 2)}</div>
                   </AriaCalendarHeaderCell>
                 )}
               </AriaCalendarGridHeader>
@@ -159,7 +165,7 @@ export const RangeCalendar = ({ presets, ...props }: RangeCalendarProps) => {
         )}
       </AriaRangeCalendar>
     </ContextWrapper>
-  )
+  );
 }
 
 export type { RangeCalendarProps }

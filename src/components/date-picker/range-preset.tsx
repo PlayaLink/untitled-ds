@@ -21,10 +21,10 @@ export const RangePresetButton = ({ value, className, children, ...props }: Rang
         isSelected ? 'bg-active text-secondary-hover hover:bg-secondary-hover' : 'text-secondary hover:bg-primary-hover hover:text-secondary-hover',
         className,
       )}
-    >
+      data-untitled-ds='RangePresetButton'>
       {children}
     </button>
-  )
+  );
 }
 
 export type { RangePresetButtonProps }

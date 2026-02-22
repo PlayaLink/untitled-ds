@@ -23,7 +23,10 @@ export interface RadioGroupIconSimpleProps extends RadioGroupProps {
 
 export const RadioGroupIconSimple = ({ items, size = 'sm', className, ...props }: RadioGroupIconSimpleProps) => {
   return (
-    <AriaRadioGroup {...props} className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}>
+    <AriaRadioGroup
+      {...props}
+      className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}
+      data-untitled-ds='RadioGroupIconSimple'>
       {items.map((plan) => (
         <AriaRadio
           isDisabled={plan.disabled}
@@ -68,5 +71,5 @@ export const RadioGroupIconSimple = ({ items, size = 'sm', className, ...props }
         </AriaRadio>
       ))}
     </AriaRadioGroup>
-  )
+  );
 }

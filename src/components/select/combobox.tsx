@@ -52,7 +52,7 @@ const ComboBoxValue = ({ size, icon, shortcut, placeholder, shortcutClassName, .
           selectSizes[size].root,
         )
       }
-    >
+      data-untitled-ds='ComboBoxValue'>
       {({ isDisabled }) => (
         <>
           {icon && <Icon name="search" className="pointer-events-none size-5 shrink-0 text-fg-quaternary" />}
@@ -78,8 +78,7 @@ const ComboBoxValue = ({ size, icon, shortcut, placeholder, shortcutClassName, .
                 isDisabled && 'to-bg-disabled-subtle',
                 selectSizes[size].shortcut,
                 shortcutClassName,
-              )}
-            >
+              )}>
               <span
                 className={cx(
                   'pointer-events-none rounded px-1 py-px text-xs font-medium text-quaternary ring-1 ring-border-secondary select-none ring-inset',
@@ -94,7 +93,7 @@ const ComboBoxValue = ({ size, icon, shortcut, placeholder, shortcutClassName, .
         </>
       )}
     </AriaGroup>
-  )
+  );
 }
 
 export const ComboBox = ({ placeholder = 'Search', icon = true, shortcut = true, size = 'sm', children, items, shortcutClassName, ...otherProps }: ComboBoxProps) => {
@@ -117,7 +116,7 @@ export const ComboBox = ({ placeholder = 'Search', icon = true, shortcut = true,
   })
 
   return (
-    <SelectContext.Provider value={{ size }}>
+    <SelectContext.Provider value={{ size }} data-untitled-ds='ComboBox'>
       <AriaComboBox menuTrigger="focus" {...otherProps}>
         {(state) => (
           <div className="flex flex-col gap-1.5">
@@ -151,5 +150,5 @@ export const ComboBox = ({ placeholder = 'Search', icon = true, shortcut = true,
         )}
       </AriaComboBox>
     </SelectContext.Provider>
-  )
+  );
 }

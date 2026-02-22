@@ -29,6 +29,6 @@ export const SelectPopover = (props: SelectPopoverProps) => {
           typeof props.className === 'function' ? props.className(state) : props.className,
         )
       }
-    />
-  )
+      data-untitled-ds='SelectPopover' />
+  );
 }

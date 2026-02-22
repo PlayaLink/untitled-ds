@@ -28,5 +28,11 @@ export const BackgroundPattern = (props: BackgroundPatternProps) => {
   const { pattern } = props
   const Pattern = patterns[pattern]
 
-  return <Pattern {...props} size={props.size as 'sm' | 'md'} className={cx('pointer-events-none', props.className)} />
+  return (
+    <Pattern
+      {...props}
+      size={props.size as 'sm' | 'md'}
+      className={cx('pointer-events-none', props.className)}
+      data-untitled-ds='BackgroundPattern' />
+  );
 }

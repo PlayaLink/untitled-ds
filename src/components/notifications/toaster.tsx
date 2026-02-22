@@ -51,15 +51,14 @@ export function ToastsOverlay() {
                     )}
                     style={{
                         background: style.background,
-                    }}
-                />
+                    }} />
             ))}
             <div
                 className={cx(
                     "pointer-events-none fixed right-0 bottom-0 left-0 z-40 h-67.5 w-full bg-linear-to-t from-black/10 to-transparent transition duration-500 xs:hidden",
                     positions.length > 0 ? "visible opacity-100" : "invisible opacity-0",
                 )}
-            />
+                data-untitled-ds='ToastsOverlay' />
         </>
     );
 }
@@ -72,8 +71,8 @@ export function Toaster() {
             <SonnerToaster
                 position={DEFAULT_TOAST_POSITION}
                 style={{ "--width": "400px" } as React.CSSProperties}
-            />
-            <ToastsOverlay />
+                data-untitled-ds='Toaster' />
+            <ToastsOverlay data-untitled-ds='Toaster' />
         </>
     );
 }

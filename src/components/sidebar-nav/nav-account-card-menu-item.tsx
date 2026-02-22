@@ -91,7 +91,7 @@ export function NavAccountCardMenuItem({
         type="button"
         onClick={onClick}
         className={cx(navAccountCardMenuItemStyles.root, className)}
-      >
+        data-untitled-ds='NavAccountCardMenuItem'>
         <span
           className={cx(
             navAccountCardMenuItemStyles.content.base,
@@ -128,7 +128,7 @@ export function NavAccountCardMenuItem({
           )}
         </span>
       </button>
-    )
+    );
   }
 
   // Menu item type
@@ -137,7 +137,7 @@ export function NavAccountCardMenuItem({
       type="button"
       onClick={onClick}
       className={cx(navAccountCardMenuItemStyles.root, className)}
-    >
+      data-untitled-ds='NavAccountCardMenuItem'>
       <span
         className={cx(
           navAccountCardMenuItemStyles.content.base,
@@ -164,5 +164,5 @@ export function NavAccountCardMenuItem({
         {shortcut && <span className={navAccountCardMenuItemStyles.shortcut}>{shortcut}</span>}
       </span>
     </button>
-  )
+  );
 }

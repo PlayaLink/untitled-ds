@@ -126,10 +126,15 @@ export const ButtonUtility = ({
 
   if (tooltip) {
     return (
-      <Tooltip title={tooltip} placement={tooltipPlacement} isDisabled={isDisabled} offset={size === 'xs' ? 4 : 6}>
+      <Tooltip
+        title={tooltip}
+        placement={tooltipPlacement}
+        isDisabled={isDisabled}
+        offset={size === 'xs' ? 4 : 6}
+        data-untitled-ds='ButtonUtility'>
         {content}
       </Tooltip>
-    )
+    );
   }
 
   return content

@@ -22,7 +22,10 @@ export interface RadioGroupPaymentIconProps extends RadioGroupProps {
 
 export const RadioGroupPaymentIcon = ({ items, size = 'sm', className, ...props }: RadioGroupPaymentIconProps) => {
   return (
-    <AriaRadioGroup {...props} className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}>
+    <AriaRadioGroup
+      {...props}
+      className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}
+      data-untitled-ds='RadioGroupPaymentIcon'>
       {items.map((card) => (
         <AriaRadio
           isDisabled={card.disabled}
@@ -69,5 +72,5 @@ export const RadioGroupPaymentIcon = ({ items, size = 'sm', className, ...props 
         </AriaRadio>
       ))}
     </AriaRadioGroup>
-  )
+  );
 }

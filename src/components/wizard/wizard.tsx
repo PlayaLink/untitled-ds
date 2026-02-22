@@ -107,12 +107,12 @@ const Root = ({ defaultStep = 0, step: controlledStep, onStepChange, children, c
   )
 
   return (
-    <WizardContext.Provider value={contextValue}>
+    <WizardContext.Provider value={contextValue} data-untitled-ds='Root'>
       <div className={cx('flex flex-col', className)} {...props}>
         {children}
       </div>
     </WizardContext.Provider>
-  )
+  );
 }
 
 // =============================================================================
@@ -130,14 +130,18 @@ const Progress = ({ showNumbers = false, showTitles = false, className, ...props
   const { steps, currentStepIndex } = useWizard()
 
   return (
-    <div className={cx('flex items-center justify-center gap-2', className)} {...props}>
+    <div
+      className={cx('flex items-center justify-center gap-2', className)}
+      {...props}
+      data-untitled-ds='Progress'>
       {steps.map((step, index) => {
         const isActive = index === currentStepIndex
         const isCompleted = index < currentStepIndex
 
         return (
           <div key={step.id} className="flex items-center gap-2">
-            {index > 0 && <div className={cx('h-px w-8', isCompleted ? 'bg-brand-500' : 'bg-border-secondary')} />}
+            {index > 0 && <div
+              className={cx('h-px w-8', isCompleted ? 'bg-brand-500' : 'bg-border-secondary')} />}
             <div className="flex flex-col items-center gap-1">
               <div
                 className={cx(
@@ -146,8 +150,7 @@ const Progress = ({ showNumbers = false, showTitles = false, className, ...props
                   isActive && 'bg-brand-500 text-white',
                   isCompleted && 'bg-brand-500 text-white',
                   !isActive && !isCompleted && 'bg-bg-tertiary text-fg-quaternary',
-                )}
-              >
+                )}>
                 {showNumbers && index + 1}
               </div>
               {showTitles && (
@@ -164,10 +167,10 @@ const Progress = ({ showNumbers = false, showTitles = false, className, ...props
               )}
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -201,10 +204,13 @@ const Step = ({ id, title, description, index = 0, children, className, ...props
   }
 
   return (
-    <div className={cx('flex flex-col', className)} {...props}>
+    <div
+      className={cx('flex flex-col', className)}
+      {...props}
+      data-untitled-ds='Step'>
       {children}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -219,7 +225,10 @@ const Header = ({ children, className, ...props }: WizardHeaderProps) => {
   const { currentStep } = useWizard()
 
   return (
-    <div className={cx('flex flex-col gap-1', className)} {...props}>
+    <div
+      className={cx('flex flex-col gap-1', className)}
+      {...props}
+      data-untitled-ds='Header'>
       {children ?? (
         <>
           {currentStep?.title && <h2 className="text-lg font-semibold text-fg-primary">{currentStep.title}</h2>}
@@ -227,7 +236,7 @@ const Header = ({ children, className, ...props }: WizardHeaderProps) => {
         </>
       )}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -240,10 +249,10 @@ export interface WizardContentProps extends ComponentPropsWithRef<'div'> {
 
 const Content = ({ children, className, ...props }: WizardContentProps) => {
   return (
-    <div className={cx('flex-1', className)} {...props}>
+    <div className={cx('flex-1', className)} {...props} data-untitled-ds='Content'>
       {children}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -256,10 +265,13 @@ export interface WizardFooterProps extends ComponentPropsWithRef<'div'> {
 
 const Footer = ({ children, className, ...props }: WizardFooterProps) => {
   return (
-    <div className={cx('flex items-center justify-end gap-3', className)} {...props}>
+    <div
+      className={cx('flex items-center justify-end gap-3', className)}
+      {...props}
+      data-untitled-ds='Footer'>
       {children}
     </div>
-  )
+  );
 }
 
 // =============================================================================
@@ -285,10 +297,10 @@ const BackButton = ({ children, className, disabled, ...props }: WizardBackButto
         className,
       )}
       {...props}
-    >
+      data-untitled-ds='BackButton'>
       {children ?? 'Back'}
     </button>
-  )
+  );
 }
 
 export interface WizardNextButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'onClick'> {
@@ -320,10 +332,10 @@ const NextButton = ({ children, className, disabled, onClick, ...props }: Wizard
         className,
       )}
       {...props}
-    >
+      data-untitled-ds='NextButton'>
       {children ?? (isLastStep ? 'Finish' : 'Continue')}
     </button>
-  )
+  );
 }
 
 // =============================================================================

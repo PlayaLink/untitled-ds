@@ -25,11 +25,15 @@ export const CalendarContextProvider = ({ children }: PropsWithChildren) => {
   const [value, onChange] = useState<DateValue | null>(null)
   const [focusedValue, onFocusChange] = useState<DateValue | undefined>()
 
-  return <AriaCalendarContext.Provider value={{ value, onChange, focusedValue, onFocusChange }}>{children}</AriaCalendarContext.Provider>
+  return (
+    <AriaCalendarContext.Provider
+      value={{ value, onChange, focusedValue, onFocusChange }}
+      data-untitled-ds='CalendarContextProvider'>{children}</AriaCalendarContext.Provider>
+  );
 }
 
-const ChevronLeftIcon = () => <Icon name="chevron-left" size="md" />
-const ChevronRightIcon = () => <Icon name="chevron-right" size="md" />
+const ChevronLeftIcon = () => <Icon name="chevron-left" size="md" data-untitled-ds='ChevronLeftIcon' />
+const ChevronRightIcon = () => <Icon name="chevron-right" size="md" data-untitled-ds='ChevronRightIcon' />
 
 const PresetButton = ({ value, children }: { value: CalendarDate; children: React.ReactNode }) => {
   const context = useContext(AriaCalendarStateContext)
@@ -53,10 +57,10 @@ const PresetButton = ({ value, children }: { value: CalendarDate; children: Reac
       size="md"
       color="secondary"
       onPress={handleClick}
-    >
+      data-untitled-ds='PresetButton'>
       {children}
     </Button>
-  )
+  );
 }
 
 interface CalendarProps extends AriaCalendarProps<DateValue> {
@@ -70,7 +74,7 @@ export const Calendar = ({ highlightedDates, className, ...props }: CalendarProp
   const ContextWrapper = context ? Fragment : CalendarContextProvider
 
   return (
-    <ContextWrapper>
+    <ContextWrapper data-untitled-ds='Calendar'>
       <AriaCalendar {...props} className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}>
         <header className="flex items-center justify-between">
           <Button slot="previous" iconLeading={ChevronLeftIcon} size="sm" color="tertiary" className="size-8" />
@@ -87,7 +91,8 @@ export const Calendar = ({ highlightedDates, className, ...props }: CalendarProp
           <AriaCalendarGridHeader className="border-b-4 border-transparent">
             {(day) => (
               <AriaCalendarHeaderCell className="p-0">
-                <div className="flex size-10 items-center justify-center text-sm font-medium text-secondary">{day.slice(0, 2)}</div>
+                <div
+                  className="flex size-10 items-center justify-center text-sm font-medium text-secondary">{day.slice(0, 2)}</div>
               </AriaCalendarHeaderCell>
             )}
           </AriaCalendarGridHeader>
@@ -97,7 +102,7 @@ export const Calendar = ({ highlightedDates, className, ...props }: CalendarProp
         </AriaCalendarGrid>
       </AriaCalendar>
     </ContextWrapper>
-  )
+  );
 }
 
 export type { CalendarProps }

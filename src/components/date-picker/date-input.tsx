@@ -14,7 +14,7 @@ export const DateInput = (props: DateInputProps) => {
         'flex rounded-lg bg-primary px-2.5 py-2 text-md shadow-xs ring-1 ring-border-primary ring-inset focus-within:ring-2 focus-within:ring-brand',
         typeof props.className === 'string' && props.className,
       )}
-    >
+      data-untitled-ds='DateInput'>
       {(segment) => (
         <AriaDateSegment
           segment={segment}
@@ -28,7 +28,7 @@ export const DateInput = (props: DateInputProps) => {
         />
       )}
     </AriaDateInput>
-  )
+  );
 }
 
 export type { DateInputProps }

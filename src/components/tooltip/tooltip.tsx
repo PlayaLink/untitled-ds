@@ -49,7 +49,7 @@ export const styles = sortCx({
   },
   // Text styles
   text: {
-    title: 'text-xs font-semibold text-white whitespace-nowrap',
+    title: 'text-xs font-semibold text-white',
     description: 'text-xs font-medium text-tooltip-supporting-text',
   },
   // Arrow styles
@@ -122,9 +122,8 @@ export function Tooltip({
   return (
     <AriaTooltipTrigger
       {...{ trigger, delay, closeDelay, isDisabled, isOpen, defaultOpen, onOpenChange }}
-    >
+      data-untitled-ds='Tooltip'>
       {children}
-
       <AriaTooltip
         {...tooltipProps}
         offset={offset}
@@ -161,8 +160,7 @@ export function Tooltip({
                 description ? styles.container.withDescription : styles.container.withoutDescription,
                 isEntering && styles.animation.entering,
                 isExiting && styles.animation.exiting
-              )}
-            >
+              )}>
               <span className={styles.text.title}>{title}</span>
 
               {description && <span className={styles.text.description}>{description}</span>}
@@ -171,7 +169,7 @@ export function Tooltip({
         )}
       </AriaTooltip>
     </AriaTooltipTrigger>
-  )
+  );
 }
 
 export interface TooltipTriggerProps extends AriaButtonProps {}
@@ -183,8 +181,8 @@ export function TooltipTrigger({ children, className, ...buttonProps }: TooltipT
       className={(values) =>
         cx(styles.trigger.base, typeof className === 'function' ? className(values) : className)
       }
-    >
+      data-untitled-ds='TooltipTrigger'>
       {children}
     </AriaButton>
-  )
+  );
 }

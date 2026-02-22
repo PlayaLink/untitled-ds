@@ -22,7 +22,10 @@ export interface RadioGroupAvatarProps extends RadioGroupProps {
 
 export const RadioGroupAvatar = ({ items, size = 'sm', className, ...props }: RadioGroupAvatarProps) => {
   return (
-    <AriaRadioGroup {...props} className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}>
+    <AriaRadioGroup
+      {...props}
+      className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}
+      data-untitled-ds='RadioGroupAvatar'>
       {items.map((person) => (
         <AriaRadio
           isDisabled={person.disabled}
@@ -60,5 +63,5 @@ export const RadioGroupAvatar = ({ items, size = 'sm', className, ...props }: Ra
         </AriaRadio>
       ))}
     </AriaRadioGroup>
-  )
+  );
 }

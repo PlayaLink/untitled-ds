@@ -198,7 +198,14 @@ export interface BadgeProps extends Omit<AriaButtonProps, 'className' | 'childre
 
 // Default close icon for button prop
 const CloseIcon: FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round">
+  <svg
+    className={className}
+    viewBox="0 0 12 12"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={3}
+    strokeLinecap="round"
+    data-untitled-ds='CloseIcon'>
     <path d="M9 3L3 9M3 3l6 6" />
   </svg>
 )
@@ -276,8 +283,7 @@ export function Badge({
             styles.button.base,
             isPill ? styles.button.pill : styles.button.badge,
             styles.color[color].button,
-          )}
-        >
+          )}>
           <ButtonIcon className="size-3 transition-inherit-all" />
         </button>
       )}
@@ -286,23 +292,28 @@ export function Badge({
 
   if (href) {
     return (
-      <AriaLink href={href} className={sharedClassName}>
+      <AriaLink href={href} className={sharedClassName} data-untitled-ds='Badge'>
         {content}
       </AriaLink>
-    )
+    );
   }
 
   if (onPress) {
     return (
-      <AriaButton type="button" onPress={onPress} className={sharedClassName} {...props}>
+      <AriaButton
+        type="button"
+        onPress={onPress}
+        className={sharedClassName}
+        {...props}
+        data-untitled-ds='Badge'>
         {content}
       </AriaButton>
-    )
+    );
   }
 
   return (
-    <span className={sharedClassName}>
+    <span className={sharedClassName} data-untitled-ds='Badge'>
       {content}
     </span>
-  )
+  );
 }

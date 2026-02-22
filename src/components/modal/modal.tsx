@@ -23,8 +23,8 @@ export const ModalOverlay = (props: AriaModalOverlayProps) => {
           typeof props.className === 'function' ? props.className(state) : props.className,
         )
       }
-    />
-  )
+      data-untitled-ds='ModalOverlay' />
+  );
 }
 
 export const Modal = (props: AriaModalOverlayProps) => (
@@ -38,9 +38,12 @@ export const Modal = (props: AriaModalOverlayProps) => (
         typeof props.className === 'function' ? props.className(state) : props.className,
       )
     }
-  />
+    data-untitled-ds='Modal' />
 )
 
-export const Dialog = (props: AriaDialogProps) => <AriaDialog {...props} className={cx('flex w-full items-center justify-center outline-hidden', props.className)} />
+export const Dialog = (props: AriaDialogProps) => <AriaDialog
+  {...props}
+  className={cx('flex w-full items-center justify-center outline-hidden', props.className)}
+  data-untitled-ds='Dialog' />
 
 export type { AriaDialogProps as DialogProps, AriaModalOverlayProps as ModalOverlayProps }

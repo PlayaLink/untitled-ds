@@ -51,7 +51,7 @@ export function DraggableHeaderCell({
         position: 'relative',
       }}
       onClick={onClick}
-    >
+      data-untitled-ds='DraggableHeaderCell'>
       {children}
       {isDraggable && (
         <button
@@ -65,11 +65,10 @@ export function DraggableHeaderCell({
           {...listeners}
           onClick={(e) => e.stopPropagation()}
           aria-label="Drag to reorder column"
-          type="button"
-        >
+          type="button">
           <Icon name="grip-vertical" size="sm" />
         </button>
       )}
     </div>
-  )
+  );
 }

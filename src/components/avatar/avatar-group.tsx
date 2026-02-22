@@ -61,7 +61,15 @@ export interface AvatarGroupProps {
 
 // Plus icon for add button
 const PlusIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    data-untitled-ds='PlusIcon'>
     <line x1="12" y1="5" x2="12" y2="19" />
     <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
@@ -88,7 +96,9 @@ export function AvatarGroup({
   const visibleChildren = max ? childArray.slice(0, max) : childArray
 
   return (
-    <div className={cx(avatarGroupStyles.base, className)}>
+    <div
+      className={cx(avatarGroupStyles.base, className)}
+      data-untitled-ds='AvatarGroup'>
       <div className="flex items-center">
         {visibleChildren.map((child, index) => {
           if (isValidElement<AvatarProps>(child)) {
@@ -127,7 +137,6 @@ export function AvatarGroup({
           />
         )}
       </div>
-
       {/* Add button */}
       {showAddButton && (
         <button
@@ -138,11 +147,10 @@ export function AvatarGroup({
             'hover:border-secondary hover:text-fg-tertiary',
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
             avatarGroupStyles.sizes[size].addButton,
-          )}
-        >
+          )}>
           <PlusIcon className={avatarGroupStyles.sizes[size].addIcon} />
         </button>
       )}
     </div>
-  )
+  );
 }

@@ -83,7 +83,15 @@ export const styles = sortCx({
 
 // Default user icon placeholder
 const User01Icon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    data-untitled-ds='User01Icon'>
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
     <circle cx="12" cy="7" r="4" />
   </svg>
@@ -113,9 +121,8 @@ export function Avatar({
           className="size-full rounded-full object-cover"
           src={src}
           alt={alt}
-          onError={() => setIsFailed(true)}
-        />
-      )
+          onError={() => setIsFailed(true)} />
+      );
     }
 
     if (initials) {
@@ -156,9 +163,9 @@ export function Avatar({
         styles.sizes[size].root,
         className,
       )}
-    >
+      data-untitled-ds='Avatar'>
       {renderMainContent()}
       {renderBadgeContent()}
     </div>
-  )
+  );
 }

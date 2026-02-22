@@ -141,7 +141,7 @@ export const TabList = <T extends Orientation>({
     const orientation = orientationProp ?? context?.orientation ?? "horizontal";
 
     return (
-        <TabListContext.Provider value={{ size, type, orientation, fullWidth }}>
+        <TabListContext.Provider value={{ size, type, orientation, fullWidth }} data-untitled-ds='TabList'>
             <AriaTabList
                 {...otherProps}
                 className={(state) =>
@@ -182,7 +182,7 @@ export const TabPanel = (props: TabPanelProps) => {
                     typeof props.className === "function" ? props.className(state) : props.className,
                 )
             }
-        />
+            data-untitled-ds='TabPanel' />
     );
 };
 
@@ -211,7 +211,7 @@ export const Tab = (props: TabComponentProps) => {
                     typeof props.className === "function" ? props.className(prop) : props.className,
                 )
             }
-        >
+            data-untitled-ds='Tab'>
             {(state) => (
                 <Fragment>
                     {typeof children === "function" ? children(state) : children || label}
@@ -239,7 +239,7 @@ export const Tabs = ({ className, ...props }: TabsProps) => {
             keyboardActivation="manual"
             {...props}
             className={(state) => cx("flex w-full flex-col", typeof className === "function" ? className(state) : className)}
-        />
+            data-untitled-ds='Tabs' />
     );
 };
 

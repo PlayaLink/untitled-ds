@@ -75,17 +75,25 @@ export function MenuItem({
   }
 
   return (
-    <AriaMenuItem className={cx(styles.common.root, className)} {...props}>
+    <AriaMenuItem
+      className={cx(styles.common.root, className)}
+      {...props}
+      data-untitled-ds='MenuItem'>
       <div className={styles.common.content}>
         {(showCheckbox || IconProp) && renderIcon()}
         <span className={styles.common.text}>{children}</span>
       </div>
       {shortcut && <span className={styles.common.shortcut}>{shortcut}</span>}
     </AriaMenuItem>
-  )
+  );
 }
 
 // Divider component for use between menu items
 export function MenuDivider({ className }: { className?: string }) {
-  return <div className={cx(styles.common.divider, className)} role="separator" />
+  return (
+    <div
+      className={cx(styles.common.divider, className)}
+      role="separator"
+      data-untitled-ds='MenuDivider' />
+  );
 }

@@ -121,15 +121,15 @@ export function IconNotification({
     const showProgress = typeof progress === "number";
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} data-untitled-ds='IconNotification'>
             <FeaturedIcon
                 icon={icon || iconMap[color]}
                 color={color === "default" ? "gray" : color}
                 theme={color === "default" ? "modern" : "outline"}
                 size="md"
             />
-
-            <div className={cx(styles.content, color !== "default" && styles.contentWithIcon, showProgress && styles.contentWithProgress)}>
+            <div
+                className={cx(styles.content, color !== "default" && styles.contentWithIcon, showProgress && styles.contentWithProgress)}>
                 <div className={styles.textContainer}>
                     <p className={styles.title}>{title}</p>
                     <p className={styles.description}>{description}</p>
@@ -150,7 +150,6 @@ export function IconNotification({
                     )}
                 </div>
             </div>
-
             <div className={styles.closeButton}>
                 <CloseButton onClick={onClose} size="sm" aria-label="Dismiss" />
             </div>
@@ -172,9 +171,8 @@ export function AvatarNotification({
     onConfirm,
 }: AvatarNotificationProps) {
     return (
-        <div className={styles.avatarContainer}>
+        <div className={styles.avatarContainer} data-untitled-ds='AvatarNotification'>
             <Avatar size="md" src={avatar} alt={name} status="online" />
-
             <div className={styles.avatarContent}>
                 <div className={styles.textContainer}>
                     <div className={styles.avatarHeader}>
@@ -197,7 +195,6 @@ export function AvatarNotification({
                     )}
                 </div>
             </div>
-
             <div className={styles.closeButton}>
                 <CloseButton onClick={onClose} size="sm" aria-label="Dismiss" />
             </div>
@@ -222,11 +219,14 @@ export function ImageNotification({
         <div
             style={{ "--width": "496px" } as React.CSSProperties}
             className={styles.imageContainer}
-        >
+            data-untitled-ds='ImageNotification'>
             <div className={styles.imageLeft}>
-                <img aria-hidden="true" src={imageMobile} alt="Image Mobile" className="size-full object-cover" />
+                <img
+                    aria-hidden="true"
+                    src={imageMobile}
+                    alt="Image Mobile"
+                    className="size-full object-cover" />
             </div>
-
             <div className={styles.imageRight}>
                 <div className={cx(styles.textContainer, "pr-8")}>
                     <p className={styles.title}>{title}</p>
@@ -250,7 +250,6 @@ export function ImageNotification({
                     )}
                 </div>
             </div>
-
             <div className={styles.closeButton}>
                 <CloseButton onClick={onClose} size="sm" aria-label="Dismiss" />
             </div>

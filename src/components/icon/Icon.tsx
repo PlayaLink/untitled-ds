@@ -251,8 +251,8 @@ export function Icon({ name, size = 'lg', className }: IconProps) {
       icon={icon}
       className={cx('shrink-0', sizeClass, className)}
       aria-hidden="true"
-    />
-  )
+      data-untitled-ds='Icon' />
+  );
 }
 
 Icon.displayName = 'Icon'
@@ -266,9 +266,9 @@ Icon.displayName = 'Icon'
  * @example iconLeading={createIcon('mail')}
  */
 export const createIcon = (name: IconName, defaultSize?: IconSize) =>
-  function CreatedIcon({ className }: { className?: string }) {
+  (function CreatedIcon({ className }: { className?: string }) {
     return <Icon name={name} size={defaultSize} className={className} />
-  }
+  })
 
 // =============================================================================
 // Utility: Get all icon names (useful for stories)

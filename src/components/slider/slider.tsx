@@ -61,7 +61,12 @@ export function Slider({
   }
 
   return (
-    <AriaSlider {...rest} minValue={minValue} maxValue={maxValue} formatOptions={formatOptions ?? defaultFormatOptions}>
+    <AriaSlider
+      {...rest}
+      minValue={minValue}
+      maxValue={maxValue}
+      formatOptions={formatOptions ?? defaultFormatOptions}
+      data-untitled-ds='Slider'>
       <AriaLabel />
       <AriaSliderTrack className={styles.track}>
         {({ state: { values, getThumbValue, getThumbPercent, getFormattedValue } }) => {
@@ -102,5 +107,5 @@ export function Slider({
         }}
       </AriaSliderTrack>
     </AriaSlider>
-  )
+  );
 }

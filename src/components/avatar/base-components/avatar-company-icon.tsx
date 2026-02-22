@@ -26,6 +26,6 @@ export function AvatarCompanyIcon({ size, src, alt }: AvatarCompanyIconProps) {
       src={src}
       alt={alt}
       className={cx(companyIconStyles.base, companyIconStyles.sizes[size])}
-    />
-  )
+      data-untitled-ds='AvatarCompanyIcon' />
+  );
 }

@@ -103,10 +103,10 @@ export function NavItemButton({
         aria-label={ariaLabel}
         aria-current={isCurrent ? 'page' : undefined}
         className={sharedClassName}
-      >
+        data-untitled-ds='NavItemButton'>
         {iconElement}
       </Link>
-    )
+    );
   }
 
   // Render as button for click handlers
@@ -117,8 +117,8 @@ export function NavItemButton({
       aria-label={ariaLabel}
       aria-current={isCurrent ? 'page' : undefined}
       className={sharedClassName}
-    >
+      data-untitled-ds='NavItemButton'>
       {iconElement}
     </button>
-  )
+  );
 }

@@ -26,18 +26,26 @@ export interface EmptyStateRootProps extends ComponentPropsWithRef<'div'>, Empty
 
 const Root = ({ size = 'lg', ...props }: EmptyStateRootProps) => {
   return (
-    <RootContext.Provider value={{ size }}>
-      <div {...props} className={cx('mx-auto flex w-full max-w-lg flex-col', props.className)} />
+    <RootContext.Provider value={{ size }} data-untitled-ds='Root'>
+      <div
+        {...props}
+        className={cx('mx-auto flex w-full max-w-lg flex-col', props.className)} />
     </RootContext.Provider>
-  )
+  );
 }
 
-const SearchIcon = () => <Icon name="search" size="lg" />
+const SearchIcon = () => <Icon name="search" size="lg" data-untitled-ds='SearchIcon' />
 
 const FeaturedIcon = ({ color = 'gray', theme = 'modern', icon = SearchIcon, size = 'lg', ...props }: ComponentPropsWithRef<typeof FeaturedIconBase>) => {
   const { size: rootSize } = useContext(RootContext)
 
-  return <FeaturedIconBase {...props} {...{ color, theme, icon }} size={rootSize === 'lg' ? 'xl' : size} />
+  return (
+    <FeaturedIconBase
+      {...props}
+      {...{ color, theme, icon }}
+      size={rootSize === 'lg' ? 'xl' : size}
+      data-untitled-ds='FeaturedIcon' />
+  );
 }
 
 const Illustration = ({ type = 'cloud', color = 'gray', size = 'lg', ...props }: ComponentPropsWithRef<typeof Illustrations>) => {
@@ -50,16 +58,19 @@ const Illustration = ({ type = 'cloud', color = 'gray', size = 'lg', ...props }:
       {...{ type, color }}
       size={rootSize === 'sm' ? 'sm' : rootSize === 'md' ? 'md' : size}
       className={cx('z-10', props.className)}
-    />
-  )
+      data-untitled-ds='Illustration' />
+  );
 }
 
 const FileTypeIcon = ({ type = 'folder', theme = 'solid', ...props }: EmptyStateFileTypeIconProps) => {
   return (
-    <div {...props} className={cx('relative z-10 flex rounded-full bg-linear-to-b from-gray-50 to-gray-200 p-8', props.className)}>
+    <div
+      {...props}
+      className={cx('relative z-10 flex rounded-full bg-linear-to-b from-gray-50 to-gray-200 p-8', props.className)}
+      data-untitled-ds='FileTypeIcon'>
       <FileIcon type={type} variant={theme} className="size-10 drop-shadow-sm" />
     </div>
-  )
+  );
 }
 
 export interface EmptyStateHeaderProps extends ComponentPropsWithRef<'div'> {
@@ -77,13 +88,13 @@ const Header = ({ pattern = 'circle', patternSize = 'md', ...props }: EmptyState
     <header
       {...props}
       className={cx('relative mx-auto mb-4 flex flex-col items-center', (size === 'md' || size === 'lg') && 'mb-5', hasIllustration && size === 'lg' && 'mb-6!', props.className)}
-    >
+      data-untitled-ds='Header'>
       {pattern !== 'none' && (
         <BackgroundPattern size={patternSize} pattern={pattern} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
       )}
       {props.children}
     </header>
-  )
+  );
 }
 
 const Content = (props: ComponentPropsWithRef<'div'>) => {
@@ -97,12 +108,17 @@ const Content = (props: ComponentPropsWithRef<'div'>) => {
         (size === 'md' || size === 'lg') && 'mb-8 gap-2',
         props.className,
       )}
-    />
-  )
+      data-untitled-ds='Content' />
+  );
 }
 
 const Footer = (props: ComponentPropsWithRef<'div'>) => {
-  return <footer {...props} className={cx('z-10 mx-auto flex gap-3', props.className)} />
+  return (
+    <footer
+      {...props}
+      className={cx('z-10 mx-auto flex gap-3', props.className)}
+      data-untitled-ds='Footer' />
+  );
 }
 
 const Title = (props: ComponentPropsWithRef<'h1'>) => {
@@ -117,14 +133,19 @@ const Title = (props: ComponentPropsWithRef<'h1'>) => {
         size === 'lg' && 'text-xl font-semibold',
         props.className,
       )}
-    />
-  )
+      data-untitled-ds='Title' />
+  );
 }
 
 const Description = (props: ComponentPropsWithRef<'p'>) => {
   const { size } = useContext(RootContext)
 
-  return <p {...props} className={cx('w-full text-center text-sm text-tertiary', size === 'lg' && 'text-md', props.className)} />
+  return (
+    <p
+      {...props}
+      className={cx('w-full text-center text-sm text-tertiary', size === 'lg' && 'text-md', props.className)}
+      data-untitled-ds='Description' />
+  );
 }
 
 export type EmptyStateContentProps = ComponentPropsWithRef<'div'>

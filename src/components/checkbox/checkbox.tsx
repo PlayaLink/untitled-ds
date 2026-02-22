@@ -64,7 +64,12 @@ export type CheckboxSize = keyof typeof styles.sizes
 export type CheckboxType = keyof typeof styles.types
 
 const CheckIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className={className}
+    viewBox="0 0 12 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    data-untitled-ds='CheckIcon'>
     <path
       d="M10 3L4.5 8.5L2 6"
       stroke="currentColor"
@@ -76,13 +81,20 @@ const CheckIcon = ({ className }: { className?: string }) => (
 )
 
 const MinusIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className={className}
+    viewBox="0 0 12 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    data-untitled-ds='MinusIcon'>
     <path d="M2.5 6H9.5" stroke="currentColor" strokeWidth="1.6667" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
 const RadioDot = ({ className }: { className?: string }) => (
-  <div className={cx('rounded-full bg-current', className)} />
+  <div
+    className={cx('rounded-full bg-current', className)}
+    data-untitled-ds='RadioDot' />
 )
 
 interface CheckboxBaseProps {
@@ -124,7 +136,7 @@ export const CheckboxBase = ({
         isFocusVisible && styles.common.boxFocused,
         className,
       )}
-    >
+      data-untitled-ds='CheckboxBase'>
       {isChecked && (
         <>
           {type === 'radio' ? (
@@ -155,7 +167,7 @@ export const CheckboxBase = ({
         </>
       )}
     </div>
-  )
+  );
 }
 
 export interface CheckboxProps extends AriaCheckboxProps {
@@ -178,7 +190,7 @@ export function Checkbox({ label, hint, className, size = 'sm', ...ariaCheckboxP
           typeof className === 'function' ? className(renderProps) : className,
         )
       }
-    >
+      data-untitled-ds='Checkbox'>
       {({ isSelected, isIndeterminate, isDisabled, isFocusVisible, isHovered }) => (
         <>
           <CheckboxBase
@@ -195,7 +207,9 @@ export function Checkbox({ label, hint, className, size = 'sm', ...ariaCheckboxP
             <div className="flex flex-col">
               {label && <span className={cx('select-none text-secondary', textStyles.label)}>{label}</span>}
               {hint && (
-                <span className={cx('text-tertiary', textStyles.hint)} onClick={(event) => event.stopPropagation()}>
+                <span
+                  className={cx('text-tertiary', textStyles.hint)}
+                  onClick={(event) => event.stopPropagation()}>
                   {hint}
                 </span>
               )}
@@ -204,6 +218,6 @@ export function Checkbox({ label, hint, className, size = 'sm', ...ariaCheckboxP
         </>
       )}
     </AriaCheckbox>
-  )
+  );
 }
   

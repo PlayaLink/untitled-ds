@@ -162,29 +162,32 @@ export function SidebarNavigation({
   // Mobile: Closed state - just show header bar
   if (breakpoint === 'mobile' && !isOpen) {
     return (
-      <div className={cx(sidebarNavigationStyles.mobileHeader, className)}>
+      <div
+        className={cx(sidebarNavigationStyles.mobileHeader, className)}
+        data-untitled-ds='SidebarNavigation'>
         <div className={sidebarNavigationStyles.mobileHeaderLogo}>{header}</div>
         <AppNavMenuButton isOpen={false} onClick={handleToggle} />
       </div>
-    )
+    );
   }
 
   // Mobile: Open state - full overlay
   if (breakpoint === 'mobile' && isOpen) {
     return (
-      <div className={cx(sidebarNavigationStyles.mobileWrapper, className)}>
+      <div
+        className={cx(sidebarNavigationStyles.mobileWrapper, className)}
+        data-untitled-ds='SidebarNavigation'>
         {/* Backdrop */}
         <div
           className={sidebarNavigationStyles.backdrop}
           onClick={handleBackdropClick}
-          aria-hidden="true"
-        />
-
+          aria-hidden="true" />
         {/* Sidebar panel */}
         <div className={sidebarNavigationStyles.mobileSidebar}>
           <div className={sidebarNavigationStyles.content}>
             {/* Header & Navigation */}
-            <div className={cx(sidebarNavigationStyles.navigation.base, sidebarNavigationStyles.navigation.mobile)}>
+            <div
+              className={cx(sidebarNavigationStyles.navigation.base, sidebarNavigationStyles.navigation.mobile)}>
               {header && (
                 <div className={sidebarNavigationStyles.header.mobile}>{header}</div>
               )}
@@ -192,7 +195,8 @@ export function SidebarNavigation({
             </div>
 
             {/* Footer */}
-            <div className={cx(sidebarNavigationStyles.footer.base, sidebarNavigationStyles.footer.mobile)}>
+            <div
+              className={cx(sidebarNavigationStyles.footer.base, sidebarNavigationStyles.footer.mobile)}>
               {footerNav && (
                 <div className={sidebarNavigationStyles.footerNav}>{footerNav}</div>
               )}
@@ -208,7 +212,7 @@ export function SidebarNavigation({
           />
         </div>
       </div>
-    )
+    );
   }
 
   // Desktop: Hover-to-expand mode
@@ -220,7 +224,7 @@ export function SidebarNavigation({
           sidebarNavigationStyles.desktopSidebar.hoverToExpandSpacer,
           className
         )}
-      >
+        data-untitled-ds='SidebarNavigation'>
         <div
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -230,16 +234,16 @@ export function SidebarNavigation({
             sidebarNavigationStyles.desktopSidebar.hoverToExpand,
             sidebarNavigationStyles.desktopSidebar.hoverToExpandOverlay,
             !isCollapsed && 'shadow-xl'
-          )}
-        >
+          )}>
           <div className={sidebarNavigationStyles.content}>
             {/* Navigation - use consistent padding to avoid shifts during animation */}
-            <div className={cx(
-              sidebarNavigationStyles.navigation.base,
-              isCollapsed
-                ? sidebarNavigationStyles.navigation.hoverToExpandCollapsed
-                : sidebarNavigationStyles.navigation.hoverToExpandExpanded
-            )}>
+            <div
+              className={cx(
+                sidebarNavigationStyles.navigation.base,
+                isCollapsed
+                  ? sidebarNavigationStyles.navigation.hoverToExpandCollapsed
+                  : sidebarNavigationStyles.navigation.hoverToExpandExpanded
+              )}>
               {header && (
                 <div className={sidebarNavigationStyles.header.slim}>
                   {header}
@@ -249,12 +253,13 @@ export function SidebarNavigation({
             </div>
 
             {/* Footer - use consistent padding to avoid shifts during animation */}
-            <div className={cx(
-              sidebarNavigationStyles.footer.base,
-              isCollapsed
-                ? sidebarNavigationStyles.footer.hoverToExpandCollapsed
-                : sidebarNavigationStyles.footer.hoverToExpandExpanded
-            )}>
+            <div
+              className={cx(
+                sidebarNavigationStyles.footer.base,
+                isCollapsed
+                  ? sidebarNavigationStyles.footer.hoverToExpandCollapsed
+                  : sidebarNavigationStyles.footer.hoverToExpandExpanded
+              )}>
               {footerNav && (
                 <div className={sidebarNavigationStyles.footerNav}>{footerNav}</div>
               )}
@@ -263,7 +268,7 @@ export function SidebarNavigation({
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   // Desktop: Slim style (collapsed)
@@ -275,10 +280,11 @@ export function SidebarNavigation({
           sidebarNavigationStyles.desktopSidebar.slim,
           className
         )}
-      >
+        data-untitled-ds='SidebarNavigation'>
         <div className={sidebarNavigationStyles.content}>
           {/* Navigation */}
-          <div className={cx(sidebarNavigationStyles.navigation.base, sidebarNavigationStyles.navigation.slim)}>
+          <div
+            className={cx(sidebarNavigationStyles.navigation.base, sidebarNavigationStyles.navigation.slim)}>
             {header && (
               <div className={sidebarNavigationStyles.header.slim}>{header}</div>
             )}
@@ -286,7 +292,8 @@ export function SidebarNavigation({
           </div>
 
           {/* Footer */}
-          <div className={cx(sidebarNavigationStyles.footer.base, sidebarNavigationStyles.footer.slim)}>
+          <div
+            className={cx(sidebarNavigationStyles.footer.base, sidebarNavigationStyles.footer.slim)}>
             {footerNav && (
               <div className={sidebarNavigationStyles.footerNav}>{footerNav}</div>
             )}
@@ -294,7 +301,7 @@ export function SidebarNavigation({
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   // Desktop: Simple style (full width)
@@ -305,10 +312,11 @@ export function SidebarNavigation({
         sidebarNavigationStyles.desktopSidebar.simple,
         className
       )}
-    >
+      data-untitled-ds='SidebarNavigation'>
       <div className={sidebarNavigationStyles.content}>
         {/* Header & Navigation */}
-        <div className={cx(sidebarNavigationStyles.navigation.base, sidebarNavigationStyles.navigation.desktop)}>
+        <div
+          className={cx(sidebarNavigationStyles.navigation.base, sidebarNavigationStyles.navigation.desktop)}>
           {header && (
             <div className={sidebarNavigationStyles.header.desktop}>{header}</div>
           )}
@@ -316,7 +324,8 @@ export function SidebarNavigation({
         </div>
 
         {/* Footer */}
-        <div className={cx(sidebarNavigationStyles.footer.base, sidebarNavigationStyles.footer.desktop)}>
+        <div
+          className={cx(sidebarNavigationStyles.footer.base, sidebarNavigationStyles.footer.desktop)}>
           {footerNav && (
             <div className={sidebarNavigationStyles.footerNav}>{footerNav}</div>
           )}
@@ -324,5 +333,5 @@ export function SidebarNavigation({
         </div>
       </div>
     </div>
-  )
+  );
 }

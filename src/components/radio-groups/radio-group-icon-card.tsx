@@ -26,7 +26,10 @@ export interface RadioGroupIconCardProps extends RadioGroupProps {
 
 export const RadioGroupIconCard = ({ items, size = 'sm', className, ...props }: RadioGroupIconCardProps) => {
   return (
-    <AriaRadioGroup {...props} className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}>
+    <AriaRadioGroup
+      {...props}
+      className={(state) => cx('flex flex-col gap-3', typeof className === 'function' ? className(state) : className)}
+      data-untitled-ds='RadioGroupIconCard'>
       {items.map((plan) => (
         <AriaRadio
           isDisabled={plan.disabled}
@@ -51,8 +54,7 @@ export const RadioGroupIconCard = ({ items, size = 'sm', className, ...props }: 
                   isDisabled && 'ring-border-disabled',
                   isSelected && isDisabled && 'ring-border-disabled-subtle',
                   isFocusVisible && 'outline-hidden',
-                )}
-              >
+                )}>
                 <FeaturedIcon
                   size={size === 'md' ? 'md' : 'sm'}
                   icon={plan.icon}
@@ -74,7 +76,8 @@ export const RadioGroupIconCard = ({ items, size = 'sm', className, ...props }: 
                 />
               </div>
 
-              <div className="flex flex-col-reverse items-start justify-between gap-4 rounded-b-lg p-4 sm:flex-row sm:gap-1">
+              <div
+                className="flex flex-col-reverse items-start justify-between gap-4 rounded-b-lg p-4 sm:flex-row sm:gap-1">
                 <div className={cx('flex flex-col', size === 'md' ? 'gap-2' : 'gap-1')}>
                   <p className="flex items-baseline gap-1">
                     <span
@@ -97,5 +100,5 @@ export const RadioGroupIconCard = ({ items, size = 'sm', className, ...props }: 
         </AriaRadio>
       ))}
     </AriaRadioGroup>
-  )
+  );
 }

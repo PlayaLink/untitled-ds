@@ -68,8 +68,8 @@ export function CircleBadge({
         outlined && circleBadgeStyles.outlineColor[color],
         className,
       )}
-    >
+      data-untitled-ds='CircleBadge'>
       {children}
     </div>
-  )
+  );
 }

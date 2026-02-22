@@ -35,6 +35,6 @@ export function AvatarOnlineIndicator({ size, status, className }: AvatarOnlineI
         onlineIndicatorStyles.sizes[size],
         className,
       )}
-    />
-  )
+      data-untitled-ds='AvatarOnlineIndicator' />
+  );
 }

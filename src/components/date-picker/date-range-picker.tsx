@@ -23,7 +23,7 @@ const now = today(getLocalTimeZone())
 
 const highlightedDates = [today(getLocalTimeZone())]
 
-const CalendarIcon = () => <Icon name="calendar" size="md" />
+const CalendarIcon = () => <Icon name="calendar" size="md" data-untitled-ds='CalendarIcon' />
 
 interface DateRangePickerProps extends AriaDateRangePickerProps<DateValue> {
   /** The function to call when the apply button is clicked. */
@@ -85,7 +85,13 @@ export const DateRangePicker = ({ value: valueProp, defaultValue, onChange, onAp
   )
 
   return (
-    <AriaDateRangePicker aria-label="Date range picker" shouldCloseOnSelect={false} {...props} value={value} onChange={setValue}>
+    <AriaDateRangePicker
+      aria-label="Date range picker"
+      shouldCloseOnSelect={false}
+      {...props}
+      value={value}
+      onChange={setValue}
+      data-untitled-ds='DateRangePicker'>
       <AriaGroup>
         <Button size="md" color="secondary" iconLeading={CalendarIcon}>
           {!value ? <span className="text-placeholder">Select dates</span> : `${formattedStartDate} – ${formattedEndDate}`}
@@ -107,7 +113,8 @@ export const DateRangePicker = ({ value: valueProp, defaultValue, onChange, onAp
         <AriaDialog className="flex rounded-2xl bg-primary shadow-xl ring ring-border-secondary-alt focus:outline-hidden">
           {({ close }) => (
             <>
-              <div className="hidden w-38 flex-col gap-0.5 border-r border-solid border-secondary p-3 lg:flex">
+              <div
+                className="hidden w-38 flex-col gap-0.5 border-r border-solid border-secondary p-3 lg:flex">
                 {Object.values(presets).map((preset) => (
                   <RangePresetButton
                     key={preset.label}
@@ -167,7 +174,7 @@ export const DateRangePicker = ({ value: valueProp, defaultValue, onChange, onAp
         </AriaDialog>
       </AriaPopover>
     </AriaDateRangePicker>
-  )
+  );
 }
 
 export type { DateRangePickerProps }

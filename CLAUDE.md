@@ -29,8 +29,6 @@ npm run build:tokens  # Generate CSS tokens from token sources
 2. Build library: `npm run build:lib`
 3. Validate package exports under `dist/` before publish
 
-## Instruction Sources
+## Path Aliases
 
-- Agent behavior/process rules live in `/Users/jengland/claude/untitled-ds/AGENTS.md`.
-- Rule source of truth remains `.ai-rules/` (workspace and project overrides).
-- Keep this file focused on project runtime context only.
+- `@/*` -> `./src/*` (e.g., `@/utils/cx`, `@/components/button`)

@@ -249,3 +249,4 @@ export { FullscreenOverlay, type FullscreenOverlayProps } from './components/ful
 
 // Hooks
 export { useResizeObserver, useBreakpoint } from './hooks'
+export { useEditableField, type EditableFieldState, type UseEditableFieldOptions, type UseEditableFieldReturn } from './hooks'

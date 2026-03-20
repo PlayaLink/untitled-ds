@@ -247,6 +247,9 @@ export {
 // Fullscreen Overlay
 export { FullscreenOverlay, type FullscreenOverlayProps } from './components/fullscreen-overlay'
 
+// Editable Text
+export { EditableText, type EditableTextProps } from './components/editable-text'
+
 // Hooks
 export { useResizeObserver, useBreakpoint } from './hooks'
 export { useEditableField, type EditableFieldState, type UseEditableFieldOptions, type UseEditableFieldReturn } from './hooks'

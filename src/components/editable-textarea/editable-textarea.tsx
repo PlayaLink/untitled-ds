@@ -4,40 +4,36 @@ import { useRef, useEffect } from 'react'
 import { useEditableField } from '@/hooks/use-editable-field'
 import { cx } from '@/utils/cx'
 
-export interface EditableTextProps {
+export interface EditableTextAreaProps {
   value: string | null
   onSave: (newValue: string) => Promise<void>
-  type?: 'text' | 'email' | 'url' | 'tel'
   placeholder?: string
   emptyText?: string
   editable?: boolean
   disabled?: boolean
-  size?: 'sm' | 'md'
+  rows?: number
   className?: string
 }
 
-export const EditableText = ({
+export const EditableTextArea = ({
   value,
   onSave,
-  type = 'text',
   placeholder,
   emptyText,
   editable = true,
   disabled,
-  size = 'sm',
+  rows = 3,
   className,
-}: EditableTextProps) => {
+}: EditableTextAreaProps) => {
   const field = useEditableField({ value: value ?? '' })
-  const inputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Auto-focus input when entering edit mode
   useEffect(() => {
     if (field.state === 'EDITING' || field.state === 'ERROR') {
-      inputRef.current?.focus()
+      textareaRef.current?.focus()
     }
   }, [field.state])
 
-  // Trigger onSave when entering SAVING state
   useEffect(() => {
     if (field.state === 'SAVING') {
       onSave(field.value)
@@ -47,10 +43,13 @@ export const EditableText = ({
   }, [field.state]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!editable) {
-    return <span className={className}>{value}</span>
+    return (
+      <span className={cx('whitespace-pre-wrap', className)}>
+        {value || <span className="text-tertiary">{emptyText ?? '—'}</span>}
+      </span>
+    )
   }
 
-  // READING state — dormant-input tint button
   if (field.state === 'READING') {
     return (
       <button
@@ -59,7 +58,7 @@ export const EditableText = ({
         onClick={field.edit}
         disabled={disabled}
         className={cx(
-          'w-full rounded-md bg-secondary px-2 py-1 text-left text-md text-primary',
+          'w-full whitespace-pre-wrap rounded-md bg-secondary px-2 py-1 text-left text-md text-primary',
           disabled && 'cursor-not-allowed opacity-50',
           className,
         )}
@@ -71,24 +70,26 @@ export const EditableText = ({
     )
   }
 
-  // EDITING / SAVING / ERROR — active input
   return (
     <div data-state={field.state} className={cx('w-full', className)}>
       <div className="relative">
-        <input
-          ref={inputRef}
-          type={type}
+        <textarea
+          ref={textareaRef}
           value={field.value}
           placeholder={placeholder}
+          rows={rows}
           disabled={field.state === 'SAVING'}
           onChange={(e) => field.change(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') field.commit()
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              field.commit()
+            }
             if (e.key === 'Escape') field.cancel()
           }}
           onBlur={field.commit}
           className={cx(
-            'w-full rounded-md px-2 py-1 text-md text-primary bg-primary ring-1 ring-border-primary ring-inset outline-none',
+            'w-full rounded-md px-2 py-1 text-md text-primary bg-primary ring-1 ring-border-primary ring-inset outline-none resize-y',
             'focus:ring-2 focus:ring-border-brand',
             field.state === 'SAVING' && 'animate-pulse',
             field.state === 'ERROR' && 'ring-border-error',
@@ -99,7 +100,7 @@ export const EditableText = ({
             type="button"
             aria-label="Cancel"
             onClick={field.cancel}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-tertiary hover:text-primary"
+            className="absolute right-2 top-2 text-sm text-tertiary hover:text-primary"
           >
             Cancel
           </button>
@@ -112,4 +113,4 @@ export const EditableText = ({
   )
 }
 
-EditableText.displayName = 'EditableText'
+EditableTextArea.displayName = 'EditableTextArea'

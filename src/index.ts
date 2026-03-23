@@ -250,6 +250,12 @@ export { FullscreenOverlay, type FullscreenOverlayProps } from './components/ful
 // Editable Text
 export { EditableText, type EditableTextProps } from './components/editable-text'
 
+// Editable TextArea
+export { EditableTextArea, type EditableTextAreaProps } from './components/editable-textarea'
+
+// Editable Select
+export { EditableSelect, type EditableSelectProps, type EditableSelectOption } from './components/editable-select'
+
 // Hooks
 export { useResizeObserver, useBreakpoint } from './hooks'
 export { useEditableField, type EditableFieldState, type UseEditableFieldOptions, type UseEditableFieldReturn } from './hooks'

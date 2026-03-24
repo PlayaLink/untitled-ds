@@ -1,1 +1,1 @@
-export { EditableText, type EditableTextProps } from './editable-text'
+export { EditableText, type EditableTextProps, type EditableTextVariant } from './editable-text'

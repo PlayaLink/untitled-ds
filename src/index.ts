@@ -248,7 +248,7 @@ export {
 export { FullscreenOverlay, type FullscreenOverlayProps } from './components/fullscreen-overlay'
 
 // Editable Text
-export { EditableText, type EditableTextProps } from './components/editable-text'
+export { EditableText, type EditableTextProps, type EditableTextVariant } from './components/editable-text'
 
 // Editable TextArea
 export { EditableTextArea, type EditableTextAreaProps } from './components/editable-textarea'

@@ -4,6 +4,8 @@ import { useRef, useEffect } from 'react'
 import { useEditableField } from '@/hooks/use-editable-field'
 import { cx } from '@/utils/cx'
 
+export type EditableTextVariant = 'field' | 'title'
+
 export interface EditableTextProps {
   value: string | null
   onSave: (newValue: string) => Promise<void>
@@ -13,6 +15,7 @@ export interface EditableTextProps {
   editable?: boolean
   disabled?: boolean
   size?: 'sm' | 'md'
+  variant?: EditableTextVariant
   className?: string
 }
 
@@ -25,6 +28,7 @@ export const EditableText = ({
   editable = true,
   disabled,
   size = 'sm',
+  variant = 'field',
   className,
 }: EditableTextProps) => {
   const field = useEditableField({ value: value ?? '' })
@@ -50,16 +54,21 @@ export const EditableText = ({
     return <span className={className}>{value}</span>
   }
 
-  // READING state — dormant-input tint button
+  // READING state — dormant-input tint button (field) or plain text (title)
   if (field.state === 'READING') {
+    const isTitle = variant === 'title'
     return (
       <button
         type="button"
         data-state={field.state}
+        data-variant={variant}
         onClick={field.edit}
         disabled={disabled}
         className={cx(
-          'w-full rounded-md bg-secondary px-2 py-1 text-left text-md text-primary',
+          'w-full text-left text-primary',
+          isTitle
+            ? 'inline rounded-sm decoration-tertiary underline-offset-4 hover:underline'
+            : 'rounded-md bg-secondary px-2 py-1 text-md',
           disabled && 'cursor-not-allowed opacity-50',
           className,
         )}
@@ -72,8 +81,9 @@ export const EditableText = ({
   }
 
   // EDITING / SAVING / ERROR — active input
+  const isTitle = variant === 'title'
   return (
-    <div data-state={field.state} className={cx('w-full', className)}>
+    <div data-state={field.state} data-variant={variant} className={cx('w-full', className)}>
       <div className="relative">
         <input
           ref={inputRef}
@@ -88,7 +98,8 @@ export const EditableText = ({
           }}
           onBlur={field.commit}
           className={cx(
-            'w-full rounded-md px-2 py-1 text-md text-primary bg-primary ring-1 ring-border-primary ring-inset outline-none',
+            'w-full rounded-md px-2 py-1 text-primary bg-primary ring-1 ring-border-primary ring-inset outline-none',
+            isTitle ? 'text-[inherit] font-[inherit]' : 'text-md',
             'focus:ring-2 focus:ring-border-brand',
             field.state === 'SAVING' && 'animate-pulse',
             field.state === 'ERROR' && 'ring-border-error',

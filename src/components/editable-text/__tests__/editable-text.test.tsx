@@ -119,6 +119,34 @@ describe('EditableText', () => {
     expect(screen.getByText('Read Only').tagName).toBe('SPAN')
   })
 
+  describe('variant="title"', () => {
+    it('renders without background and inherits text size in READING state', () => {
+      render(
+        <EditableText {...defaultProps} variant="title" />,
+      )
+
+      const reading = screen.getByRole('button')
+      expect(reading.textContent).toBe('Acme Corp')
+      // Title variant should NOT have bg-secondary by default (only on hover)
+      expect(reading.className).not.toContain(' bg-secondary')
+      expect(reading.className).toContain('hover:bg-secondary')
+      // Should inherit text size
+      expect(reading.className).toContain('text-[inherit]')
+    })
+
+    it('enters edit mode with inherited text size on click', () => {
+      render(
+        <EditableText {...defaultProps} variant="title" />,
+      )
+
+      fireEvent.click(screen.getByRole('button'))
+
+      const input = screen.getByRole('textbox')
+      expect(input.className).toContain('text-[inherit]')
+      expect(input.className).toContain('font-inherit')
+    })
+  })
+
   it('has data-state=SAVING during save', () => {
     // Use a save that never resolves so we can inspect the SAVING state
     const onSave = vi.fn(() => new Promise<void>(() => {}))

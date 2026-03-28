@@ -31,6 +31,7 @@ export const EditableText = ({
   variant = 'field',
   className,
 }: EditableTextProps) => {
+  const isTitle = variant === 'title'
   const field = useEditableField({ value: value ?? '' })
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -98,9 +99,9 @@ export const EditableText = ({
           }}
           onBlur={field.commit}
           className={cx(
-            'w-full rounded-md px-2 py-1 text-primary bg-primary ring-1 ring-border-primary ring-inset outline-none',
-            isTitle ? 'text-[inherit] font-[inherit]' : 'text-md',
+            'w-full rounded-md text-primary bg-primary ring-1 ring-border-primary ring-inset outline-none',
             'focus:ring-2 focus:ring-border-brand',
+            isTitle ? 'px-1 py-0.5 text-[inherit] font-[inherit]' : 'px-2 py-1 text-md',
             field.state === 'SAVING' && 'animate-pulse',
             field.state === 'ERROR' && 'ring-border-error',
           )}

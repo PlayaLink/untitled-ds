@@ -60,9 +60,9 @@ export const navAccountCardStyles = sortCx({
   content: 'flex flex-1 items-center gap-2',
   textGroup: 'flex min-w-0 flex-col',
   name: 'truncate text-sm font-semibold text-primary',
-  email: 'truncate text-sm text-tertiary',
+  email: 'block min-w-0 max-w-full truncate text-left text-sm text-tertiary',
   actionButton: 'absolute right-2 top-4 flex items-center justify-center rounded-md p-1.5 text-fg-quaternary transition-colors hover:bg-secondary hover:text-fg-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-focus-ring',
-  actionButtonInline: 'flex shrink-0 items-center justify-center rounded-md p-1.5 text-fg-quaternary transition-colors hover:bg-secondary hover:text-fg-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-focus-ring',
+  actionButtonInline: 'mt-0.5 flex shrink-0 self-start items-center justify-center rounded-md p-1.5 text-fg-quaternary transition-colors hover:bg-secondary hover:text-fg-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-focus-ring',
   actionIcon: 'size-4',
   // Crossfade animation styles
   crossfade: {

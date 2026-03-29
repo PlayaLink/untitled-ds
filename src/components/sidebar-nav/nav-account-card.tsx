@@ -7,6 +7,7 @@
 import { type FC, type ReactNode } from 'react'
 import { cx, sortCx } from '@/utils/cx'
 import { Avatar } from '@/components/avatar'
+import { Tooltip, TooltipTrigger } from '@/components/tooltip'
 
 // Logout icon
 const LogOutIcon = ({ className }: { className?: string }) => (
@@ -128,7 +129,13 @@ export function NavAccountCard({
           />
           <div className={cx(navAccountCardStyles.textGroup, 'flex-1')}>
             <span className={navAccountCardStyles.name}>{name}</span>
-            {email && <span className={navAccountCardStyles.email}>{email}</span>}
+            {email && (
+              <Tooltip title={email} placement="top">
+                <TooltipTrigger className={navAccountCardStyles.email}>
+                  {email}
+                </TooltipTrigger>
+              </Tooltip>
+            )}
           </div>
           {showAction && (
             actionButton ?? (
@@ -165,7 +172,13 @@ export function NavAccountCard({
         {showDetails && (
           <div className={navAccountCardStyles.textGroup}>
             <span className={navAccountCardStyles.name}>{name}</span>
-            {email && <span className={navAccountCardStyles.email}>{email}</span>}
+            {email && (
+              <Tooltip title={email} placement="top">
+                <TooltipTrigger className={navAccountCardStyles.email}>
+                  {email}
+                </TooltipTrigger>
+              </Tooltip>
+            )}
           </div>
         )}
       </div>

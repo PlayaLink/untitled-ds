@@ -38,6 +38,8 @@ export interface SidebarNavigationProps {
   expandedWidth?: string
   /** Callback when collapsed state changes */
   onCollapsedChange?: (isCollapsed: boolean) => void
+  /** Keep sidebar expanded even when not hovered (e.g., while a popover is open) */
+  keepExpanded?: boolean
 }
 
 export const sidebarNavigationStyles = sortCx({
@@ -107,10 +109,11 @@ export function SidebarNavigation({
   collapsedWidth = '64px',
   expandedWidth = '296px',
   onCollapsedChange,
+  keepExpanded = false,
 }: SidebarNavigationProps) {
   // Hover state for collapse-on-idle behavior
   const [isHovered, setIsHovered] = useState(false)
-  const isCollapsed = collapseOnIdle && !isHovered
+  const isCollapsed = collapseOnIdle && !isHovered && !keepExpanded
 
   // Notify parent when collapsed state changes
   useEffect(() => {

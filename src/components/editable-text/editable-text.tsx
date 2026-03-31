@@ -57,7 +57,6 @@ export const EditableText = ({
 
   // READING state — dormant-input tint button (field) or plain text (title)
   if (field.state === 'READING') {
-    const isTitle = variant === 'title'
     return (
       <button
         type="button"
@@ -82,7 +81,6 @@ export const EditableText = ({
   }
 
   // EDITING / SAVING / ERROR — active input
-  const isTitle = variant === 'title'
   return (
     <div data-state={field.state} data-variant={variant} className={cx('w-full', className)}>
       <div className="relative">

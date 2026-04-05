@@ -6,6 +6,7 @@ export type EditableFieldState = 'READING' | 'EDITING' | 'SAVING' | 'ERROR'
 
 export interface UseEditableFieldOptions<T = string> {
   value: T
+  initialState?: EditableFieldState
 }
 
 export interface UseEditableFieldReturn<T = string> {
@@ -25,7 +26,7 @@ export interface UseEditableFieldReturn<T = string> {
 export function useEditableField<T = string>(
   options: UseEditableFieldOptions<T>,
 ): UseEditableFieldReturn<T> {
-  const [state, setState] = useState<EditableFieldState>('READING')
+  const [state, setState] = useState<EditableFieldState>(options.initialState ?? 'READING')
   const [currentValue, setCurrentValue] = useState<T>(options.value)
   const [originalValue, setOriginalValue] = useState<T>(options.value)
   const [error, setError] = useState<string | null>(null)

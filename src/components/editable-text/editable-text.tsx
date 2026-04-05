@@ -14,6 +14,7 @@ export interface EditableTextProps {
   emptyText?: string
   editable?: boolean
   disabled?: boolean
+  autoFocus?: boolean
   size?: 'sm' | 'md'
   variant?: EditableTextVariant
   className?: string
@@ -27,20 +28,32 @@ export const EditableText = ({
   emptyText,
   editable = true,
   disabled,
+  autoFocus = false,
   size = 'sm',
   variant = 'field',
   className,
 }: EditableTextProps) => {
   const isTitle = variant === 'title'
-  const field = useEditableField({ value: value ?? '' })
+  const field = useEditableField({
+    value: value ?? '',
+    initialState: autoFocus ? 'EDITING' : 'READING',
+  })
   const inputRef = useRef<HTMLInputElement>(null)
+  const hasAutoFocused = useRef(false)
 
   // Auto-focus input when entering edit mode
   useEffect(() => {
     if (field.state === 'EDITING' || field.state === 'ERROR') {
-      inputRef.current?.focus()
+      const input = inputRef.current
+      if (!input) return
+      input.focus()
+      // Select all text on initial autoFocus mount so user can type to replace
+      if (autoFocus && !hasAutoFocused.current && input.value) {
+        input.select()
+      }
+      hasAutoFocused.current = true
     }
-  }, [field.state])
+  }, [field.state, autoFocus])
 
   // Trigger onSave when entering SAVING state
   useEffect(() => {

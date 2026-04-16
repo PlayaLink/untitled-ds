@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Icon, iconNames, type IconName, type IconSize } from './Icon'
+import { Icon, iconNames, createIcon, type IconName, type IconSize } from './Icon'
+import { Button } from '../button'
+
+const GitHubIcon = createIcon('github')
+const FigmaIcon = createIcon('figma')
 
 const meta: Meta<typeof Icon> = {
   title: 'Components/Icon',
@@ -139,4 +143,38 @@ export const Props: Story = {
     name: 'search',
     size: 'md',
   },
+}
+
+// =============================================================================
+// SOURCE CODE + DESIGN
+// =============================================================================
+
+export const SourceCodeAndDesign: Story = {
+  name: 'Source Code + Design',
+  render: () => (
+    <div className="flex min-w-[480px] flex-col items-center gap-8 py-12">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <h2 className="text-display-xs font-semibold text-primary">Source Code + Figma Design</h2>
+        <p className="text-md text-tertiary">This component was built from the Untitled Design System</p>
+      </div>
+      <div className="flex gap-4">
+        <Button
+          href="https://github.com/PlayaLink/untitled-ds/tree/main/src/components/icon"
+          target="_blank"
+          iconLeading={GitHubIcon}
+          color="secondary"
+        >
+          View on GitHub
+        </Button>
+        <Button
+          href="https://www.figma.com/design/99BhJBqUTbouPjng6udcbz/Unified-Design-System--Untitled-UI-"
+          target="_blank"
+          iconLeading={FigmaIcon}
+          color="primary"
+        >
+          View in Figma
+        </Button>
+      </div>
+    </div>
+  ),
 }

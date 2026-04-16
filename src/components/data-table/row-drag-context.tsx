@@ -9,7 +9,10 @@ export interface RowDragContextValue {
   attributes: Record<string, any>
   setActivatorNodeRef: (element: HTMLElement | null) => void
   isDragging: boolean
+  /** True when global sort/filter locks all grips (shows tooltip). */
   isDisabled: boolean
+  /** False when this specific row's canDragRow predicate returns false (hides grip entirely). */
+  isRowDraggable: boolean
 }
 
 export const RowDragContext = createContext<RowDragContextValue | null>(null)

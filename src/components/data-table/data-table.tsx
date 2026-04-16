@@ -91,6 +91,8 @@ interface DataTableBaseProps<TData> {
   selectionActions?: (selectedRows: TData[]) => TableAction[]
   /** Pagination configuration. When provided, renders pagination footer. */
   pagination?: PaginationConfig
+  /** Initial sorting state (uncontrolled; useful for stories and default sort). */
+  initialSorting?: SortingState
   /** Controlled column filters state (for persistence) */
   columnFilters?: ColumnFiltersState
   /** Callback when column filters change */
@@ -166,6 +168,7 @@ export function DataTable<TData>({
   enableRowReorder = false,
   onRowReorder,
   canDragRow,
+  initialSorting,
 }: DataTableProps<TData>) {
   const tableContainerRef = useRef<HTMLDivElement>(null)
 
@@ -176,7 +179,7 @@ export function DataTable<TData>({
     setRowSelection({})
   }, [selectionKey])
   // Sorting state
-  const [sorting, setSorting] = useState<SortingState>([])
+  const [sorting, setSorting] = useState<SortingState>(initialSorting ?? [])
   // Internal column sizing state (used when uncontrolled)
   const [internalColumnSizing, setInternalColumnSizing] = useState<ColumnSizingState>({})
   // Internal column filters state (used when uncontrolled)
@@ -452,6 +455,7 @@ export function DataTable<TData>({
                     key={row.id}
                     id={row.id}
                     isGripsDisabled={areGripsDisabled}
+                    isRowDraggable={canDragRow ? canDragRow(row.original) : true}
                     className={cx(
                       'flex w-full min-w-max items-center border-b border-secondary',
                       row.getIsSelected() && 'bg-secondary'

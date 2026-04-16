@@ -20,7 +20,12 @@ function DragHandleCell() {
     )
   }
 
-  const { listeners, attributes, setActivatorNodeRef, isDragging, isDisabled } = context
+  const { listeners, attributes, setActivatorNodeRef, isDragging, isDisabled, isRowDraggable } = context
+
+  // Per-row opt-out: render empty cell so non-draggable rows have no grip
+  if (!isRowDraggable) {
+    return <div className="size-6" data-referenceid="drag-handle-hidden" aria-hidden="true" />
+  }
 
   if (isDisabled) {
     return (

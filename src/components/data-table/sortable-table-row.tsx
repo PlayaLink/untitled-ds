@@ -8,6 +8,7 @@ interface SortableTableRowProps {
   id: string
   children: ReactNode
   isGripsDisabled: boolean
+  isRowDraggable: boolean
   className?: string
   style?: React.CSSProperties
 }
@@ -16,6 +17,7 @@ export function SortableTableRow({
   id,
   children,
   isGripsDisabled,
+  isRowDraggable,
   className,
   style,
 }: SortableTableRowProps) {
@@ -41,6 +43,7 @@ export function SortableTableRow({
         setActivatorNodeRef,
         isDragging,
         isDisabled: isGripsDisabled,
+        isRowDraggable,
       }}
     >
       <div

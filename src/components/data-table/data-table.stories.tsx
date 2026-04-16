@@ -258,6 +258,12 @@ export const Overview: Story = {
 
       {/* Row Reordering */}
       <RowReorderExample />
+
+      {/* Row Reordering — disabled grips under active sort */}
+      <RowReorderSortDisabledExample />
+
+      {/* Row Reordering — mixed pinned / draggable rows */}
+      <RowReorderPinnedExample />
     </div>
   ),
 }
@@ -353,6 +359,86 @@ function RowReorderExample() {
         getRowId={(row) => row.id}
         enableRowReorder
         onRowReorder={handleRowReorder}
+        maxHeight={400}
+      />
+    </div>
+  )
+}
+
+function RowReorderSortDisabledExample() {
+  const [items, setItems] = useState(sampleData.slice(0, 6))
+
+  const reorderColumns = [
+    createColumn<Product>({ id: 'name', header: 'Product Name', accessor: 'name', isPrimary: true }),
+    createColumn<Product>({ id: 'status', header: 'Status', accessor: 'status', width: 120 }),
+    createColumn<Product>({ id: 'price', header: 'Price', accessor: (row) => `$${row.price}`, sortValue: 'price', width: 100 }),
+  ]
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h3 className="text-lg font-semibold text-primary">Row Reordering — Grips Disabled Under Sort</h3>
+        <p className="text-sm text-tertiary">
+          When a column sort is active, all drag grips disable and show a "Clear sort to reorder"
+          tooltip. Click any column header to toggle the sort and watch grips change state.
+        </p>
+      </div>
+      <DataTable
+        columns={reorderColumns}
+        data={items}
+        getRowId={(row) => row.id}
+        enableRowReorder
+        onRowReorder={(reordered) => setItems(reordered)}
+        initialSorting={[{ id: 'price', desc: false }]}
+        maxHeight={400}
+      />
+    </div>
+  )
+}
+
+interface PinnedProduct extends Product {
+  pinned: boolean
+}
+
+const pinnedSampleData: PinnedProduct[] = [
+  { id: '1', name: 'iPhone 15 Pro', status: 'active', category: 'electronics', price: 999, pinned: true },
+  { id: '2', name: 'MacBook Pro 14"', status: 'active', category: 'electronics', price: 1999, pinned: true },
+  { id: '3', name: 'Wool Sweater', status: 'pending', category: 'clothing', price: 89, pinned: false },
+  { id: '4', name: 'Running Shoes', status: 'active', category: 'clothing', price: 129, pinned: false },
+  { id: '5', name: 'Organic Coffee Beans', status: 'active', category: 'food', price: 24, pinned: false },
+  { id: '6', name: 'Chocolate Bar', status: 'inactive', category: 'food', price: 5, pinned: false },
+]
+
+function RowReorderPinnedExample() {
+  const [items, setItems] = useState(pinnedSampleData)
+
+  const pinnedColumns = [
+    createColumn<PinnedProduct>({ id: 'name', header: 'Product Name', accessor: 'name', isPrimary: true }),
+    createColumn<PinnedProduct>({ id: 'status', header: 'Status', accessor: 'status', width: 120 }),
+    createColumn<PinnedProduct>({
+      id: 'pinned',
+      header: 'Pinned',
+      accessor: (row) => (row.pinned ? 'Pinned' : '—'),
+      width: 100,
+    }),
+  ]
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h3 className="text-lg font-semibold text-primary">Row Reordering — Pinned Rows</h3>
+        <p className="text-sm text-tertiary">
+          Pinned rows (first two) have no grip and cannot be dragged. Draggable rows can still be
+          dropped above or below them via the <code className="rounded bg-tertiary px-1 font-mono text-xs">canDragRow</code> predicate.
+        </p>
+      </div>
+      <DataTable
+        columns={pinnedColumns}
+        data={items}
+        getRowId={(row) => row.id}
+        enableRowReorder
+        canDragRow={(row) => !row.pinned}
+        onRowReorder={(reordered) => setItems(reordered)}
         maxHeight={400}
       />
     </div>

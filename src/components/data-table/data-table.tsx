@@ -3,6 +3,11 @@
 /**
  * Data Table component
  * @docs https://www.untitledui.com/components/table
+ *
+ * Row reorder (`enableRowReorder`) and row virtualization are mutually exclusive.
+ * When `enableRowReorder` is true the virtualizer is skipped and all rows render
+ * directly in the DOM. This is intentional — the feature targets datasets of at
+ * most a few hundred rows.
  */
 
 import { useRef, useEffect, useState, useCallback, type ReactNode } from 'react'
@@ -21,6 +26,7 @@ import {
   type Updater,
   type FilterFn,
   type Table as ReactTable,
+  type Row,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import {
@@ -28,6 +34,7 @@ import {
   PointerSensor,
   KeyboardSensor,
   closestCenter,
+  DragOverlay,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -35,7 +42,13 @@ import {
   type SensorDescriptor,
   type SensorOptions,
 } from '@dnd-kit/core'
-import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  verticalListSortingStrategy,
+  sortableKeyboardCoordinates,
+  arrayMove,
+} from '@dnd-kit/sortable'
 import { cx } from '@/utils/cx'
 import { Checkbox } from '@/components/checkbox'
 import { Icon } from '@/components/icon'
@@ -43,6 +56,10 @@ import { Pagination } from '@/components/pagination'
 import { TableActionsBar, type TableAction } from './table-actions-bar'
 import { ColumnFilterDropdown } from './column-filter-dropdown'
 import { DraggableHeaderCell } from './draggable-header-cell'
+import { SortableTableRow } from './sortable-table-row'
+import { DragOverlayRow } from './drag-overlay-row'
+import { injectDragColumn, DRAG_COLUMN_ID } from './inject-drag-column'
+import { useRowReorder, type RowReorderChange } from '@/hooks/use-row-reorder'
 
 export interface PaginationConfig {
   currentPage: number
@@ -91,6 +108,22 @@ export interface DataTableProps<TData> {
   onColumnOrderChange?: (
     orderOrUpdater: ColumnOrderState | ((prev: ColumnOrderState) => ColumnOrderState)
   ) => void
+  /**
+   * Enable drag-and-drop row reordering via grip handles.
+   * Requires `getRowId` for stable identity.
+   * Disables row virtualization — suited for datasets up to a few hundred rows.
+   */
+  enableRowReorder?: boolean
+  /**
+   * Fires synchronously on drop with the fully reordered data array and
+   * change metadata `{ from, to, activeId, overId }`.
+   */
+  onRowReorder?: (reordered: TData[], change: RowReorderChange) => void
+  /**
+   * Per-row opt-out. When `canDragRow(row)` returns false, the grip is hidden
+   * but the row still participates as a drop-around target.
+   */
+  canDragRow?: (row: TData) => boolean
 }
 
 export function DataTable<TData>({
@@ -114,6 +147,9 @@ export function DataTable<TData>({
   enableColumnReorder = false,
   columnOrder: controlledColumnOrder,
   onColumnOrderChange,
+  enableRowReorder = false,
+  onRowReorder,
+  canDragRow,
 }: DataTableProps<TData>) {
   const tableContainerRef = useRef<HTMLDivElement>(null)
 
@@ -147,10 +183,8 @@ export function DataTable<TData>({
   // Handler for column sizing changes - wraps external callback or uses internal state
   const handleColumnSizingChange = (updaterOrValue: Updater<ColumnSizingState>) => {
     if (onColumnSizingChange) {
-      // Pass through to external handler (which handles both updater functions and values)
       onColumnSizingChange(updaterOrValue)
     } else {
-      // Use internal state setter
       setInternalColumnSizing(updaterOrValue)
     }
   }
@@ -186,19 +220,19 @@ export function DataTable<TData>({
     [onColumnOrderChange]
   )
 
-  // DnD sensors
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor)
+  // Column-reorder DnD sensors (8px activation + keyboard coordinates for parity with row reorder)
+  const columnSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
-  // Restrict drag to horizontal axis only (avoids adding @dnd-kit/modifiers dependency)
+  // Restrict column drag to horizontal axis only (avoids adding @dnd-kit/modifiers dependency)
   const restrictToHorizontalAxis: Modifier = useCallback(({ transform }) => {
     return { ...transform, y: 0 }
   }, [])
 
-  // Handle drag end - reorder columns
-  const handleDragEnd = useCallback(
+  // Handle column drag end - reorder columns
+  const handleColumnDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event
       if (over && active.id !== over.id) {
@@ -212,6 +246,45 @@ export function DataTable<TData>({
     [handleColumnOrderChange]
   )
 
+  // getRowId for TanStack Table (index-based fallback when not provided)
+  const tableGetRowId = getRowId ?? ((row: TData, index: number) => String(index))
+
+  // getRowId for useRowReorder — must produce the same IDs as TanStack Table
+  const reorderGetRowId = useCallback(
+    (row: TData): string => (getRowId ? getRowId(row) : String(data.indexOf(row))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getRowId, data]
+  )
+
+  // Row reorder hook
+  const {
+    sensors: rowSensors,
+    activeRow,
+    areGripsDisabled,
+    handleDragStart: handleRowDragStart,
+    handleDragEnd: handleRowDragEnd,
+    handleDragCancel: handleRowDragCancel,
+  } = useRowReorder({
+    data,
+    getRowId: reorderGetRowId,
+    onRowReorder,
+    sorting,
+    columnFilters,
+    canDragRow,
+  })
+
+  // Dev-mode warning: enableRowReorder without a stable getRowId
+  useEffect(() => {
+    if ((import.meta as { env?: { DEV?: boolean } }).env?.DEV && enableRowReorder && !getRowId) {
+      console.warn(
+        '[DataTable] enableRowReorder is true but no getRowId was provided. ' +
+        'Row drag-and-drop requires stable IDs — supply a getRowId prop that returns a unique, stable string per row.'
+      )
+    }
+  // intentionally runs once on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Custom filter function for multi-select
   const multiSelectFilterFn: FilterFn<TData> = (row, columnId, filterValue: string[]) => {
     if (!filterValue?.length) return true
@@ -219,13 +292,16 @@ export function DataTable<TData>({
     return filterValue.includes(String(cellValue))
   }
 
+  // Inject the drag column to the left of the caller's columns when row reorder is enabled
+  const effectiveColumns = injectDragColumn(columns, { enabled: enableRowReorder })
+
   const table = useReactTable({
     data,
-    columns,
+    columns: effectiveColumns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getRowId: getRowId ?? ((row, index) => String(index)),
+    getRowId: tableGetRowId,
     state: {
       rowSelection,
       sorting,
@@ -259,9 +335,9 @@ export function DataTable<TData>({
   const selectedRows = table.getSelectedRowModel().rows
   const selectedCount = selectedRows.length
 
-  // Virtualization
+  // Virtualizer — skipped when row reorder is enabled (all rows render directly)
   const rowVirtualizer = useVirtualizer({
-    count: rows.length,
+    count: enableRowReorder ? 0 : rows.length,
     getScrollElement: () => tableContainerRef.current,
     estimateSize: () => rowHeight,
     overscan: 5,
@@ -294,6 +370,14 @@ export function DataTable<TData>({
   const totalSize = rowVirtualizer.getTotalSize()
 
   const useFlexLayout = typeof maxHeight !== 'number'
+
+  // Find the TanStack Table row matching the currently-dragged data item
+  const activeTableRow: Row<TData> | null = activeRow
+    ? (rows.find((r) => r.original === activeRow) ?? null)
+    : null
+
+  // Sorted item IDs for SortableContext (must match rows order)
+  const sortableIds = rows.map((r) => r.id)
 
   return (
     <div
@@ -329,58 +413,122 @@ export function DataTable<TData>({
             columnSizing={columnSizing}
             enableColumnResizing={enableColumnResizing}
             enableColumnReorder={enableColumnReorder}
-            sensors={sensors}
+            sensors={columnSensors}
             columnOrder={columnOrder}
             restrictToHorizontalAxis={restrictToHorizontalAxis}
-            handleDragEnd={handleDragEnd}
+            handleDragEnd={handleColumnDragEnd}
           />
         </div>
 
-        {/* Table body */}
-        <div style={{ height: totalSize, position: 'relative' }}>
-          {virtualRows.map((virtualRow) => {
-            const row = rows[virtualRow.index]
-            return (
-              <div
-                key={row.id}
-                data-index={virtualRow.index}
-                ref={rowVirtualizer.measureElement}
-                className={cx(
-                  'absolute left-0 top-0 flex w-full min-w-max items-center border-b border-secondary',
-                  row.getIsSelected() && 'bg-secondary'
-                )}
-                style={{
-                  height: rowHeight,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}>
-                {row.getVisibleCells().map((cell) => {
-                  // Get width: prefer dynamic size from columnSizing, fall back to meta width
-                  const dynamicWidth = columnSizing[cell.column.id]
-                  const metaWidth = cell.column.columnDef.meta?.width
-                  const width = dynamicWidth ?? metaWidth
-                  const hasExplicitWidth = width !== undefined
+        {/* Table body — row reorder path: no virtualizer, full row set, DnD context */}
+        {enableRowReorder ? (
+          <DndContext
+            sensors={rowSensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleRowDragStart}
+            onDragEnd={handleRowDragEnd}
+            onDragCancel={handleRowDragCancel}
+          >
+            <SortableContext items={sortableIds} strategy={verticalListSortingStrategy}>
+              <div>
+                {rows.map((row) => (
+                  <SortableTableRow
+                    key={row.id}
+                    id={row.id}
+                    isGripsDisabled={areGripsDisabled}
+                    className={cx(
+                      'flex w-full min-w-max items-center border-b border-secondary',
+                      row.getIsSelected() && 'bg-secondary'
+                    )}
+                    style={{ height: rowHeight }}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const dynamicWidth = columnSizing[cell.column.id]
+                      const metaWidth = cell.column.columnDef.meta?.width
+                      const width = dynamicWidth ?? metaWidth
+                      const hasExplicitWidth = width !== undefined
 
-                  return (
-                    <div
-                      key={cell.id}
-                      className={cx(
-                        'flex h-full min-w-0 items-center overflow-hidden px-6 py-4',
-                        hasExplicitWidth ? 'shrink-0' : 'flex-1'
-                      )}
-                      style={{
-                        width: hasExplicitWidth ? (dynamicWidth ?? cell.column.getSize()) : undefined,
-                        flexShrink: hasExplicitWidth ? 0 : undefined,
-                      }}>
-                      <div className="w-full min-w-0">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </div>
-                    </div>
-                  );
-                })}
+                      // Drag column gets its own compact padding
+                      const isDragCol = cell.column.id === DRAG_COLUMN_ID
+
+                      return (
+                        <div
+                          key={cell.id}
+                          className={cx(
+                            'flex h-full min-w-0 items-center overflow-hidden',
+                            isDragCol ? 'justify-center px-2' : 'px-6 py-4',
+                            hasExplicitWidth ? 'shrink-0' : 'flex-1'
+                          )}
+                          style={{
+                            width: hasExplicitWidth ? (dynamicWidth ?? cell.column.getSize()) : undefined,
+                            flexShrink: hasExplicitWidth ? 0 : undefined,
+                          }}>
+                          <div className="w-full min-w-0">
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </SortableTableRow>
+                ))}
               </div>
-            );
-          })}
-        </div>
+            </SortableContext>
+            <DragOverlay>
+              {activeTableRow && (
+                <DragOverlayRow
+                  row={activeTableRow}
+                  columnSizing={columnSizing}
+                  rowHeight={rowHeight}
+                />
+              )}
+            </DragOverlay>
+          </DndContext>
+        ) : (
+          /* Virtualized path (default) */
+          <div style={{ height: totalSize, position: 'relative' }}>
+            {virtualRows.map((virtualRow) => {
+              const row = rows[virtualRow.index]
+              return (
+                <div
+                  key={row.id}
+                  data-index={virtualRow.index}
+                  ref={rowVirtualizer.measureElement}
+                  className={cx(
+                    'absolute left-0 top-0 flex w-full min-w-max items-center border-b border-secondary',
+                    row.getIsSelected() && 'bg-secondary'
+                  )}
+                  style={{
+                    height: rowHeight,
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}>
+                  {row.getVisibleCells().map((cell) => {
+                    const dynamicWidth = columnSizing[cell.column.id]
+                    const metaWidth = cell.column.columnDef.meta?.width
+                    const width = dynamicWidth ?? metaWidth
+                    const hasExplicitWidth = width !== undefined
+
+                    return (
+                      <div
+                        key={cell.id}
+                        className={cx(
+                          'flex h-full min-w-0 items-center overflow-hidden px-6 py-4',
+                          hasExplicitWidth ? 'shrink-0' : 'flex-1'
+                        )}
+                        style={{
+                          width: hasExplicitWidth ? (dynamicWidth ?? cell.column.getSize()) : undefined,
+                          flexShrink: hasExplicitWidth ? 0 : undefined,
+                        }}>
+                        <div className="w-full min-w-0">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
       {/* Pagination footer */}
       {pagination && pagination.totalPages > 1 && (
@@ -437,8 +585,11 @@ function HeaderRow<TData>({
       const width = dynamicWidth ?? metaWidth
       const hasExplicitWidth = width !== undefined
 
+      const isDragCol = header.column.id === DRAG_COLUMN_ID
+
       const cellClassName = cx(
-        'relative flex h-full items-center gap-1 px-6 py-3',
+        'relative flex h-full items-center gap-1',
+        isDragCol ? 'justify-center px-2' : 'px-6 py-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
         canSort && 'cursor-pointer select-none hover:bg-secondary-hover'
       )

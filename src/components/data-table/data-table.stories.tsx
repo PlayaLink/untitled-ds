@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import type { ColumnFiltersState, ColumnOrderState } from '@tanstack/react-table'
-import { DataTable } from './data-table'
+import { DataTable, type DataTableProps } from './data-table'
 import { createColumn, createSelectColumn } from './column-helpers'
 import { Button } from '../button'
 import { createIcon } from '../icon'
@@ -77,6 +77,11 @@ const meta: Meta<typeof DataTable> = {
     enableColumnReorder: {
       control: 'boolean',
       description: 'Enable drag-and-drop column reordering',
+      table: { category: 'Behavior' },
+    },
+    enableRowReorder: {
+      control: 'boolean',
+      description: 'Enable drag-and-drop row reordering (disables virtualization)',
       table: { category: 'Behavior' },
     },
     // Advanced
@@ -250,6 +255,9 @@ export const Overview: Story = {
 
       {/* Controlled Filter State */}
       <ControlledExample />
+
+      {/* Row Reordering */}
+      <RowReorderExample />
     </div>
   ),
 }
@@ -310,6 +318,42 @@ function ControlledExample() {
         columnFilters={columnFilters}
         onColumnFiltersChange={setColumnFilters}
         maxHeight={300}
+      />
+    </div>
+  )
+}
+
+function RowReorderExample() {
+  const [items, setItems] = useState(sampleData.slice(0, 6))
+
+  const reorderColumns = [
+    createSelectColumn<Product>(),
+    createColumn<Product>({ id: 'name', header: 'Product Name', accessor: 'name', isPrimary: true }),
+    createColumn<Product>({ id: 'status', header: 'Status', accessor: 'status', width: 120 }),
+    createColumn<Product>({ id: 'price', header: 'Price', accessor: (row) => `$${row.price}`, sortValue: 'price', width: 100 }),
+  ]
+
+  const handleRowReorder: DataTableProps<Product>['onRowReorder'] = (reordered) => {
+    setItems(reordered)
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h3 className="text-lg font-semibold text-primary">Row Reordering</h3>
+        <p className="text-sm text-tertiary">
+          Drag the grip handle on the left to reorder rows. Grips disable automatically when a sort
+          or filter is active. Targets datasets of at most a few hundred rows (virtualization
+          disabled).
+        </p>
+      </div>
+      <DataTable
+        columns={reorderColumns}
+        data={items}
+        getRowId={(row) => row.id}
+        enableRowReorder
+        onRowReorder={handleRowReorder}
+        maxHeight={400}
       />
     </div>
   )

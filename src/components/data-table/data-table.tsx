@@ -69,7 +69,7 @@ export interface PaginationConfig {
   label?: string
 }
 
-export interface DataTableProps<TData> {
+interface DataTableBaseProps<TData> {
   columns: ColumnDef<TData, unknown>[]
   data: TData[]
   isLoading?: boolean
@@ -77,7 +77,6 @@ export interface DataTableProps<TData> {
   onRowSelectionChange?: (rows: TData[]) => void
   rowHeight?: number
   maxHeight?: number | string
-  getRowId?: (row: TData) => string
   /** Enable column resizing via drag handles */
   enableColumnResizing?: boolean
   /** Controlled column sizing state (for persistence) */
@@ -109,12 +108,6 @@ export interface DataTableProps<TData> {
     orderOrUpdater: ColumnOrderState | ((prev: ColumnOrderState) => ColumnOrderState)
   ) => void
   /**
-   * Enable drag-and-drop row reordering via grip handles.
-   * Requires `getRowId` for stable identity.
-   * Disables row virtualization — suited for datasets up to a few hundred rows.
-   */
-  enableRowReorder?: boolean
-  /**
    * Fires synchronously on drop with the fully reordered data array and
    * change metadata `{ from, to, activeId, overId }`.
    */
@@ -125,6 +118,29 @@ export interface DataTableProps<TData> {
    */
   canDragRow?: (row: TData) => boolean
 }
+
+/**
+ * Discriminated union that enforces `getRowId` when `enableRowReorder` is true.
+ * TypeScript consumers get a compile-time error if they omit `getRowId` with row reorder enabled.
+ * JavaScript consumers get a dev-mode console warning at mount time.
+ */
+export type DataTableProps<TData> = DataTableBaseProps<TData> & (
+  | {
+      /** When false or omitted, row virtualization is active and `getRowId` is optional. */
+      enableRowReorder?: false
+      getRowId?: (row: TData) => string
+    }
+  | {
+      /**
+       * Enable drag-and-drop row reordering via grip handles.
+       * Requires `getRowId` for stable row identity.
+       * Disables row virtualization — suited for datasets up to a few hundred rows.
+       */
+      enableRowReorder: true
+      /** Required when `enableRowReorder` is true. Must return a unique, stable string per row. */
+      getRowId: (row: TData) => string
+    }
+)
 
 export function DataTable<TData>({
   columns,
@@ -273,9 +289,9 @@ export function DataTable<TData>({
     canDragRow,
   })
 
-  // Dev-mode warning: enableRowReorder without a stable getRowId
+  // Dev-mode warning: enableRowReorder without a stable getRowId (runtime safety net for JS consumers)
   useEffect(() => {
-    if ((import.meta as { env?: { DEV?: boolean } }).env?.DEV && enableRowReorder && !getRowId) {
+    if ((import.meta as { env?: { DEV?: boolean } }).env?.DEV !== false && enableRowReorder && !getRowId) {
       console.warn(
         '[DataTable] enableRowReorder is true but no getRowId was provided. ' +
         'Row drag-and-drop requires stable IDs — supply a getRowId prop that returns a unique, stable string per row.'

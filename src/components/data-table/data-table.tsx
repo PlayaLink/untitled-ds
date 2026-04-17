@@ -99,6 +99,14 @@ interface DataTableBaseProps<TData> {
   onColumnFiltersChange?: (
     filtersOrUpdater: ColumnFiltersState | ((prev: ColumnFiltersState) => ColumnFiltersState)
   ) => void
+  /**
+   * When true, skips in-memory filtering and trusts `data` to already reflect
+   * the active filter state. Pair with controlled `columnFilters` +
+   * `onColumnFiltersChange` to drive a server-side filter pipeline — the filter
+   * popover still reports state upward, and the consumer translates that state
+   * into fetch params. Defaults to `false` (client-side filtering).
+   */
+  manualFiltering?: boolean
   /** Change this value to reset row selection (e.g. after bulk delete). */
   selectionKey?: string | number
   /** Enable drag-and-drop column reordering via grip handles */
@@ -162,6 +170,7 @@ export function DataTable<TData>({
   pagination,
   columnFilters: controlledColumnFilters,
   onColumnFiltersChange,
+  manualFiltering = false,
   enableColumnReorder = false,
   columnOrder: controlledColumnOrder,
   onColumnOrderChange,
@@ -304,6 +313,18 @@ export function DataTable<TData>({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Dev-mode warning: manualFiltering without onColumnFiltersChange (filter clicks would be silent no-ops)
+  useEffect(() => {
+    if ((import.meta as { env?: { DEV?: boolean } }).env?.DEV !== false && manualFiltering && !onColumnFiltersChange) {
+      console.warn(
+        '[DataTable] manualFiltering is true but no onColumnFiltersChange was provided. ' +
+        'Filter popover clicks will be silent no-ops — supply onColumnFiltersChange so you can translate filter state into fetch params.'
+      )
+    }
+  // intentionally runs once on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Custom filter function for multi-select
   const multiSelectFilterFn: FilterFn<TData> = (row, columnId, filterValue: string[]) => {
     if (!filterValue?.length) return true
@@ -319,7 +340,7 @@ export function DataTable<TData>({
     columns: effectiveColumns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    ...(manualFiltering ? { manualFiltering: true } : { getFilteredRowModel: getFilteredRowModel() }),
     getRowId: tableGetRowId,
     state: {
       rowSelection,

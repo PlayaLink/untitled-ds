@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { ColumnFiltersState, ColumnOrderState } from '@tanstack/react-table'
 import { DataTable, type DataTableProps } from './data-table'
 import { createColumn, createSelectColumn } from './column-helpers'
@@ -256,6 +256,9 @@ export const Overview: Story = {
       {/* Controlled Filter State */}
       <ControlledExample />
 
+      {/* Server-Side Filtering */}
+      <ServerSideFilteringExample />
+
       {/* Row Reordering */}
       <RowReorderExample />
 
@@ -321,6 +324,53 @@ function ControlledExample() {
         columns={filterableColumns}
         data={sampleData}
         getRowId={(row) => row.id}
+        columnFilters={columnFilters}
+        onColumnFiltersChange={setColumnFilters}
+        maxHeight={300}
+      />
+    </div>
+  )
+}
+
+function ServerSideFilteringExample() {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+  // Simulated server fetch: filters `sampleData` against the current `columnFilters`.
+  // In a real app this would be a REST call; the callback would translate `columnFilters`
+  // into query params and the response would already be filtered.
+  const serverData = useMemo(() => {
+    if (columnFilters.length === 0) return sampleData
+    return sampleData.filter((row) =>
+      columnFilters.every((f) => {
+        const cellValue = String(row[f.id as keyof Product])
+        if (Array.isArray(f.value)) return (f.value as string[]).includes(cellValue)
+        return cellValue === f.value
+      })
+    )
+  }, [columnFilters])
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h3 className="text-lg font-semibold text-primary">Server-Side Filtering</h3>
+        <p className="text-sm text-tertiary">
+          Pass <code className="rounded bg-tertiary px-1 font-mono text-xs">manualFiltering</code>{' '}
+          with controlled <code className="rounded bg-tertiary px-1 font-mono text-xs">columnFilters</code>{' '}
+          to drive a server-side filter pipeline. The popover reports state upward via{' '}
+          <code className="rounded bg-tertiary px-1 font-mono text-xs">onColumnFiltersChange</code>;
+          the consumer translates it into fetch params. The table renders whatever{' '}
+          <code className="rounded bg-tertiary px-1 font-mono text-xs">data</code> the server
+          returns, with no in-memory filter pass.
+        </p>
+      </div>
+      <div className="rounded-lg bg-secondary p-3 font-mono text-xs">
+        columnFilters: {JSON.stringify(columnFilters)} — rows returned: {serverData.length}
+      </div>
+      <DataTable
+        columns={filterableColumns}
+        data={serverData}
+        getRowId={(row) => row.id}
+        manualFiltering
         columnFilters={columnFilters}
         onColumnFiltersChange={setColumnFilters}
         maxHeight={300}

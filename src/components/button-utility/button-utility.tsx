@@ -19,10 +19,10 @@ import { isReactComponent } from '@/utils/is-react-component'
 // =============================================================================
 
 export const styles = sortCx({
-  base: 'group relative inline-flex h-max cursor-pointer items-center justify-center rounded-md p-1.5 outline-focus-ring transition duration-100 ease-linear focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:text-fg-disabled_subtle',
+  base: 'group relative inline-flex h-max cursor-pointer items-center justify-center rounded-md p-1.5 outline-focus-ring transition duration-100 ease-linear focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:text-fg-disabled-subtle',
   colors: {
     secondary:
-      'bg-primary text-fg-quaternary shadow-xs-skeumorphic ring-1 ring-primary ring-inset hover:bg-primary-hover hover:text-fg-quaternary-hover disabled:shadow-xs disabled:ring-disabled_subtle',
+      'bg-primary text-fg-quaternary shadow-xs-skeumorphic ring-1 ring-border-primary ring-inset hover:bg-primary-hover hover:text-fg-quaternary-hover disabled:shadow-xs disabled:ring-border-disabled-subtle',
     tertiary: 'text-fg-quaternary hover:bg-primary-hover hover:text-fg-quaternary-hover',
   },
   sizes: {

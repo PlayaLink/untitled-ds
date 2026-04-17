@@ -220,9 +220,9 @@ export const FileUploadDropZone = ({
       onDragEnd={handleDragOut}
       onDrop={handleDrop}
       className={cx(
-        'relative flex flex-col items-center gap-3 rounded-xl bg-primary px-6 py-4 text-tertiary ring-1 ring-secondary transition duration-100 ease-linear ring-inset',
+        'relative flex flex-col items-center gap-3 rounded-xl bg-primary px-6 py-4 text-tertiary ring-1 ring-border-secondary transition duration-100 ease-linear ring-inset',
         isDraggingOver && 'ring-2 ring-brand',
-        isDisabled && 'cursor-not-allowed bg-disabled_subtle ring-disabled_subtle',
+        isDisabled && 'cursor-not-allowed bg-disabled-subtle ring-border-disabled-subtle',
         className
       )}
       data-untitled-ds='FileUploadDropZone'>
@@ -297,7 +297,7 @@ export const FileListItemProgressBar = ({
     <motion.li
       layout="position"
       className={cx(
-        'relative flex gap-3 rounded-xl bg-primary p-4 ring-1 ring-secondary transition-shadow duration-100 ease-linear ring-inset',
+        'relative flex gap-3 rounded-xl bg-primary p-4 ring-1 ring-border-secondary transition-shadow duration-100 ease-linear ring-inset',
         failed && 'ring-2 ring-error',
         className
       )}
@@ -395,7 +395,7 @@ export const FileListItemProgressFill = ({
       {/* Inner ring. */}
       <div
         className={cx(
-          'absolute inset-0 size-full rounded-[inherit] ring-1 ring-secondary transition duration-100 ease-linear ring-inset',
+          'absolute inset-0 size-full rounded-[inherit] ring-1 ring-border-secondary transition duration-100 ease-linear ring-inset',
           failed && 'ring-2 ring-error'
         )} />
       <FileTypeIcon

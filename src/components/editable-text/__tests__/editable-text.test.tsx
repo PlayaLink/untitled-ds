@@ -120,18 +120,16 @@ describe('EditableText', () => {
   })
 
   describe('variant="title"', () => {
-    it('renders without background and inherits text size in READING state', () => {
+    it('renders without background and uses underline hover in READING state', () => {
       render(
         <EditableText {...defaultProps} variant="title" />,
       )
 
       const reading = screen.getByRole('button')
       expect(reading.textContent).toBe('Acme Corp')
-      // Title variant should NOT have bg-secondary by default (only on hover)
       expect(reading.className).not.toContain(' bg-secondary')
-      expect(reading.className).toContain('hover:bg-secondary')
-      // Should inherit text size
-      expect(reading.className).toContain('text-[inherit]')
+      expect(reading.className).toContain('hover:underline')
+      expect(reading.className).toContain('inline')
     })
 
     it('enters edit mode with inherited text size on click', () => {
@@ -143,7 +141,7 @@ describe('EditableText', () => {
 
       const input = screen.getByRole('textbox')
       expect(input.className).toContain('text-[inherit]')
-      expect(input.className).toContain('font-inherit')
+      expect(input.className).toContain('font-[inherit]')
     })
   })
 

@@ -12,7 +12,7 @@ Pick the next task. Prioritize in this order:
 
 1. Critical bugfixes (broken components, build failures)
 2. Development infrastructure (tests, token linting, build scripts)
-3. New components pulled from Untitled UI or Figma (follow `.claude/rules/untitled-ui-components.md`)
+3. New components pulled from Untitled UI or Figma (follow `.claude/skills/untitled-ui-component/SKILL.md`)
 4. Polish and quick wins (stories, JSDoc parity notes, semantic token cleanup)
 5. Refactors
 
@@ -20,13 +20,13 @@ Skip any issue labeled HITL or that requires human decision-making (architectura
 
 # EXPLORATION
 
-Explore the repo. Read CLAUDE.md (symlinked to AGENTS.md) and .claude/rules/ to understand conventions. Key rules to scan:
+Explore the repo. Read CLAUDE.md (symlinked to AGENTS.md) and .claude/rules/ to understand conventions. Key references:
 
-- `untitled-ui-components.md` — the 8-step workflow for adding components
-- `storybook-stories.md` — required 3-story structure (Overview, Props, SourceCodeAndDesign)
-- `design-tokens.md` — semantic tokens vs primitives, dark mode
-- `semantic-tagging.md` — `data-referenceid` requirements
-- `commit-messages.md` — conventional commit format, NO AI attribution
+- `.claude/skills/untitled-ui-component/SKILL.md` — the 8-step workflow for adding components
+- `.claude/rules/storybook-stories.md` — required 3-story structure (Overview, Props, SourceCodeAndDesign)
+- `.claude/rules/design-tokens.md` — semantic tokens vs primitives, dark mode
+- `.claude/rules/semantic-tagging.md` — `data-referenceid` requirements
+- `.claude/skills/commit/SKILL.md` — conventional commit format, NO AI attribution
 
 # IMPLEMENTATION
 
@@ -43,17 +43,27 @@ Key constraints:
 
 # FEEDBACK LOOPS
 
-Before committing, run the feedback loops:
+Before committing, run the feedback loops and fix any failures:
 
-- `npm run test` — runs Vitest
-- `npm run lint` — runs token naming checks
-- `npm run build:lib` — builds the distributable library
+- `npm run lint` — token-naming checks (pure shell)
+- `npm run test` — Vitest component and utility tests
+- `npm run build:lib` — Vite library build
 
-Fix any failures before proceeding.
+If any of these fail with a native-binary error from a node-gyp/C++ addon
+(`NODE_MODULE_VERSION` mismatch, "compiled against a different Node.js
+version", "invalid ELF header"), invoke the `sandbox-native-rebuild` skill
+and retry.
+
+If a precompiled binary like `esbuild`, `@rollup/rollup-*`, or
+`@tailwindcss/oxide-*` segfaults or reports "illegal instruction", the
+sandbox install itself is corrupt — stop and tell the user to re-run
+`./ralph/setup-sandbox.sh` from the host. Do not attempt to patch.
+
+Do not commit if feedback loops are red.
 
 # COMMIT
 
-Make a git commit. Follow the conventional commit format from `.claude/rules/commit-messages.md`:
+Make a git commit. Follow the conventional commit format from `.claude/skills/commit/SKILL.md`:
 
 ```
 type(scope): message title

@@ -59,14 +59,49 @@ The loop exits early if Claude reports `NO MORE TASKS`.
 
 ## Recreating the Sandbox
 
-If the sandbox gets into a bad state (dependency errors, stale node_modules), destroy and recreate it:
+If the sandbox gets into a bad state (dependency errors, segfaults from
+esbuild/rollup/@tailwindcss/oxide, "illegal instruction"), destroy and
+recreate it:
 
 ```bash
 docker sandbox rm claude-untitled-ds
 ./ralph/setup-sandbox.sh
 ```
 
-The `.dockerignore` ensures the sandbox installs its own Linux-native dependencies — the host's `node_modules` is never copied in.
+`setup-sandbox.sh` installs `node_modules` to a VM-local path
+(`/home/agent/nm-workspace/node_modules`) and symlinks `./node_modules`
+to it. This avoids a Docker Desktop virtiofs write-corruption bug that
+otherwise silently corrupts large native binaries during install.
+
+The script runs `npm run build:tokens` and `npm run build:lib` as
+pass/fail gates at the end of setup — those two together exercise every
+precompiled native binary in the install (esbuild, rollup,
+@tailwindcss/oxide), so a sandbox that passes them is guaranteed healthy.
+`npm run test` runs as an advisory step; pre-existing test failures don't
+block setup because Ralph fixes those in-loop.
+
+### Host impact
+
+While the sandbox is set up, the project's host-visible `./node_modules` is
+a symlink pointing into the VM. From the host, it is a dangling symlink —
+host-side `npm run dev`, `npm run test`, and IDE features that need
+`node_modules` will not resolve.
+
+Options:
+
+- Run host commands inside the sandbox instead: `./ralph/sbx.sh npm run <script>`
+- Or delete the symlink and `npm install` on the host, then re-run
+  `./ralph/setup-sandbox.sh` if you want the sandbox back.
+
+## Native-binary errors inside the sandbox
+
+If Claude reports a native-addon error during a feedback loop
+(`NODE_MODULE_VERSION` mismatch, etc.) it will invoke the
+`sandbox-native-rebuild` skill, which runs `npm rebuild`. That skill only
+covers node-gyp / C++ addons (e.g. `better-sqlite3`, `sharp`).
+
+If the error comes from a precompiled binary (`esbuild`, `@rollup/rollup-*`,
+`@tailwindcss/oxide-*`) the sandbox install is corrupt — recreate it.
 
 ---
 

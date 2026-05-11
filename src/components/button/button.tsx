@@ -24,27 +24,27 @@ export const styles = sortCx({
   },
   sizes: {
     xs: {
-      root: 'gap-0.5 rounded-md px-2 py-1.5 text-sm font-semibold data-icon-only:p-1',
+      root: 'gap-0.5 rounded-md px-2 py-1.5 text-sm font-semibold data-icon-only:px-1 data-icon-only:py-1',
       linkRoot: 'gap-0.5',
     },
     sm: {
-      root: 'gap-1 rounded-lg px-3 py-2 text-sm font-semibold data-icon-only:p-2',
+      root: 'gap-1 rounded-lg px-3 py-2 text-sm font-semibold data-icon-only:px-2 data-icon-only:py-2',
       linkRoot: 'gap-1',
     },
     md: {
-      root: 'gap-1 rounded-lg px-3.5 py-2.5 text-sm font-semibold data-icon-only:p-2.5',
+      root: 'gap-1 rounded-lg px-3.5 py-2.5 text-sm font-semibold data-icon-only:px-2.5 data-icon-only:py-2.5',
       linkRoot: 'gap-1',
     },
     lg: {
-      root: 'gap-1.5 rounded-lg px-4 py-2.5 text-md font-semibold data-icon-only:p-3',
+      root: 'gap-1.5 rounded-lg px-4 py-2.5 text-md font-semibold data-icon-only:px-3 data-icon-only:py-3',
       linkRoot: 'gap-1.5',
     },
     xl: {
-      root: 'gap-1.5 rounded-lg px-[18px] py-3 text-md font-semibold data-icon-only:p-3.5',
+      root: 'gap-1.5 rounded-lg px-[18px] py-3 text-md font-semibold data-icon-only:px-3.5 data-icon-only:py-3.5',
       linkRoot: 'gap-1.5',
     },
     '2xl': {
-      root: 'gap-2 rounded-lg px-[22px] py-4 text-lg font-semibold data-icon-only:p-4',
+      root: 'gap-2 rounded-lg px-[22px] py-4 text-lg font-semibold data-icon-only:px-4 data-icon-only:py-4',
       linkRoot: 'gap-2',
     },
   },

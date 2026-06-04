@@ -23,7 +23,7 @@ import type { FilterOption } from './column-helpers'
 
 export const styles = sortCx({
   trigger: {
-    base: 'ml-0.5 flex h-5 min-w-5 items-center justify-center gap-1 rounded px-0.5 transition-colors outline-none',
+    base: 'ml-0.5 flex h-5 min-w-5 cursor-pointer items-center justify-center gap-1 rounded px-0.5 transition-colors outline-none',
     default: 'text-quaternary hover:bg-tertiary hover:text-tertiary',
     active: 'text-brand-600 hover:bg-tertiary hover:text-brand-700',
     activeDot: 'size-1.5 shrink-0 rounded-full bg-brand-500',

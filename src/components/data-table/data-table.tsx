@@ -630,7 +630,7 @@ function HeaderRow<TData>({
 
       const cellClassName = cx(
         'relative flex h-full items-center gap-1',
-        isDragCol ? 'justify-center px-2' : 'px-6 py-3',
+        isDragCol ? 'justify-center px-2' : 'py-3 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
         canSort && 'cursor-pointer select-none hover:bg-secondary-hover'
       )

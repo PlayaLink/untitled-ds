@@ -23,9 +23,10 @@ import type { FilterOption } from './column-helpers'
 
 export const styles = sortCx({
   trigger: {
-    base: 'flex size-6 items-center justify-center rounded transition-colors',
-    default: 'text-quaternary hover:text-tertiary hover:bg-tertiary',
-    active: 'text-brand-600 bg-brand-50 hover:bg-brand-100',
+    base: 'ml-0.5 flex h-5 min-w-5 items-center justify-center gap-1 rounded px-0.5 transition-colors outline-none',
+    default: 'text-quaternary hover:bg-tertiary hover:text-tertiary',
+    active: 'text-brand-600 hover:bg-tertiary hover:text-brand-700',
+    activeDot: 'size-1.5 shrink-0 rounded-full bg-brand-500',
   },
   popover: [
     'w-56 origin-(--trigger-anchor-point) overflow-hidden rounded-lg bg-primary shadow-lg ring-1 ring-border-secondary-alt',
@@ -117,13 +118,15 @@ export function ColumnFilterDropdown({
       data-untitled-ds='ColumnFilterDropdown'>
       <AriaButton
         aria-label={`Filter ${columnId}`}
+        data-state={hasActiveFilter ? 'active' : 'inactive'}
         className={cx(
           styles.trigger.base,
           hasActiveFilter ? styles.trigger.active : styles.trigger.default
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        <Icon name="filter" size="sm" />
+        {hasActiveFilter && <span aria-hidden="true" className={styles.trigger.activeDot} />}
+        <Icon name="chevron-down" size="sm" />
       </AriaButton>
       <Popover placement="bottom end" className={styles.popover}>
         <Dialog className={styles.dialog}>

@@ -82,6 +82,21 @@ describe('DataTable manualFiltering', () => {
     expect(screen.getByText('Charlie')).toBeTruthy()
   })
 
+  it('uses a subtle active-state trigger for filtered columns', () => {
+    render(
+      <DataTable
+        columns={columns}
+        data={data}
+        getRowId={(row) => row.id}
+        manualFiltering
+        columnFilters={[{ id: 'status', value: 'active' }]}
+        onColumnFiltersChange={() => {}}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: /filter status/i }).getAttribute('data-state')).toBe('active')
+  })
+
   it('fires onColumnFiltersChange when a popover option is toggled in manual mode', () => {
     const onColumnFiltersChange = vi.fn()
 

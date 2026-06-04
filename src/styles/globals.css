@@ -1,3 +1,4 @@
 @import './tokens.css';
+@import '@fortawesome/fontawesome-svg-core/styles.css';
 @import 'tailwindcss';
 @config '../../tailwind.config.cjs';

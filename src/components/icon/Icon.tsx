@@ -1,6 +1,13 @@
 // src/components/icon/Icon.tsx
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { config } from '@fortawesome/fontawesome-svg-core'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+
+// FA's runtime CSS injection lands after Tailwind in the cascade and overrides
+// utilities like `size-5` on icons (.svg-inline--fa { width: 1.25em; height: 1em }).
+// Disable it and rely on the static stylesheet imported above — bundled at build time.
+config.autoAddCss = false
 // Regular (outline) icons - use these for UI icons where available
 import {
   faCircleQuestion as faCircleQuestionRegular,

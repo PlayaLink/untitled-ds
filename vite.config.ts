@@ -2,7 +2,7 @@ import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 import { resolve } from 'path'
-import { copyFileSync, mkdirSync, existsSync, readdirSync } from 'fs'
+import { copyFileSync, mkdirSync, existsSync, readdirSync, renameSync } from 'fs'
 
 /**
  * Plugin to copy CSS files to dist directory
@@ -30,6 +30,14 @@ function copyStylesPlugin(): Plugin {
             )
           }
         }
+      }
+
+      // Vite extracts CSS imported from JS (Icon.tsx imports the FA stylesheet
+      // so we can disable FA's runtime CSS injection) to `dist/untitled-ds.css`.
+      // Move it under dist/styles/ to match the rest of the package's CSS exports.
+      const extractedCss = resolve(__dirname, 'dist/untitled-ds.css')
+      if (existsSync(extractedCss)) {
+        renameSync(extractedCss, resolve(distStylesDir, 'fontawesome.css'))
       }
     },
   }

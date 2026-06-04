@@ -30,6 +30,14 @@
       "style": "./dist/styles/globals.css",
       "default": "./dist/styles/globals.css"
     },
+    "./styles/fontawesome": {
+      "style": "./dist/styles/fontawesome.css",
+      "default": "./dist/styles/fontawesome.css"
+    },
+    "./dist/styles/fontawesome.css": {
+      "style": "./dist/styles/fontawesome.css",
+      "default": "./dist/styles/fontawesome.css"
+    },
     "./tailwind.config": "./tailwind.config.cjs"
   },
   "files": [

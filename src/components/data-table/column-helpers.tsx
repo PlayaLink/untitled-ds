@@ -22,6 +22,7 @@ declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData, TValue> {
     width?: number
+    label?: string
     isPrimary?: boolean
     filterable?: boolean
     filterOptions?: FilterOption[]
@@ -33,6 +34,8 @@ declare module '@tanstack/react-table' {
 interface CreateColumnOptions<TData> {
   id: string
   header: string | (() => ReactNode)
+  /** Human-readable column name for visibility controls and table surfaces */
+  label?: string
   accessor: keyof TData | ((row: TData) => ReactNode)
   /** Extract raw value for sorting (use when accessor returns ReactNode like a Link) */
   sortValue?: keyof TData | ((row: TData) => string | number | Date | null)
@@ -42,6 +45,8 @@ interface CreateColumnOptions<TData> {
   /** Maximum column width when resizing (default: 500) */
   maxWidth?: number
   isPrimary?: boolean
+  /** Allow this column to be hidden (default: true; primary columns are always visible) */
+  canHide?: boolean
   /** Enable sorting for this column (default: true) */
   sortable?: boolean
   /** Custom sort function for complex sorting logic */
@@ -64,12 +69,14 @@ interface CreateColumnOptions<TData> {
 export function createColumn<TData>({
   id,
   header,
+  label,
   accessor,
   sortValue,
   width,
   minWidth = 50,
   maxWidth = 500,
   isPrimary = false,
+  canHide = true,
   sortable = true,
   sortingFn,
   enableResizing = true,
@@ -142,6 +149,7 @@ export function createColumn<TData>({
     maxSize: maxWidth,
     enableResizing,
     enableSorting: sortable,
+    enableHiding: isPrimary ? false : canHide,
     sortingFn: sortingFn ?? 'auto',
     enableColumnFilter: filterable,
     filterFn: getFilterFn(),
@@ -149,6 +157,7 @@ export function createColumn<TData>({
     ...(filterable && filterValue ? { accessorFn: getFilterAccessorFn() } : {}),
     meta: {
       width,
+      label: label ?? (typeof header === 'string' ? header : undefined),
       isPrimary,
       filterable,
       filterOptions,
@@ -185,6 +194,7 @@ export function createSelectColumn<TData>(width = 80): ColumnDef<TData, unknown>
     maxSize: width,
     enableResizing: false,
     enableSorting: false,
+    enableHiding: false,
     meta: { width, reorderable: false },
   }
 }

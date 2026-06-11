@@ -96,7 +96,7 @@ export function ColumnVisibilityDropdown<TData>({ table }: ColumnVisibilityDropd
       <Popover placement="bottom end" className={styles.popover}>
         <Dialog className={styles.dialog}>
           <div className={styles.header}>
-            <span className={styles.headerTitle}>Columns</span>
+            <span className={styles.headerTitle}>Column visibility</span>
           </div>
           <div className={styles.optionsList} data-untitled-ds='ColumnVisibilityOptions'>
             {columns.map((column) => {

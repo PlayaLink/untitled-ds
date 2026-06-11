@@ -128,6 +128,8 @@ describe('DataTable column header menu', () => {
     renderTable()
 
     fireEvent.click(getMenuButton('Product'))
+
+    expect(screen.queryByText('Product')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: /sort descending/i }))
 
     const renderedRows = screen.getAllByText(/Alpha|Bravo|Charlie/).map((node) => node.textContent)

@@ -31,8 +31,6 @@ export const styles = sortCx({
     'exiting:duration-100 exiting:ease-in exiting:animate-out exiting:fade-out',
   ].join(' '),
   dialog: 'outline-hidden',
-  header: 'border-b border-secondary px-3 py-2',
-  headerTitle: 'truncate text-xs font-semibold text-tertiary',
   section: 'py-1',
   sectionTitle: 'px-3 py-1.5 text-xs font-semibold text-quaternary',
   divider: 'h-px bg-border-secondary',
@@ -182,10 +180,6 @@ export function ColumnHeaderMenu<TData>({
       </AriaButton>
       <Popover placement="bottom start" triggerRef={triggerRef} className={styles.popover}>
         <Dialog className={styles.dialog} onClick={(event) => event.stopPropagation()}>
-          <div className={styles.header}>
-            <span className={styles.headerTitle}>{label}</span>
-          </div>
-
           {canSort && (
             <div className={styles.section} data-untitled-ds='ColumnHeaderMenuSort'>
               <button

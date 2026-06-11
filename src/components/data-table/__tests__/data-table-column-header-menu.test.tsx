@@ -1,5 +1,7 @@
 import { render, screen, fireEvent, within } from '@testing-library/react'
+import { useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
+import type { VisibilityState } from '@tanstack/react-table'
 import { describe, expect, it, vi } from 'vitest'
 
 // JSDOM gives refs a 0x0 bounding box, which makes TanStack Virtual render
@@ -217,15 +219,51 @@ describe('DataTable column header menu', () => {
     expect(getMenuButton('Status').getAttribute('data-state')).toBe('inactive')
   })
 
-  it('hides hideable columns through the unified menu', () => {
-    renderTable()
+  it('hides columns through the unified menu and restores them from the global manager', () => {
+    function Harness() {
+      const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 
-    expect(screen.getByText('A-001')).toBeTruthy()
+      return (
+        <DataTable
+          columns={columns}
+          data={data}
+          getRowId={(row) => row.id}
+          enableColumnVisibility
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={setColumnVisibility}
+        />
+      )
+    }
+
+    render(<Harness />)
 
     fireEvent.click(getMenuButton('SKU'))
     fireEvent.click(screen.getByRole('button', { name: /hide column/i }))
 
     expect(screen.queryByText('A-001')).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: /manage columns/i }))
+    expect((screen.getByRole('checkbox', { name: 'SKU' }) as HTMLInputElement).checked).toBe(false)
+
+    fireEvent.click(screen.getByRole('checkbox', { name: 'SKU' }))
+
+    expect(screen.getByText('A-001')).toBeTruthy()
+    expect((screen.getByRole('checkbox', { name: 'SKU' }) as HTMLInputElement).checked).toBe(true)
+  })
+
+  it('does not expose hide actions when table column visibility is disabled', () => {
+    render(
+      <DataTable
+        columns={columns}
+        data={data}
+        getRowId={(row) => row.id}
+      />
+    )
+
+    fireEvent.click(getMenuButton('Product'))
+
+    expect(screen.queryByRole('button', { name: /hide column/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /column menu for sku/i })).toBeNull()
   })
 
   it('omits hide for locked columns and omits menus with no available actions', () => {

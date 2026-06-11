@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useMemo, useState } from 'react'
-import type { ColumnFiltersState, ColumnOrderState, VisibilityState } from '@tanstack/react-table'
+import type { ColumnFiltersState, ColumnOrderState, SortingState, VisibilityState } from '@tanstack/react-table'
 import { DataTable, type DataTableProps } from './data-table'
 import { createColumn, createSelectColumn } from './column-helpers'
 import { Button } from '../button'
@@ -385,7 +385,10 @@ export const UnifiedHeaderMenu: StoryObj<typeof DataTable<HeaderMenuProduct>> = 
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
       { id: 'category', value: ['electronics'] },
     ])
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+      sku: false,
+    })
+    const initialSorting: SortingState = [{ id: 'price', desc: true }]
 
     const headerMenuColumns = [
       createSelectColumn<HeaderMenuProduct>(),
@@ -402,7 +405,7 @@ export const UnifiedHeaderMenu: StoryObj<typeof DataTable<HeaderMenuProduct>> = 
         accessor: 'status',
         sortable: false,
         filterable: true,
-        filterMode: 'multiSelect',
+        filterMode: 'select',
         filterOptions: [
           { value: 'active', label: 'Active' },
           { value: 'pending', label: 'Pending' },
@@ -477,6 +480,7 @@ export const UnifiedHeaderMenu: StoryObj<typeof DataTable<HeaderMenuProduct>> = 
           onColumnFiltersChange={setColumnFilters}
           columnVisibility={columnVisibility}
           onColumnVisibilityChange={setColumnVisibility}
+          initialSorting={initialSorting}
           maxHeight={420}
         />
       </div>

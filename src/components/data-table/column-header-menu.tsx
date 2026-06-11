@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { type RefObject, useState } from 'react'
 import type { Column } from '@tanstack/react-table'
 import {
   Button as AriaButton,
@@ -56,6 +56,7 @@ export const styles = sortCx({
 export interface ColumnHeaderMenuProps<TData> {
   column: Column<TData, unknown>
   enableColumnVisibility: boolean
+  triggerRef?: RefObject<Element | null>
 }
 
 // =============================================================================
@@ -75,6 +76,7 @@ function getSelectedValues(currentValue: unknown): string[] {
 export function ColumnHeaderMenu<TData>({
   column,
   enableColumnVisibility,
+  triggerRef,
 }: ColumnHeaderMenuProps<TData>) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -178,7 +180,7 @@ export function ColumnHeaderMenu<TData>({
         )}
         <Icon name="chevron-down" size="sm" />
       </AriaButton>
-      <Popover placement="bottom end" className={styles.popover}>
+      <Popover placement="bottom start" triggerRef={triggerRef} className={styles.popover}>
         <Dialog className={styles.dialog} onClick={(event) => event.stopPropagation()}>
           <div className={styles.header}>
             <span className={styles.headerTitle}>{label}</span>

@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode } from 'react'
+import { type ReactNode, useCallback } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { Icon } from '@/components/icon'
 import { cx } from '@/utils/cx'
@@ -13,6 +13,7 @@ interface DraggableHeaderCellProps {
   style?: React.CSSProperties
   onClick?: React.MouseEventHandler<HTMLDivElement>
   forceDragHandleVisible?: boolean
+  setCellRef?: (node: HTMLDivElement | null) => void
 }
 
 export function DraggableHeaderCell({
@@ -23,6 +24,7 @@ export function DraggableHeaderCell({
   style,
   onClick,
   forceDragHandleVisible = false,
+  setCellRef,
 }: DraggableHeaderCellProps) {
   const {
     attributes,
@@ -40,10 +42,17 @@ export function DraggableHeaderCell({
   const transformStyle = transform
     ? `translate3d(${Math.round(transform.x)}px, 0, 0)`
     : undefined
+  const setCombinedNodeRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      setNodeRef(node)
+      setCellRef?.(node)
+    },
+    [setNodeRef, setCellRef]
+  )
 
   return (
     <div
-      ref={setNodeRef}
+      ref={setCombinedNodeRef}
       className={cx('group/header', className)}
       style={{
         ...style,

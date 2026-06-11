@@ -57,4 +57,14 @@ describe('DraggableHeaderCell', () => {
     expect(getDragHandle().classList.contains('opacity-100')).toBe(true)
     expect(getDragHandle().classList.contains('opacity-0')).toBe(false)
   })
+
+  it('exposes the rendered header cell node to callers', () => {
+    const setCellRef = vi.fn()
+
+    renderCell({ setCellRef })
+
+    expect(setCellRef).toHaveBeenCalledWith(
+      screen.getByText('Name').closest('[data-untitled-ds="DraggableHeaderCell"]')
+    )
+  })
 })

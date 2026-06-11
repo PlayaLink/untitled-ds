@@ -17,6 +17,7 @@ import {
   useCallback,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
+  type RefObject,
   type TouchEvent as ReactTouchEvent,
 } from 'react'
 import {
@@ -684,6 +685,20 @@ function HeaderRow<TData>({
 }: HeaderRowProps<TData>) {
   const shouldShowColumnVisibility = enableColumnVisibility && hasHideableColumns(table)
   const [activeResizeColumnId, setActiveResizeColumnId] = useState<string | null>(null)
+  const headerCellRefs = useRef<Record<string, RefObject<Element | null>>>({})
+  const headerCellRefCallbacks = useRef<Record<string, (node: HTMLDivElement | null) => void>>({})
+
+  const getHeaderCellRef = useCallback((headerId: string) => {
+    headerCellRefs.current[headerId] ??= { current: null }
+    return headerCellRefs.current[headerId]
+  }, [])
+
+  const getHeaderCellRefCallback = useCallback((headerId: string) => {
+    headerCellRefCallbacks.current[headerId] ??= (node: HTMLDivElement | null) => {
+      getHeaderCellRef(headerId).current = node
+    }
+    return headerCellRefCallbacks.current[headerId]
+  }, [getHeaderCellRef])
 
   const handleColumnResizeStart = useCallback(
     (column: Column<TData, unknown>, event: HeaderResizeStartEvent) => {
@@ -813,6 +828,8 @@ function HeaderRow<TData>({
         width: hasExplicitWidth ? layoutWidth : undefined,
         flexShrink: hasExplicitWidth ? 0 : undefined,
       }
+      const headerCellRef = getHeaderCellRef(header.id)
+      const setHeaderCellRef = getHeaderCellRefCallback(header.id)
       const cellContent = (
         <>
           {header.isPlaceholder
@@ -822,6 +839,7 @@ function HeaderRow<TData>({
             <ColumnHeaderMenu
               column={header.column}
               enableColumnVisibility={enableColumnVisibility}
+              triggerRef={headerCellRef}
             />
           )}
           {/* Resize handle */}
@@ -848,6 +866,7 @@ function HeaderRow<TData>({
             isDraggable={isReorderable}
             className={cellClassName}
             style={cellStyle}
+            setCellRef={setHeaderCellRef}
             forceDragHandleVisible={isResizing}
           >
             {cellContent}
@@ -859,6 +878,7 @@ function HeaderRow<TData>({
         <div
           key={header.id}
           className={cellClassName}
+          ref={setHeaderCellRef}
           style={cellStyle}>
           {cellContent}
         </div>

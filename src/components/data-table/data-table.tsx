@@ -17,6 +17,7 @@ import {
   useCallback,
   useMemo,
   type FC,
+  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
   type RefObject,
@@ -1184,7 +1185,7 @@ function HeaderRow<TData>({
         shouldRenderColumnVisibilityInCell ? 'px-6' : 'px-2'
       )
       const cellClassName = cx(
-        'relative flex h-full items-center gap-1',
+        'group/header relative flex h-full items-center gap-1',
         isDragCol || isUtilityCol ? compactCellClassName : 'py-3 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
         hasHeaderMenu && 'select-none hover:bg-secondary-hover',
@@ -1200,11 +1201,34 @@ function HeaderRow<TData>({
       }
       const headerCellRef = getHeaderCellRef(header.id)
       const setHeaderCellRef = getHeaderCellRefCallback(header.id)
+      const handleHeaderLabelSort = (
+        event: ReactMouseEvent<HTMLElement> | ReactKeyboardEvent<HTMLElement>
+      ) => {
+        event.stopPropagation()
+        header.column.getToggleSortingHandler()?.(event)
+      }
+      const handleHeaderLabelKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return
+
+        event.preventDefault()
+        handleHeaderLabelSort(event)
+      }
+      const renderedHeader = header.isPlaceholder
+        ? null
+        : flexRender(header.column.columnDef.header, header.getContext())
       const cellContent = (
         <>
-          {header.isPlaceholder
-            ? null
-            : flexRender(header.column.columnDef.header, header.getContext())}
+          {canSort && !header.isPlaceholder ? (
+            <span
+              role="button"
+              tabIndex={0}
+              className="inline-flex min-w-0 cursor-pointer items-center outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-border-brand"
+              onClick={handleHeaderLabelSort}
+              onKeyDown={handleHeaderLabelKeyDown}
+            >
+              {renderedHeader}
+            </span>
+          ) : renderedHeader}
           {hasHeaderMenu && (
             <ColumnHeaderMenu
               column={header.column}

@@ -43,6 +43,7 @@ export const styles = sortCx({
   },
   option: {
     checkbox: 'w-full px-3 py-2 transition-colors hover:bg-secondary',
+    item: 'flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-secondary outline-none transition-colors hover:bg-secondary focus:bg-secondary',
   },
   clearButton: 'text-xs font-medium text-brand-600 hover:text-brand-700',
 })
@@ -214,16 +215,33 @@ export function ColumnHeaderMenu<TData>({
                 {filterOptions.map((option) => {
                   const isSelected = selectedValues.includes(option.value)
 
+                  if (filterMode === 'multiSelect') {
+                    return (
+                      <Checkbox
+                        key={option.value}
+                        size="md"
+                        label={option.label}
+                        isSelected={isSelected}
+                        onChange={() => handleOptionToggle(option.value)}
+                        aria-label={option.label}
+                        className={styles.option.checkbox}
+                      />
+                    )
+                  }
+
                   return (
-                    <Checkbox
+                    <button
                       key={option.value}
-                      size="md"
-                      label={option.label}
-                      isSelected={isSelected}
-                      onChange={() => handleOptionToggle(option.value)}
-                      aria-label={option.label}
-                      className={styles.option.checkbox}
-                    />
+                      type="button"
+                      aria-pressed={isSelected}
+                      className={styles.option.item}
+                      onClick={() => handleOptionToggle(option.value)}
+                    >
+                      {option.label}
+                      {isSelected && (
+                        <Icon name="check" size="sm" className={styles.action.check} />
+                      )}
+                    </button>
                   )
                 })}
               </div>

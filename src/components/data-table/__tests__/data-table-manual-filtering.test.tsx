@@ -111,9 +111,9 @@ describe('DataTable manualFiltering', () => {
       />
     )
 
-    // Open the status column menu and click "Active" via its filter checkbox
+    // Open the status column menu and click "Active" via its filter menu item.
     fireEvent.click(screen.getByRole('button', { name: /column menu for status/i }))
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Active' }))
 
     expect(onColumnFiltersChange).toHaveBeenCalled()
   })
@@ -135,7 +135,7 @@ describe('DataTable manualFiltering', () => {
     expect(screen.queryByText('Charlie')).toBeNull()
   })
 
-  it('reflects controlled columnFilters in the popover checkbox state on mount and across re-renders', () => {
+  it('reflects controlled columnFilters in the popover selected state on mount and across re-renders', () => {
     function Harness({ filters }: { filters: ColumnFiltersState }) {
       const [current, setCurrent] = useState(filters)
       // Sync prop changes into state so rerender swaps the controlled value
@@ -157,16 +157,14 @@ describe('DataTable manualFiltering', () => {
     // Open popover by clicking the column menu trigger
     fireEvent.click(screen.getByRole('button', { name: /column menu for status/i }))
 
-    const activeCheckbox = screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement
-    const inactiveCheckbox = screen.getByRole('checkbox', { name: 'Inactive' }) as HTMLInputElement
-    expect(activeCheckbox.checked).toBe(true)
-    expect(inactiveCheckbox.checked).toBe(false)
+    expect(screen.getByRole('button', { name: 'Active' }).getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByRole('button', { name: 'Inactive' }).getAttribute('aria-pressed')).toBe('false')
 
     // Re-render with a different controlled value
     rerender(<Harness filters={[{ id: 'status', value: 'inactive' }]} />)
 
-    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(false)
-    expect((screen.getByRole('checkbox', { name: 'Inactive' }) as HTMLInputElement).checked).toBe(true)
+    expect(screen.getByRole('button', { name: 'Active' }).getAttribute('aria-pressed')).toBe('false')
+    expect(screen.getByRole('button', { name: 'Inactive' }).getAttribute('aria-pressed')).toBe('true')
   })
 
   it('warns once on mount when manualFiltering is true and onColumnFiltersChange is missing', () => {

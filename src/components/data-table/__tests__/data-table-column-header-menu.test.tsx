@@ -33,15 +33,16 @@ interface Item {
   id: string
   name: string
   status: 'active' | 'inactive'
+  category: 'hardware' | 'software'
   sku: string
   owner: string
   stock: number
 }
 
 const data: Item[] = [
-  { id: 'a', name: 'Alpha', status: 'active', sku: 'A-001', owner: 'Jane', stock: 3 },
-  { id: 'b', name: 'Bravo', status: 'inactive', sku: 'B-002', owner: 'Max', stock: 0 },
-  { id: 'c', name: 'Charlie', status: 'active', sku: 'C-003', owner: 'Priya', stock: 8 },
+  { id: 'a', name: 'Alpha', status: 'active', category: 'hardware', sku: 'A-001', owner: 'Jane', stock: 3 },
+  { id: 'b', name: 'Bravo', status: 'inactive', category: 'software', sku: 'B-002', owner: 'Max', stock: 0 },
+  { id: 'c', name: 'Charlie', status: 'active', category: 'hardware', sku: 'C-003', owner: 'Priya', stock: 8 },
 ]
 
 const columns: ColumnDef<Item, unknown>[] = [
@@ -62,6 +63,18 @@ const columns: ColumnDef<Item, unknown>[] = [
     filterOptions: [
       { value: 'active', label: 'Active' },
       { value: 'inactive', label: 'Inactive' },
+    ],
+  }),
+  createColumn<Item>({
+    id: 'category',
+    header: 'Category',
+    accessor: 'category',
+    sortable: false,
+    filterable: true,
+    filterMode: 'multiSelect',
+    filterOptions: [
+      { value: 'hardware', label: 'Hardware' },
+      { value: 'software', label: 'Software' },
     ],
   }),
   createColumn<Item>({
@@ -133,11 +146,26 @@ describe('DataTable column header menu', () => {
     renderTable()
 
     fireEvent.click(getMenuButton('Status'))
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Inactive' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Inactive' }))
 
     expect(screen.queryByText('Alpha')).toBeNull()
     expect(screen.getByText('Bravo')).toBeTruthy()
     expect(screen.queryByText('Charlie')).toBeNull()
+  })
+
+  it('renders single-select filters as menu items and multi-select filters as checkboxes', () => {
+    renderTable()
+
+    fireEvent.click(getMenuButton('Status'))
+
+    expect(screen.queryByRole('checkbox', { name: 'Inactive' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Inactive' }).getAttribute('aria-pressed')).toBe('false')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Inactive' }))
+    fireEvent.click(getMenuButton('Category'))
+
+    expect(screen.getByRole('checkbox', { name: 'Hardware' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Hardware' })).toBeNull()
   })
 
   it('marks a column menu active when the filter is active', () => {

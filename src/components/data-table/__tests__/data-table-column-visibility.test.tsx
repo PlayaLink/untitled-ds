@@ -68,6 +68,14 @@ function getManagerButton() {
   return screen.getByRole('button', { name: /manage columns/i })
 }
 
+function getManagerIconName() {
+  const icon = getManagerButton().querySelector('svg')
+  if (!(icon instanceof SVGElement)) {
+    throw new Error('Column visibility icon was not rendered')
+  }
+  return icon.getAttribute('data-icon')
+}
+
 function queryManagerButton() {
   return screen.queryByRole('button', { name: /manage columns/i })
 }
@@ -127,6 +135,19 @@ describe('DataTable column visibility', () => {
       />
     )
     expect(queryManagerButton()).toBeNull()
+  })
+
+  it('uses vertical dots for the column visibility manager trigger', () => {
+    render(
+      <DataTable
+        columns={columns}
+        data={data}
+        getRowId={(row) => row.id}
+        enableColumnVisibility
+      />
+    )
+
+    expect(getManagerIconName()).toBe('ellipsis-vertical')
   })
 
   it('lists only hideable leaf columns in current order', () => {

@@ -76,6 +76,7 @@ import {
   getColumnLayoutWidth,
   hasColumnLayoutWidth,
 } from './column-sizing'
+import { isUtilityColumn } from './column-utils'
 import { useRowReorder, type RowReorderChange } from '@/hooks/use-row-reorder'
 
 export interface PaginationConfig {
@@ -702,7 +703,9 @@ function HeaderRow<TData>({
   const shouldShowColumnVisibility = enableColumnVisibility && hasHideableColumns(table)
   const rightmostVisibleColumn = table.getVisibleLeafColumns().at(-1)
   const shouldPlaceColumnVisibilityInUtilityHeader =
-    shouldShowColumnVisibility && rightmostVisibleColumn?.columnDef.meta?.isUtility === true
+    shouldShowColumnVisibility &&
+    rightmostVisibleColumn !== undefined &&
+    isUtilityColumn(rightmostVisibleColumn)
   const [activeResizeColumnId, setActiveResizeColumnId] = useState<string | null>(null)
   const headerCellRefs = useRef<Record<string, RefObject<Element | null>>>({})
   const headerCellRefCallbacks = useRef<Record<string, (node: HTMLDivElement | null) => void>>({})
@@ -826,11 +829,12 @@ function HeaderRow<TData>({
       const canFilter = Boolean(
         filterMeta?.filterable && filterMeta?.filterOptions?.length && header.column.getCanFilter()
       )
-      const hasHeaderMenu = !header.isPlaceholder && (
+      const isUtilityCol = isUtilityColumn(header.column)
+      const hasHeaderMenu = !isUtilityCol && !header.isPlaceholder && (
         canSort || canFilter || (enableColumnVisibility && header.column.getCanHide())
       )
-      const isReorderable = enableColumnReorder && header.column.columnDef.meta?.reorderable !== false
-      const isUtilityCol = header.column.columnDef.meta?.isUtility === true
+      const isReorderable =
+        enableColumnReorder && !isUtilityCol && header.column.columnDef.meta?.reorderable !== false
       const shouldRenderColumnVisibilityInCell =
         shouldPlaceColumnVisibilityInUtilityHeader &&
         header.column.id === rightmostVisibleColumn?.id &&

@@ -421,7 +421,7 @@ export const ColumnVisibility: StoryObj<typeof DataTable<VisibilityProduct>> = {
       <div>
         <h3 className="text-lg font-semibold text-primary">Column Visibility</h3>
         <p className="text-sm text-tertiary">
-          Open the sliders control to hide visible columns or restore the SKU column.
+          Open the column menu to hide visible columns or restore the SKU column.
         </p>
       </div>
       <DataTable

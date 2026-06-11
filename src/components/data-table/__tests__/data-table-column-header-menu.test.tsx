@@ -492,6 +492,52 @@ describe('DataTable column header menu', () => {
     expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: /actions/i })).toBeNull()
   })
 
+  it('treats conventional actions column ids as row utility columns', () => {
+    render(
+      <DataTable
+        columns={[
+          createSelectColumn<Item>(),
+          createColumn<Item>({
+            id: 'name',
+            header: 'Name',
+            label: 'Product',
+            accessor: 'name',
+            isPrimary: true,
+          }),
+          createColumn<Item>({
+            id: 'status',
+            header: 'Status',
+            accessor: 'status',
+          }),
+          createColumn<Item>({
+            id: 'actions',
+            header: '',
+            accessor: (row) => (
+              <button type="button" aria-label={`Actions for ${row.name}`}>
+                ...
+              </button>
+            ),
+            width: 60,
+          }),
+        ]}
+        data={data}
+        getRowId={(row) => row.id}
+        enableColumnVisibility
+      />
+    )
+
+    const managerButton = screen.getByRole('button', { name: /manage columns/i })
+    const utilityHeaderCell = managerButton.parentElement
+
+    expect(screen.queryByRole('button', { name: /column menu for actions/i })).toBeNull()
+    expect(screen.getByRole('button', { name: /actions for alpha/i })).toBeTruthy()
+    expect(utilityHeaderCell?.getAttribute('class')).toContain('px-6')
+
+    fireEvent.click(managerButton)
+
+    expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: /actions/i })).toBeNull()
+  })
+
   it('aligns the utility-header column visibility trigger with row actions', () => {
     renderTable()
 

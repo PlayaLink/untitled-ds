@@ -17,7 +17,7 @@ import { Checkbox } from '@/components/checkbox'
 import { Icon } from '@/components/icon'
 import { cx, sortCx } from '@/utils/cx'
 import { DRAG_COLUMN_ID } from './inject-drag-column'
-import { resolveColumnLabel } from './column-utils'
+import { isUtilityColumn, resolveColumnLabel } from './column-utils'
 
 // =============================================================================
 // Styles
@@ -60,7 +60,9 @@ export interface ColumnVisibilityDropdownProps<TData> {
 function getVisibilityColumns<TData>(table: ReactTable<TData>) {
   return table
     .getAllLeafColumns()
-    .filter((column) => column.id !== DRAG_COLUMN_ID && column.getCanHide())
+    .filter(
+      (column) => column.id !== DRAG_COLUMN_ID && !isUtilityColumn(column) && column.getCanHide()
+    )
 }
 
 export function hasHideableColumns<TData>(table: ReactTable<TData>) {
@@ -73,7 +75,7 @@ export function hasHideableColumns<TData>(table: ReactTable<TData>) {
 
 export function ColumnVisibilityDropdown<TData>({
   table,
-  iconName = 'sliders',
+  iconName = 'dots-vertical',
 }: ColumnVisibilityDropdownProps<TData>) {
   const [isOpen, setIsOpen] = useState(false)
   const columns = getVisibilityColumns(table)

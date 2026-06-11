@@ -408,7 +408,6 @@ export const UnifiedHeaderMenu: StoryObj<typeof DataTable<HeaderMenuProduct>> = 
           { value: 'pending', label: 'Pending' },
           { value: 'inactive', label: 'Inactive' },
         ],
-        canHide: false,
         width: 132,
       }),
       createColumn<HeaderMenuProduct>({
@@ -437,7 +436,6 @@ export const UnifiedHeaderMenu: StoryObj<typeof DataTable<HeaderMenuProduct>> = 
         id: 'owner',
         header: 'Owner',
         accessor: 'owner',
-        canHide: false,
         width: 120,
       }),
       createColumn<HeaderMenuProduct>({

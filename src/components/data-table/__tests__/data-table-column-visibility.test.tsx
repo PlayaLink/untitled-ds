@@ -129,7 +129,7 @@ describe('DataTable column visibility', () => {
     expect(queryManagerButton()).toBeNull()
   })
 
-  it('lists leaf columns in current order and disables locked columns', () => {
+  it('lists only hideable leaf columns in current order', () => {
     render(
       <DataTable
         columns={columns}
@@ -145,15 +145,12 @@ describe('DataTable column visibility', () => {
 
     const checkboxes = within(getVisibilityOptions()).getAllByRole('checkbox')
     expect(checkboxes.map((checkbox) => checkbox.getAttribute('aria-label'))).toEqual([
-      'Owner',
       'Status',
-      'Product',
-      'select',
     ])
-    expect(getCheckbox('Owner').disabled).toBe(true)
-    expect(getCheckbox('Product').disabled).toBe(true)
-    expect(getCheckbox('select').disabled).toBe(true)
     expect(getCheckbox('Status').disabled).toBe(false)
+    expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: 'Owner' })).toBeNull()
+    expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: 'Product' })).toBeNull()
+    expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: 'select' })).toBeNull()
   })
 
   it('uses defaultColumnVisibility for uncontrolled initial state', () => {
@@ -215,7 +212,7 @@ describe('DataTable column visibility', () => {
     expect(screen.getByText('Visible status')).toBeTruthy()
   })
 
-  it('does not toggle locked columns', () => {
+  it('omits locked columns from the visibility menu', () => {
     const onColumnVisibilityChange = vi.fn()
 
     render(
@@ -229,9 +226,10 @@ describe('DataTable column visibility', () => {
     )
 
     fireEvent.click(getManagerButton())
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Owner' }))
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Product' }))
-    fireEvent.click(screen.getByRole('checkbox', { name: 'select' }))
+
+    expect(screen.queryByRole('checkbox', { name: 'Owner' })).toBeNull()
+    expect(screen.queryByRole('checkbox', { name: 'Product' })).toBeNull()
+    expect(screen.queryByRole('checkbox', { name: 'select' })).toBeNull()
 
     expect(onColumnVisibilityChange).not.toHaveBeenCalled()
     expect(screen.getByText('Jane')).toBeTruthy()

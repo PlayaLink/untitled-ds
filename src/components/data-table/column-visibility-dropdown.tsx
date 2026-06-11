@@ -41,7 +41,6 @@ export const styles = sortCx({
   option: {
     checkbox: 'w-full px-3 py-2 transition-colors',
     enabled: 'hover:bg-secondary',
-    disabled: 'opacity-50',
   },
 })
 
@@ -58,11 +57,13 @@ export interface ColumnVisibilityDropdownProps<TData> {
 // =============================================================================
 
 function getVisibilityColumns<TData>(table: ReactTable<TData>) {
-  return table.getAllLeafColumns().filter((column) => column.id !== DRAG_COLUMN_ID)
+  return table
+    .getAllLeafColumns()
+    .filter((column) => column.id !== DRAG_COLUMN_ID && column.getCanHide())
 }
 
 export function hasHideableColumns<TData>(table: ReactTable<TData>) {
-  return getVisibilityColumns(table).some((column) => column.getCanHide())
+  return getVisibilityColumns(table).length > 0
 }
 
 // =============================================================================
@@ -100,7 +101,6 @@ export function ColumnVisibilityDropdown<TData>({ table }: ColumnVisibilityDropd
           <div className={styles.optionsList} data-untitled-ds='ColumnVisibilityOptions'>
             {columns.map((column) => {
               const label = resolveColumnLabel(column)
-              const canHide = column.getCanHide()
 
               return (
                 <Checkbox
@@ -109,17 +109,8 @@ export function ColumnVisibilityDropdown<TData>({ table }: ColumnVisibilityDropd
                   label={label}
                   aria-label={label}
                   isSelected={column.getIsVisible()}
-                  isDisabled={!canHide}
-                  onChange={(isSelected) => {
-                    if (!canHide) return
-                    column.toggleVisibility(isSelected)
-                  }}
-                  className={({ isDisabled }) =>
-                    cx(
-                      styles.option.checkbox,
-                      isDisabled ? styles.option.disabled : styles.option.enabled
-                    )
-                  }
+                  onChange={(isSelected) => column.toggleVisibility(isSelected)}
+                  className={cx(styles.option.checkbox, styles.option.enabled)}
                 />
               )
             })}

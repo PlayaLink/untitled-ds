@@ -754,7 +754,7 @@ function HeaderRow<TData>({
             className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
             {headerCells}
             {shouldShowColumnVisibility && (
-              <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary shadow-[-8px_0_12px_-12px_rgba(10,13,18,0.45)]">
+              <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary">
                 <ColumnVisibilityDropdown table={table} />
               </div>
             )}
@@ -770,7 +770,7 @@ function HeaderRow<TData>({
       data-untitled-ds='HeaderRow'>
       {headerCells}
       {shouldShowColumnVisibility && (
-        <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary shadow-[-8px_0_12px_-12px_rgba(10,13,18,0.45)]">
+        <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary">
           <ColumnVisibilityDropdown table={table} />
         </div>
       )}

@@ -661,7 +661,6 @@ function HeaderRow<TData>({
   const headerCells = table.getHeaderGroups().flatMap((headerGroup) =>
     headerGroup.headers.map((header) => {
       const canSort = header.column.getCanSort()
-      const sortDirection = header.column.getIsSorted()
       const canResize = enableColumnResizing && header.column.getCanResize()
       const isResizing = header.column.getIsResizing()
       const filterMeta = header.column.columnDef.meta
@@ -684,28 +683,17 @@ function HeaderRow<TData>({
         'relative flex h-full items-center gap-1',
         isDragCol ? 'justify-center px-2' : 'py-3 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
-        hasHeaderMenu && 'select-none hover:bg-secondary-hover',
-        canSort && 'cursor-pointer'
+        hasHeaderMenu && 'select-none hover:bg-secondary-hover'
       )
       const cellStyle = {
         width: hasExplicitWidth ? layoutWidth : undefined,
         flexShrink: hasExplicitWidth ? 0 : undefined,
       }
-      const cellOnClick = canSort ? header.column.getToggleSortingHandler() : undefined
       const cellContent = (
         <>
           {header.isPlaceholder
             ? null
             : flexRender(header.column.columnDef.header, header.getContext())}
-          {canSort && sortDirection && (
-            <span className="ml-1">
-              {sortDirection === 'asc' ? (
-                <Icon name="arrow-up" size="sm" className="text-quaternary" />
-              ) : (
-                <Icon name="arrow-down" size="sm" className="text-quaternary" />
-              )}
-            </span>
-          )}
           {hasHeaderMenu && (
             <ColumnHeaderMenu
               column={header.column}
@@ -736,7 +724,6 @@ function HeaderRow<TData>({
             isDraggable={isReorderable}
             className={cellClassName}
             style={cellStyle}
-            onClick={cellOnClick}
           >
             {cellContent}
           </DraggableHeaderCell>
@@ -747,8 +734,7 @@ function HeaderRow<TData>({
         <div
           key={header.id}
           className={cellClassName}
-          style={cellStyle}
-          onClick={cellOnClick}>
+          style={cellStyle}>
           {cellContent}
         </div>
       );

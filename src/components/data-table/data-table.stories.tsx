@@ -304,7 +304,7 @@ export const Overview: Story = {
         <div>
           <h3 className="text-lg font-semibold text-primary">Filter + Sort</h3>
           <p className="text-sm text-tertiary">
-            Header clicks toggle sort; the column menu also exposes explicit sort and filter actions.
+            Use the column menu to combine explicit sorting with single-select and multi-select filters.
           </p>
         </div>
         <DataTable
@@ -379,8 +379,8 @@ export const ColumnVisibility: StoryObj<typeof DataTable<VisibilityProduct>> = {
   ),
 }
 
-export const UnifiedHeaderMenuPrototype: StoryObj<typeof DataTable<HeaderMenuProduct>> = {
-  name: 'Unified Header Menu Prototype',
+export const UnifiedHeaderMenu: StoryObj<typeof DataTable<HeaderMenuProduct>> = {
+  name: 'Unified Header Menu',
   render: () => {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
       { id: 'category', value: ['electronics'] },
@@ -460,10 +460,10 @@ export const UnifiedHeaderMenuPrototype: StoryObj<typeof DataTable<HeaderMenuPro
     return (
       <div className="flex max-w-6xl flex-col gap-4 px-4 py-8">
         <div>
-          <h3 className="text-lg font-semibold text-primary">Unified Header Menu Prototype</h3>
+          <h3 className="text-lg font-semibold text-primary">Unified Header Menu</h3>
           <p className="text-sm text-tertiary">
             Open each chevron to evaluate sortable-only, filterable, active-filter, hideable, and
-            locked-column behavior. Sortable header labels still toggle sort directly.
+            locked-column behavior through one header control.
           </p>
         </div>
         <div className="rounded-lg bg-secondary p-3 font-mono text-xs">

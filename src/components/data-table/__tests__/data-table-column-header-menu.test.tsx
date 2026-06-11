@@ -132,14 +132,28 @@ describe('DataTable column header menu', () => {
     expect(renderedRows).toEqual(['Charlie', 'Bravo', 'Alpha'])
   })
 
-  it('still toggles sorting when the sortable header label is clicked', () => {
+  it('marks a column menu active when the sort is active', () => {
+    renderTable()
+
+    fireEvent.click(getMenuButton('Product'))
+    fireEvent.click(screen.getByRole('button', { name: /sort descending/i }))
+
+    const menuButton = screen.getByRole('button', {
+      name: /column menu for product, sorted descending/i,
+    })
+    expect(menuButton.getAttribute('data-state')).toBe('active')
+    expect(menuButton.getAttribute('data-sort-direction')).toBe('desc')
+  })
+
+  it('does not toggle sorting when the sortable header label is clicked', () => {
     renderTable()
 
     fireEvent.click(screen.getByText('Name'))
 
     const renderedRows = screen.getAllByText(/Alpha|Bravo|Charlie/).map((node) => node.textContent)
     expect(renderedRows).toEqual(['Alpha', 'Bravo', 'Charlie'])
-    expect(getMenuButton('Product').getAttribute('data-state')).toBe('active')
+    expect(getMenuButton('Product').getAttribute('data-state')).toBe('inactive')
+    expect(getMenuButton('Product').getAttribute('data-sort-direction')).toBeNull()
   })
 
   it('filters a filterable column through the unified menu', () => {
@@ -182,6 +196,25 @@ describe('DataTable column header menu', () => {
 
     expect(getMenuButton('Status').getAttribute('data-state')).toBe('active')
     expect(within(getMenuButton('Status')).getByText('1')).toBeTruthy()
+  })
+
+  it('clears a filter through the unified menu', () => {
+    renderTable()
+
+    fireEvent.click(getMenuButton('Status'))
+    fireEvent.click(screen.getByRole('button', { name: 'Inactive' }))
+
+    expect(screen.queryByText('Alpha')).toBeNull()
+    expect(screen.getByText('Bravo')).toBeTruthy()
+    expect(screen.queryByText('Charlie')).toBeNull()
+
+    fireEvent.click(getMenuButton('Status'))
+    fireEvent.click(screen.getByRole('button', { name: /clear/i }))
+
+    expect(screen.getByText('Alpha')).toBeTruthy()
+    expect(screen.getByText('Bravo')).toBeTruthy()
+    expect(screen.getByText('Charlie')).toBeTruthy()
+    expect(getMenuButton('Status').getAttribute('data-state')).toBe('inactive')
   })
 
   it('hides hideable columns through the unified menu', () => {

@@ -23,6 +23,7 @@ export const styles = sortCx({
     default: 'text-quaternary hover:bg-tertiary hover:text-tertiary',
     active: 'text-brand-600 hover:bg-tertiary hover:text-brand-700',
     activeBadge: 'flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-semibold leading-none text-white',
+    sortIcon: 'text-current',
   },
   popover: [
     'w-64 origin-(--trigger-anchor-point) overflow-hidden rounded-lg bg-primary shadow-lg ring-1 ring-border-secondary-alt',
@@ -93,6 +94,18 @@ export function ColumnHeaderMenu<TData>({
   const filterCount = selectedValues.length
   const isActive = Boolean(sortDirection || hasActiveFilter)
   const filterMode = filterMeta?.filterMode ?? 'select'
+  const sortLabel = sortDirection === 'asc'
+    ? 'sorted ascending'
+    : sortDirection === 'desc'
+      ? 'sorted descending'
+      : undefined
+  const filterLabel = hasActiveFilter
+    ? `${filterCount} ${filterCount === 1 ? 'filter' : 'filters'} active`
+    : undefined
+  const activeDescription = [sortLabel, filterLabel].filter(Boolean).join(', ')
+  const ariaLabel = activeDescription
+    ? `Column menu for ${label}, ${activeDescription}`
+    : `Column menu for ${label}`
 
   const handleSort = (direction: 'asc' | 'desc') => {
     column.toggleSorting(direction === 'desc')
@@ -141,8 +154,10 @@ export function ColumnHeaderMenu<TData>({
       onOpenChange={setIsOpen}
       data-untitled-ds='ColumnHeaderMenu'>
       <AriaButton
-        aria-label={`Column menu for ${label}`}
+        aria-label={ariaLabel}
         data-state={isActive ? 'active' : 'inactive'}
+        data-sort-direction={sortDirection || undefined}
+        data-filter-count={hasActiveFilter ? filterCount : undefined}
         className={cx(
           styles.trigger.base,
           isActive ? styles.trigger.active : styles.trigger.default
@@ -153,6 +168,13 @@ export function ColumnHeaderMenu<TData>({
           <span aria-hidden="true" className={styles.trigger.activeBadge}>
             {filterCount}
           </span>
+        )}
+        {sortDirection && (
+          <Icon
+            name={sortDirection === 'asc' ? 'arrow-up' : 'arrow-down'}
+            size="sm"
+            className={styles.trigger.sortIcon}
+          />
         )}
         <Icon name="chevron-down" size="sm" />
       </AriaButton>

@@ -89,6 +89,7 @@ import {
   faDownload,
   faArrowUpRightFromSquare,
   faGripVertical,
+  faSliders,
   faLink,
   faLinkSlash,
   faCamera,
@@ -191,6 +192,7 @@ const iconMap = {
   'link-external': faArrowUpRightFromSquare, // no regular version
   'camera': faCamera, // no regular version
   'grip-vertical': faGripVertical, // no regular version
+  'sliders': faSliders, // no regular version
   // Trend/Chart Icons
   'trend-up-01': faArrowTrendUp, // no regular version
   'trend-down-01': faArrowTrendDown, // no regular version

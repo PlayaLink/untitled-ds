@@ -23,6 +23,7 @@ import {
   type ColumnSizingState,
   type ColumnFiltersState,
   type ColumnOrderState,
+  type VisibilityState,
   type Updater,
   type FilterFn,
   type Table as ReactTable,
@@ -55,6 +56,7 @@ import { Icon } from '@/components/icon'
 import { Pagination } from '@/components/pagination'
 import { TableActionsBar, type TableAction } from './table-actions-bar'
 import { ColumnFilterDropdown } from './column-filter-dropdown'
+import { ColumnVisibilityDropdown, hasHideableColumns } from './column-visibility-dropdown'
 import { DraggableHeaderCell } from './draggable-header-cell'
 import { SortableTableRow } from './sortable-table-row'
 import { DragOverlayRow } from './drag-overlay-row'
@@ -117,6 +119,14 @@ interface DataTableBaseProps<TData> {
   onColumnOrderChange?: (
     orderOrUpdater: ColumnOrderState | ((prev: ColumnOrderState) => ColumnOrderState)
   ) => void
+  /** Enable the column visibility manager in the header band */
+  enableColumnVisibility?: boolean
+  /** Controlled column visibility state (for persistence) */
+  columnVisibility?: VisibilityState
+  /** Initial column visibility state (uncontrolled; useful for defaults) */
+  defaultColumnVisibility?: VisibilityState
+  /** Callback when column visibility changes */
+  onColumnVisibilityChange?: (visibilityOrUpdater: Updater<VisibilityState>) => void
   /**
    * Fires synchronously on drop with the fully reordered data array and
    * change metadata `{ from, to, activeId, overId }`.
@@ -174,6 +184,10 @@ export function DataTable<TData>({
   enableColumnReorder = false,
   columnOrder: controlledColumnOrder,
   onColumnOrderChange,
+  enableColumnVisibility = false,
+  columnVisibility: controlledColumnVisibility,
+  defaultColumnVisibility,
+  onColumnVisibilityChange,
   enableRowReorder = false,
   onRowReorder,
   canDragRow,
@@ -197,6 +211,10 @@ export function DataTable<TData>({
   const [internalColumnOrder, setInternalColumnOrder] = useState<ColumnOrderState>(() =>
     enableColumnReorder ? columns.map((c) => c.id!) : []
   )
+  // Internal column visibility state (used when uncontrolled)
+  const [internalColumnVisibility, setInternalColumnVisibility] = useState<VisibilityState>(
+    () => defaultColumnVisibility ?? {}
+  )
 
   // Use controlled or uncontrolled column sizing
   const columnSizing = controlledColumnSizing ?? internalColumnSizing
@@ -207,6 +225,8 @@ export function DataTable<TData>({
   const columnOrder = (controlledColumnOrder && controlledColumnOrder.length > 0)
     ? controlledColumnOrder
     : internalColumnOrder
+  // Use controlled or uncontrolled column visibility
+  const columnVisibility = controlledColumnVisibility ?? internalColumnVisibility
 
   // Handler for column sizing changes - wraps external callback or uses internal state
   const handleColumnSizingChange = (updaterOrValue: Updater<ColumnSizingState>) => {
@@ -225,6 +245,28 @@ export function DataTable<TData>({
       setInternalColumnFilters(updaterOrValue)
     }
   }
+
+  // Ref to always hold the latest effective column visibility (avoids stale closures in callbacks)
+  const columnVisibilityRef = useRef(columnVisibility)
+  columnVisibilityRef.current = columnVisibility
+
+  // Handler for column visibility changes - updates internal state when uncontrolled and reports next state
+  const handleColumnVisibilityChange = useCallback(
+    (updaterOrValue: Updater<VisibilityState>) => {
+      const newValue = typeof updaterOrValue === 'function'
+        ? updaterOrValue(columnVisibilityRef.current)
+        : updaterOrValue
+
+      if (controlledColumnVisibility === undefined) {
+        setInternalColumnVisibility(newValue)
+      }
+
+      if (onColumnVisibilityChange) {
+        onColumnVisibilityChange(newValue)
+      }
+    },
+    [controlledColumnVisibility, onColumnVisibilityChange]
+  )
 
   // Ref to always hold the latest effective column order (avoids stale closures in callbacks)
   const columnOrderRef = useRef(columnOrder)
@@ -347,12 +389,14 @@ export function DataTable<TData>({
       sorting,
       columnSizing,
       columnFilters,
+      columnVisibility,
       ...(enableColumnReorder ? { columnOrder } : {}),
     },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnSizingChange: handleColumnSizingChange,
     onColumnFiltersChange: handleColumnFiltersChange,
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     ...(enableColumnReorder ? { onColumnOrderChange: handleColumnOrderChange } : {}),
     enableRowSelection: true,
     enableSorting: true,
@@ -453,6 +497,7 @@ export function DataTable<TData>({
             columnSizing={columnSizing}
             enableColumnResizing={enableColumnResizing}
             enableColumnReorder={enableColumnReorder}
+            enableColumnVisibility={enableColumnVisibility}
             sensors={columnSensors}
             columnOrder={columnOrder}
             restrictToHorizontalAxis={restrictToHorizontalAxis}
@@ -594,6 +639,7 @@ interface HeaderRowProps<TData> {
   columnSizing: ColumnSizingState
   enableColumnResizing: boolean
   enableColumnReorder: boolean
+  enableColumnVisibility: boolean
   sensors: SensorDescriptor<SensorOptions>[]
   columnOrder: ColumnOrderState
   restrictToHorizontalAxis: Modifier
@@ -605,11 +651,14 @@ function HeaderRow<TData>({
   columnSizing,
   enableColumnResizing,
   enableColumnReorder,
+  enableColumnVisibility,
   sensors,
   columnOrder,
   restrictToHorizontalAxis,
   handleDragEnd,
 }: HeaderRowProps<TData>) {
+  const shouldShowColumnVisibility = enableColumnVisibility && hasHideableColumns(table)
+
   const headerCells = table.getHeaderGroups().flatMap((headerGroup) =>
     headerGroup.headers.map((header) => {
       const canSort = header.column.getCanSort()
@@ -720,6 +769,11 @@ function HeaderRow<TData>({
           <div
             className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
             {headerCells}
+            {shouldShowColumnVisibility && (
+              <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary shadow-[-8px_0_12px_-12px_rgba(10,13,18,0.45)]">
+                <ColumnVisibilityDropdown table={table} />
+              </div>
+            )}
           </div>
         </SortableContext>
       </DndContext>
@@ -731,6 +785,11 @@ function HeaderRow<TData>({
       className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary"
       data-untitled-ds='HeaderRow'>
       {headerCells}
+      {shouldShowColumnVisibility && (
+        <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary shadow-[-8px_0_12px_-12px_rgba(10,13,18,0.45)]">
+          <ColumnVisibilityDropdown table={table} />
+        </div>
+      )}
     </div>
   );
 }

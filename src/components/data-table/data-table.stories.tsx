@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useMemo, useState } from 'react'
-import type { ColumnFiltersState, ColumnOrderState } from '@tanstack/react-table'
+import type { ColumnFiltersState, ColumnOrderState, VisibilityState } from '@tanstack/react-table'
 import { DataTable, type DataTableProps } from './data-table'
 import { createColumn, createSelectColumn } from './column-helpers'
 import { Button } from '../button'
@@ -79,6 +79,11 @@ const meta: Meta<typeof DataTable> = {
       description: 'Enable drag-and-drop column reordering',
       table: { category: 'Behavior' },
     },
+    enableColumnVisibility: {
+      control: 'boolean',
+      description: 'Enable the column visibility manager',
+      table: { category: 'Behavior' },
+    },
     enableRowReorder: {
       control: 'boolean',
       description: 'Enable drag-and-drop row reordering (disables virtualization)',
@@ -109,6 +114,18 @@ const meta: Meta<typeof DataTable> = {
       control: false,
       table: { category: 'Advanced' },
     },
+    columnVisibility: {
+      control: false,
+      table: { category: 'Advanced' },
+    },
+    onColumnVisibilityChange: {
+      control: false,
+      table: { category: 'Advanced' },
+    },
+    defaultColumnVisibility: {
+      control: false,
+      table: { category: 'Advanced' },
+    },
   },
   args: {
     maxHeight: 500,
@@ -116,6 +133,7 @@ const meta: Meta<typeof DataTable> = {
     isLoading: false,
     enableColumnResizing: true,
     enableColumnReorder: false,
+    enableColumnVisibility: false,
   },
 }
 
@@ -253,6 +271,9 @@ export const Overview: Story = {
       {/* Controlled Column Order */}
       <ControlledColumnOrderExample />
 
+      {/* Controlled Column Visibility */}
+      <ControlledColumnVisibilityExample />
+
       {/* Controlled Filter State */}
       <ControlledExample />
 
@@ -298,6 +319,35 @@ function ControlledColumnOrderExample() {
         enableColumnReorder
         columnOrder={columnOrder}
         onColumnOrderChange={setColumnOrder}
+        maxHeight={300}
+      />
+    </div>
+  )
+}
+
+function ControlledColumnVisibilityExample() {
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    price: false,
+  })
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h3 className="text-lg font-semibold text-primary">Controlled Column Visibility</h3>
+        <p className="text-sm text-tertiary">
+          Pass columnVisibility and onColumnVisibilityChange for controlled mode (useful for persistence)
+        </p>
+      </div>
+      <div className="rounded-lg bg-secondary p-3 font-mono text-xs">
+        columnVisibility: {JSON.stringify(columnVisibility)}
+      </div>
+      <DataTable
+        columns={filterableColumns}
+        data={sampleData}
+        getRowId={(row) => row.id}
+        enableColumnVisibility
+        columnVisibility={columnVisibility}
+        onColumnVisibilityChange={setColumnVisibility}
         maxHeight={300}
       />
     </div>
@@ -507,6 +557,7 @@ export const Props: Story = {
     isLoading: false,
     enableColumnResizing: true,
     enableColumnReorder: false,
+    enableColumnVisibility: false,
   },
   render: (args) => (
     <DataTable

@@ -832,9 +832,13 @@ function HeaderRow<TData>({
 
       const isDragCol = header.column.id === DRAG_COLUMN_ID
 
+      const compactCellClassName = cx(
+        'justify-center',
+        shouldRenderColumnVisibilityInCell ? 'pl-2 pr-6' : 'px-2'
+      )
       const cellClassName = cx(
         'relative flex h-full items-center gap-1',
-        isDragCol || isUtilityCol ? 'justify-center px-2' : 'py-3 pl-6 pr-3',
+        isDragCol || isUtilityCol ? compactCellClassName : 'py-3 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
         hasHeaderMenu && 'select-none hover:bg-secondary-hover'
       )

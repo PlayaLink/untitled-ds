@@ -179,6 +179,7 @@ const filterableColumns = [
     accessor: 'status',
     width: 120,
     filterable: true,
+    filterMode: 'multiSelect',
     filterOptions: [
       { value: 'active', label: 'Active' },
       { value: 'pending', label: 'Pending' },
@@ -263,7 +264,7 @@ export const Overview: Story = {
         <div>
           <h3 className="text-lg font-semibold text-primary">Column Filtering</h3>
           <p className="text-sm text-tertiary">
-            Open the column menu in Status (single-select) or Category (multi-select) columns
+            Open the column menu in Status or Category to combine multiple filter options.
           </p>
         </div>
         <DataTable
@@ -279,20 +280,20 @@ export const Overview: Story = {
         <div>
           <h3 className="text-lg font-semibold text-primary">Filter Modes</h3>
           <p className="text-sm text-tertiary">
-            Single-select (Status): one option at a time. Multi-select (Category): multiple options.
+            Status and Category use multi-select filters by default; single-select remains available for exclusive workflows.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-6">
           <div className="rounded-lg border border-secondary p-4">
-            <p className="mb-2 text-xs font-medium text-quaternary">SINGLE SELECT</p>
+            <p className="mb-2 text-xs font-medium text-quaternary">DEFAULT</p>
             <p className="text-sm text-tertiary">
-              Clicking an option filters immediately. Clicking again clears the filter.
+              Option-based grid filters use checkboxes so users can combine matching values.
             </p>
           </div>
           <div className="rounded-lg border border-secondary p-4">
-            <p className="mb-2 text-xs font-medium text-quaternary">MULTI SELECT</p>
+            <p className="mb-2 text-xs font-medium text-quaternary">ESCAPE HATCH</p>
             <p className="text-sm text-tertiary">
-              Check multiple options to include rows matching any selected value.
+              Use single-select only when a column should behave like one exclusive slice.
             </p>
           </div>
         </div>
@@ -401,6 +402,7 @@ export const UnifiedHeaderMenuPrototype: StoryObj<typeof DataTable<HeaderMenuPro
         accessor: 'status',
         sortable: false,
         filterable: true,
+        filterMode: 'multiSelect',
         filterOptions: [
           { value: 'active', label: 'Active' },
           { value: 'pending', label: 'Pending' },
@@ -548,7 +550,7 @@ function ControlledColumnVisibilityExample() {
 
 function ControlledExample() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
-    { id: 'status', value: 'active' },
+    { id: 'status', value: ['active'] },
   ])
 
   return (

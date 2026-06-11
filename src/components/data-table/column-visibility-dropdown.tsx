@@ -6,7 +6,7 @@
  */
 
 import { useState } from 'react'
-import type { Column, Table as ReactTable } from '@tanstack/react-table'
+import type { Table as ReactTable } from '@tanstack/react-table'
 import {
   Button as AriaButton,
   Dialog,
@@ -17,6 +17,7 @@ import { Checkbox } from '@/components/checkbox'
 import { Icon } from '@/components/icon'
 import { cx, sortCx } from '@/utils/cx'
 import { DRAG_COLUMN_ID } from './inject-drag-column'
+import { resolveColumnLabel } from './column-utils'
 
 // =============================================================================
 // Styles
@@ -55,11 +56,6 @@ export interface ColumnVisibilityDropdownProps<TData> {
 // =============================================================================
 // Helpers
 // =============================================================================
-
-function resolveColumnLabel<TData>(column: Column<TData, unknown>) {
-  const header = column.columnDef.header
-  return column.columnDef.meta?.label ?? (typeof header === 'string' ? header : column.id)
-}
 
 function getVisibilityColumns<TData>(table: ReactTable<TData>) {
   return table.getAllLeafColumns().filter((column) => column.id !== DRAG_COLUMN_ID)

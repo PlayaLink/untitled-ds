@@ -84,4 +84,35 @@ describe('DataTable column helpers', () => {
       owner: false,
     })
   })
+
+  it('computes a header-aware minimum width for sort and filter controls', () => {
+    const statusColumn = createColumn<Item>({
+      id: 'status',
+      header: 'Status',
+      accessor: 'status',
+      width: 120,
+      sortable: true,
+      filterable: true,
+      filterOptions: [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+      ],
+    })
+    const ownerColumn = createColumn<Item>({
+      id: 'owner',
+      header: 'Owner',
+      accessor: 'owner',
+      sortable: false,
+      filterable: false,
+      canHide: false,
+      minWidth: 72,
+      width: 72,
+    })
+
+    expect(statusColumn.minSize).toBeGreaterThan(120)
+    expect(statusColumn.size).toBe(statusColumn.minSize)
+    expect(statusColumn.meta?.width).toBe(statusColumn.minSize)
+    expect(ownerColumn.minSize).toBeGreaterThan(72)
+    expect(ownerColumn.size).toBe(ownerColumn.minSize)
+  })
 })

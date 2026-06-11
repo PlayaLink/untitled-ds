@@ -25,6 +25,11 @@ interface VisibilityProduct extends Product {
   sku: string
 }
 
+interface HeaderMenuProduct extends VisibilityProduct {
+  owner: string
+  stock: number
+}
+
 const sampleData: Product[] = [
   { id: '1', name: 'iPhone 15 Pro', status: 'active', category: 'electronics', price: 999 },
   { id: '2', name: 'MacBook Pro 14"', status: 'active', category: 'electronics', price: 1999 },
@@ -41,6 +46,13 @@ const sampleData: Product[] = [
 const columnVisibilityData: VisibilityProduct[] = sampleData.slice(0, 6).map((product, index) => ({
   ...product,
   sku: ['APL-15P', 'APL-M14', 'APP-WOL', 'APP-RUN', 'GRC-COF', 'GRC-CHO'][index],
+}))
+
+const headerMenuData: HeaderMenuProduct[] = sampleData.slice(0, 6).map((product, index) => ({
+  ...product,
+  sku: ['APL-15P', 'APL-M14', 'APP-WOL', 'APP-RUN', 'GRC-COF', 'GRC-CHO'][index],
+  owner: ['Jane', 'Max', 'Priya', 'Sam', 'Lina', 'Owen'][index],
+  stock: [32, 14, 7, 21, 48, 0][index],
 }))
 
 // =============================================================================
@@ -251,7 +263,7 @@ export const Overview: Story = {
         <div>
           <h3 className="text-lg font-semibold text-primary">Column Filtering</h3>
           <p className="text-sm text-tertiary">
-            Click the filter icon in Status (single-select) or Category (multi-select) columns
+            Open the column menu in Status (single-select) or Category (multi-select) columns
           </p>
         </div>
         <DataTable
@@ -291,7 +303,7 @@ export const Overview: Story = {
         <div>
           <h3 className="text-lg font-semibold text-primary">Filter + Sort</h3>
           <p className="text-sm text-tertiary">
-            Filtering and sorting work together. Filter icon clicks don&apos;t trigger sorting.
+            Header clicks toggle sort; the column menu also exposes explicit sort and filter actions.
           </p>
         </div>
         <DataTable
@@ -364,6 +376,112 @@ export const ColumnVisibility: StoryObj<typeof DataTable<VisibilityProduct>> = {
       />
     </div>
   ),
+}
+
+export const UnifiedHeaderMenuPrototype: StoryObj<typeof DataTable<HeaderMenuProduct>> = {
+  name: 'Unified Header Menu Prototype',
+  render: () => {
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+      { id: 'category', value: ['electronics'] },
+    ])
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
+    const headerMenuColumns = [
+      createSelectColumn<HeaderMenuProduct>(),
+      createColumn<HeaderMenuProduct>({
+        id: 'name',
+        header: 'Product Name',
+        label: 'Product',
+        accessor: 'name',
+        isPrimary: true,
+      }),
+      createColumn<HeaderMenuProduct>({
+        id: 'status',
+        header: 'Status',
+        accessor: 'status',
+        sortable: false,
+        filterable: true,
+        filterOptions: [
+          { value: 'active', label: 'Active' },
+          { value: 'pending', label: 'Pending' },
+          { value: 'inactive', label: 'Inactive' },
+        ],
+        canHide: false,
+        width: 132,
+      }),
+      createColumn<HeaderMenuProduct>({
+        id: 'category',
+        header: 'Category',
+        accessor: 'category',
+        sortable: false,
+        filterable: true,
+        filterMode: 'multiSelect',
+        filterOptions: [
+          { value: 'electronics', label: 'Electronics' },
+          { value: 'clothing', label: 'Clothing' },
+          { value: 'food', label: 'Food' },
+          { value: 'books', label: 'Books' },
+        ],
+        width: 152,
+      }),
+      createColumn<HeaderMenuProduct>({
+        id: 'sku',
+        header: 'SKU',
+        accessor: 'sku',
+        sortable: false,
+        width: 120,
+      }),
+      createColumn<HeaderMenuProduct>({
+        id: 'owner',
+        header: 'Owner',
+        accessor: 'owner',
+        canHide: false,
+        width: 120,
+      }),
+      createColumn<HeaderMenuProduct>({
+        id: 'stock',
+        header: 'Stock',
+        accessor: 'stock',
+        sortable: false,
+        canHide: false,
+        width: 96,
+      }),
+      createColumn<HeaderMenuProduct>({
+        id: 'price',
+        header: 'Price',
+        accessor: (row) => `$${row.price}`,
+        sortValue: 'price',
+        width: 108,
+      }),
+    ]
+
+    return (
+      <div className="flex max-w-6xl flex-col gap-4 px-4 py-8">
+        <div>
+          <h3 className="text-lg font-semibold text-primary">Unified Header Menu Prototype</h3>
+          <p className="text-sm text-tertiary">
+            Open each chevron to evaluate sortable-only, filterable, active-filter, hideable, and
+            locked-column behavior. Sortable header labels still toggle sort directly.
+          </p>
+        </div>
+        <div className="rounded-lg bg-secondary p-3 font-mono text-xs">
+          columnFilters: {JSON.stringify(columnFilters)} | columnVisibility:{' '}
+          {JSON.stringify(columnVisibility)}
+        </div>
+        <DataTable
+          columns={headerMenuColumns}
+          data={headerMenuData}
+          getRowId={(row) => row.id}
+          enableColumnVisibility
+          columnFilters={columnFilters}
+          onColumnFiltersChange={setColumnFilters}
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={setColumnVisibility}
+          maxHeight={420}
+        />
+      </div>
+    )
+  },
 }
 
 function ControlledColumnOrderExample() {
@@ -554,7 +672,7 @@ function RowReorderSortDisabledExample() {
         <h3 className="text-lg font-semibold text-primary">Row Reordering — Grips Disabled Under Sort</h3>
         <p className="text-sm text-tertiary">
           When a column sort is active, all drag grips disable and show a "Clear sort to reorder"
-          tooltip. Click any column header to toggle the sort and watch grips change state.
+          tooltip. Click a sortable header or use its menu to change sorting and watch grips change state.
         </p>
       </div>
       <DataTable

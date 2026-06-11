@@ -1,0 +1,253 @@
+'use client'
+
+import { useState } from 'react'
+import type { Column } from '@tanstack/react-table'
+import {
+  Button as AriaButton,
+  Dialog,
+  DialogTrigger,
+  Popover,
+} from 'react-aria-components'
+import { Checkbox } from '@/components/checkbox'
+import { Icon } from '@/components/icon'
+import { cx, sortCx } from '@/utils/cx'
+import { resolveColumnLabel } from './column-utils'
+
+// =============================================================================
+// Styles
+// =============================================================================
+
+export const styles = sortCx({
+  trigger: {
+    base: 'ml-1.5 flex h-5 min-w-5 cursor-pointer items-center justify-center gap-1.5 rounded px-0.5 outline-none transition-colors',
+    default: 'text-quaternary hover:bg-tertiary hover:text-tertiary',
+    active: 'text-brand-600 hover:bg-tertiary hover:text-brand-700',
+    activeBadge: 'flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-semibold leading-none text-white',
+  },
+  popover: [
+    'w-64 origin-(--trigger-anchor-point) overflow-hidden rounded-lg bg-primary shadow-lg ring-1 ring-border-secondary-alt',
+    'entering:duration-150 entering:ease-out entering:animate-in entering:fade-in entering:placement-bottom:slide-in-from-top-0.5',
+    'exiting:duration-100 exiting:ease-in exiting:animate-out exiting:fade-out',
+  ].join(' '),
+  dialog: 'outline-hidden',
+  header: 'border-b border-secondary px-3 py-2',
+  headerTitle: 'truncate text-xs font-semibold text-tertiary',
+  section: 'py-1',
+  sectionTitle: 'px-3 py-1.5 text-xs font-semibold text-quaternary',
+  divider: 'h-px bg-border-secondary',
+  action: {
+    base: 'flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-secondary outline-none transition-colors hover:bg-secondary focus:bg-secondary',
+    disabled: 'cursor-not-allowed text-disabled hover:bg-transparent focus:bg-transparent',
+    icon: 'text-quaternary',
+    check: 'ml-auto text-brand-600',
+  },
+  option: {
+    checkbox: 'w-full px-3 py-2 transition-colors hover:bg-secondary',
+  },
+  clearButton: 'text-xs font-medium text-brand-600 hover:text-brand-700',
+})
+
+// =============================================================================
+// Types
+// =============================================================================
+
+export interface ColumnHeaderMenuProps<TData> {
+  column: Column<TData, unknown>
+  enableColumnVisibility: boolean
+}
+
+// =============================================================================
+// Helpers
+// =============================================================================
+
+function getSelectedValues(currentValue: unknown): string[] {
+  if (currentValue === undefined || currentValue === null) return []
+  if (Array.isArray(currentValue)) return currentValue.map(String)
+  return [String(currentValue)]
+}
+
+// =============================================================================
+// Component
+// =============================================================================
+
+export function ColumnHeaderMenu<TData>({
+  column,
+  enableColumnVisibility,
+}: ColumnHeaderMenuProps<TData>) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const label = resolveColumnLabel(column)
+  const filterMeta = column.columnDef.meta
+  const filterOptions = filterMeta?.filterOptions ?? []
+  const canSort = column.getCanSort()
+  const canFilter = Boolean(filterMeta?.filterable && filterOptions.length > 0 && column.getCanFilter())
+  const shouldShowHideAction = enableColumnVisibility && column.getCanHide()
+  const hasMenuActions = canSort || canFilter || (enableColumnVisibility && column.getCanHide())
+
+  if (!hasMenuActions) return null
+
+  const sortDirection = column.getIsSorted()
+  const selectedValues = getSelectedValues(column.getFilterValue())
+  const hasActiveFilter = selectedValues.length > 0
+  const filterCount = selectedValues.length
+  const isActive = Boolean(sortDirection || hasActiveFilter)
+  const filterMode = filterMeta?.filterMode ?? 'select'
+
+  const handleSort = (direction: 'asc' | 'desc') => {
+    column.toggleSorting(direction === 'desc')
+    setIsOpen(false)
+  }
+
+  const handleClearSort = () => {
+    column.clearSorting()
+    setIsOpen(false)
+  }
+
+  const handleOptionToggle = (optionValue: string) => {
+    if (filterMode === 'select') {
+      if (selectedValues.includes(optionValue)) {
+        column.setFilterValue(undefined)
+      } else {
+        column.setFilterValue(optionValue)
+      }
+      setIsOpen(false)
+      return
+    }
+
+    const nextValues = selectedValues.includes(optionValue)
+      ? selectedValues.filter((value) => value !== optionValue)
+      : [...selectedValues, optionValue]
+
+    column.setFilterValue(nextValues.length > 0 ? nextValues : undefined)
+  }
+
+  const handleClearFilter = () => {
+    column.setFilterValue(undefined)
+    if (filterMode === 'select') {
+      setIsOpen(false)
+    }
+  }
+
+  const handleHideColumn = () => {
+    if (!column.getCanHide()) return
+    column.toggleVisibility(false)
+    setIsOpen(false)
+  }
+
+  return (
+    <DialogTrigger
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      data-untitled-ds='ColumnHeaderMenu'>
+      <AriaButton
+        aria-label={`Column menu for ${label}`}
+        data-state={isActive ? 'active' : 'inactive'}
+        className={cx(
+          styles.trigger.base,
+          isActive ? styles.trigger.active : styles.trigger.default
+        )}
+        onClick={(event) => event.stopPropagation()}
+      >
+        {hasActiveFilter && (
+          <span aria-hidden="true" className={styles.trigger.activeBadge}>
+            {filterCount}
+          </span>
+        )}
+        <Icon name="chevron-down" size="sm" />
+      </AriaButton>
+      <Popover placement="bottom end" className={styles.popover}>
+        <Dialog className={styles.dialog} onClick={(event) => event.stopPropagation()}>
+          <div className={styles.header}>
+            <span className={styles.headerTitle}>{label}</span>
+          </div>
+
+          {canSort && (
+            <div className={styles.section} data-untitled-ds='ColumnHeaderMenuSort'>
+              <button
+                type="button"
+                className={styles.action.base}
+                onClick={() => handleSort('asc')}
+              >
+                <Icon name="arrow-up" size="md" className={styles.action.icon} />
+                Sort ascending
+                {sortDirection === 'asc' && (
+                  <Icon name="check" size="sm" className={styles.action.check} />
+                )}
+              </button>
+              <button
+                type="button"
+                className={styles.action.base}
+                onClick={() => handleSort('desc')}
+              >
+                <Icon name="arrow-down" size="md" className={styles.action.icon} />
+                Sort descending
+                {sortDirection === 'desc' && (
+                  <Icon name="check" size="sm" className={styles.action.check} />
+                )}
+              </button>
+              {sortDirection && (
+                <button
+                  type="button"
+                  className={styles.action.base}
+                  onClick={handleClearSort}
+                >
+                  <Icon name="x-close" size="md" className={styles.action.icon} />
+                  Clear sort
+                </button>
+              )}
+            </div>
+          )}
+
+          {canSort && canFilter && <div className={styles.divider} role="separator" />}
+
+          {canFilter && (
+            <div className={styles.section} data-untitled-ds='ColumnHeaderMenuFilter'>
+              <div className="flex items-center justify-between">
+                <span className={styles.sectionTitle}>Filter</span>
+                {hasActiveFilter && (
+                  <button type="button" className={cx(styles.clearButton, 'mr-3')} onClick={handleClearFilter}>
+                    Clear
+                  </button>
+                )}
+              </div>
+              <div>
+                {filterOptions.map((option) => {
+                  const isSelected = selectedValues.includes(option.value)
+
+                  return (
+                    <Checkbox
+                      key={option.value}
+                      size="md"
+                      label={option.label}
+                      isSelected={isSelected}
+                      onChange={() => handleOptionToggle(option.value)}
+                      aria-label={option.label}
+                      className={styles.option.checkbox}
+                    />
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {shouldShowHideAction && (canSort || canFilter) && (
+            <div className={styles.divider} role="separator" />
+          )}
+
+          {shouldShowHideAction && (
+            <div className={styles.section} data-untitled-ds='ColumnHeaderMenuVisibility'>
+              <button
+                type="button"
+                className={styles.action.base}
+                onClick={handleHideColumn}
+              >
+                <Icon name="x-close" size="md" className={styles.action.icon} />
+                Hide column
+              </button>
+            </div>
+          )}
+        </Dialog>
+      </Popover>
+    </DialogTrigger>
+  )
+}

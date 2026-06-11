@@ -40,7 +40,7 @@ interface CreateColumnOptions<TData> {
   /** Extract raw value for sorting (use when accessor returns ReactNode like a Link) */
   sortValue?: keyof TData | ((row: TData) => string | number | Date | null)
   width?: number
-  /** Minimum column width when resizing (default: 50) */
+  /** Minimum column width when resizing (default: computed from header controls, never below 50) */
   minWidth?: number
   /** Maximum column width when resizing (default: 500) */
   maxWidth?: number
@@ -61,6 +61,48 @@ interface CreateColumnOptions<TData> {
   filterMode?: 'select' | 'multiSelect'
   /** Extract filterable value (use when accessor returns ReactNode) */
   filterValue?: keyof TData | ((row: TData) => string | number | null)
+}
+
+const HEADER_CELL_HORIZONTAL_PADDING = 36
+const HEADER_TEXT_AVERAGE_WIDTH = 8
+const HEADER_SORT_ICON_WIDTH = 20
+const HEADER_MENU_CHEVRON_WIDTH = 20
+const HEADER_FILTER_BADGE_WIDTH = 22
+const HEADER_RESIZE_HANDLE_BUFFER = 8
+
+function getHeaderText(header: string | (() => ReactNode), label: string | undefined, id: string) {
+  return label ?? (typeof header === 'string' ? header : id)
+}
+
+function getIntrinsicHeaderMinWidth({
+  id,
+  header,
+  label,
+  sortable,
+  filterable,
+  canHide,
+}: {
+  id: string
+  header: string | (() => ReactNode)
+  label?: string
+  sortable: boolean
+  filterable: boolean
+  canHide: boolean
+}) {
+  const headerText = getHeaderText(header, label, id)
+  const textWidth = Math.ceil(headerText.length * HEADER_TEXT_AVERAGE_WIDTH)
+  const sortWidth = sortable ? HEADER_SORT_ICON_WIDTH : 0
+  const menuWidth = sortable || filterable || canHide ? HEADER_MENU_CHEVRON_WIDTH : 0
+  const filterBadgeWidth = filterable ? HEADER_FILTER_BADGE_WIDTH : 0
+
+  return (
+    HEADER_CELL_HORIZONTAL_PADDING +
+    textWidth +
+    sortWidth +
+    menuWidth +
+    filterBadgeWidth +
+    HEADER_RESIZE_HANDLE_BUFFER
+  )
 }
 
 /**
@@ -86,6 +128,16 @@ export function createColumn<TData>({
   filterValue,
 }: CreateColumnOptions<TData>): ColumnDef<TData, unknown> {
   const isAccessorKey = typeof accessor !== 'function'
+  const intrinsicMinWidth = getIntrinsicHeaderMinWidth({
+    id,
+    header,
+    label,
+    sortable,
+    filterable,
+    canHide: isPrimary ? false : canHide,
+  })
+  const resolvedMinWidth = Math.max(minWidth, intrinsicMinWidth)
+  const resolvedWidth = width === undefined ? undefined : Math.max(width, resolvedMinWidth)
 
   // Determine the accessor function for sorting
   // Priority: sortValue > accessor (if it's a key)
@@ -144,8 +196,8 @@ export function createColumn<TData>({
       )
     },
     // TanStack Table sizing properties
-    size: width,
-    minSize: minWidth,
+    size: resolvedWidth,
+    minSize: resolvedMinWidth,
     maxSize: maxWidth,
     enableResizing,
     enableSorting: sortable,
@@ -156,7 +208,7 @@ export function createColumn<TData>({
     // Override accessorFn for filtering if filterValue is provided
     ...(filterable && filterValue ? { accessorFn: getFilterAccessorFn() } : {}),
     meta: {
-      width,
+      width: resolvedWidth,
       label: label ?? (typeof header === 'string' ? header : undefined),
       isPrimary,
       filterable,

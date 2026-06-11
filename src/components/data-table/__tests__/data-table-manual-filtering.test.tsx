@@ -94,7 +94,7 @@ describe('DataTable manualFiltering', () => {
       />
     )
 
-    expect(screen.getByRole('button', { name: /filter status/i }).getAttribute('data-state')).toBe('active')
+    expect(screen.getByRole('button', { name: /column menu for status/i }).getAttribute('data-state')).toBe('active')
   })
 
   it('fires onColumnFiltersChange when a popover option is toggled in manual mode', () => {
@@ -111,9 +111,9 @@ describe('DataTable manualFiltering', () => {
       />
     )
 
-    // Open the status filter popover and click "Active" via its option text
-    fireEvent.click(screen.getByRole('button', { name: /filter status/i }))
-    fireEvent.click(screen.getByText('Active'))
+    // Open the status column menu and click "Active" via its filter checkbox
+    fireEvent.click(screen.getByRole('button', { name: /column menu for status/i }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }))
 
     expect(onColumnFiltersChange).toHaveBeenCalled()
   })
@@ -154,26 +154,19 @@ describe('DataTable manualFiltering', () => {
 
     const { rerender } = render(<Harness filters={[{ id: 'status', value: 'active' }]} />)
 
-    // Open popover by clicking the filter trigger
-    fireEvent.click(screen.getByRole('button', { name: /filter status/i }))
+    // Open popover by clicking the column menu trigger
+    fireEvent.click(screen.getByRole('button', { name: /column menu for status/i }))
 
-    // aria-selected disambiguates which option is currently selected — we don't
-    // rely on name regex which can collide ("active" ⊂ "inactive")
-    const selectedAfterMount = screen
-      .getAllByRole('option')
-      .filter((el) => el.getAttribute('aria-selected') === 'true')
-    expect(selectedAfterMount).toHaveLength(1)
-    expect(selectedAfterMount[0].textContent).toContain('Active')
-    expect(selectedAfterMount[0].textContent).not.toContain('Inactive')
+    const activeCheckbox = screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement
+    const inactiveCheckbox = screen.getByRole('checkbox', { name: 'Inactive' }) as HTMLInputElement
+    expect(activeCheckbox.checked).toBe(true)
+    expect(inactiveCheckbox.checked).toBe(false)
 
     // Re-render with a different controlled value
     rerender(<Harness filters={[{ id: 'status', value: 'inactive' }]} />)
 
-    const selectedAfterRerender = screen
-      .getAllByRole('option')
-      .filter((el) => el.getAttribute('aria-selected') === 'true')
-    expect(selectedAfterRerender).toHaveLength(1)
-    expect(selectedAfterRerender[0].textContent).toContain('Inactive')
+    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(false)
+    expect((screen.getByRole('checkbox', { name: 'Inactive' }) as HTMLInputElement).checked).toBe(true)
   })
 
   it('warns once on mount when manualFiltering is true and onColumnFiltersChange is missing', () => {

@@ -55,12 +55,13 @@ import { Checkbox } from '@/components/checkbox'
 import { Icon } from '@/components/icon'
 import { Pagination } from '@/components/pagination'
 import { TableActionsBar, type TableAction } from './table-actions-bar'
-import { ColumnFilterDropdown } from './column-filter-dropdown'
+import { ColumnHeaderMenu } from './column-header-menu'
 import { ColumnVisibilityDropdown, hasHideableColumns } from './column-visibility-dropdown'
 import { DraggableHeaderCell } from './draggable-header-cell'
 import { SortableTableRow } from './sortable-table-row'
 import { DragOverlayRow } from './drag-overlay-row'
 import { injectDragColumn, DRAG_COLUMN_ID } from './inject-drag-column'
+import { getColumnLayoutWidth } from './column-sizing'
 import { useRowReorder, type RowReorderChange } from '@/hooks/use-row-reorder'
 
 export interface PaginationConfig {
@@ -529,10 +530,9 @@ export function DataTable<TData>({
                     style={{ height: rowHeight }}
                   >
                     {row.getVisibleCells().map((cell) => {
-                      const dynamicWidth = columnSizing[cell.column.id]
                       const metaWidth = cell.column.columnDef.meta?.width
-                      const width = dynamicWidth ?? metaWidth
-                      const hasExplicitWidth = width !== undefined
+                      const hasExplicitWidth = metaWidth !== undefined
+                      const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
 
                       // Drag column gets its own compact padding
                       const isDragCol = cell.column.id === DRAG_COLUMN_ID
@@ -546,7 +546,7 @@ export function DataTable<TData>({
                             hasExplicitWidth ? 'shrink-0' : 'flex-1'
                           )}
                           style={{
-                            width: hasExplicitWidth ? (dynamicWidth ?? cell.column.getSize()) : undefined,
+                            width: hasExplicitWidth ? layoutWidth : undefined,
                             flexShrink: hasExplicitWidth ? 0 : undefined,
                           }}>
                           <div className="w-full min-w-0">
@@ -588,10 +588,9 @@ export function DataTable<TData>({
                     transform: `translateY(${virtualRow.start}px)`,
                   }}>
                   {row.getVisibleCells().map((cell) => {
-                    const dynamicWidth = columnSizing[cell.column.id]
                     const metaWidth = cell.column.columnDef.meta?.width
-                    const width = dynamicWidth ?? metaWidth
-                    const hasExplicitWidth = width !== undefined
+                    const hasExplicitWidth = metaWidth !== undefined
+                    const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
 
                     return (
                       <div
@@ -601,7 +600,7 @@ export function DataTable<TData>({
                           hasExplicitWidth ? 'shrink-0' : 'flex-1'
                         )}
                         style={{
-                          width: hasExplicitWidth ? (dynamicWidth ?? cell.column.getSize()) : undefined,
+                          width: hasExplicitWidth ? layoutWidth : undefined,
                           flexShrink: hasExplicitWidth ? 0 : undefined,
                         }}>
                         <div className="w-full min-w-0">
@@ -666,14 +665,18 @@ function HeaderRow<TData>({
       const canResize = enableColumnResizing && header.column.getCanResize()
       const isResizing = header.column.getIsResizing()
       const filterMeta = header.column.columnDef.meta
-      const canFilter = filterMeta?.filterable && filterMeta?.filterOptions
+      const canFilter = Boolean(
+        filterMeta?.filterable && filterMeta?.filterOptions?.length && header.column.getCanFilter()
+      )
+      const hasHeaderMenu = !header.isPlaceholder && (
+        canSort || canFilter || (enableColumnVisibility && header.column.getCanHide())
+      )
       const isReorderable = enableColumnReorder && header.column.columnDef.meta?.reorderable !== false
 
       // Get width: prefer dynamic size from columnSizing, fall back to meta width
-      const dynamicWidth = columnSizing[header.id]
       const metaWidth = header.column.columnDef.meta?.width
-      const width = dynamicWidth ?? metaWidth
-      const hasExplicitWidth = width !== undefined
+      const hasExplicitWidth = metaWidth !== undefined
+      const layoutWidth = getColumnLayoutWidth(header.column, columnSizing)
 
       const isDragCol = header.column.id === DRAG_COLUMN_ID
 
@@ -681,14 +684,14 @@ function HeaderRow<TData>({
         'relative flex h-full items-center gap-1',
         isDragCol ? 'justify-center px-2' : 'py-3 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
-        (canSort || canFilter) && 'cursor-pointer select-none hover:bg-secondary-hover'
+        hasHeaderMenu && 'select-none hover:bg-secondary-hover',
+        canSort && 'cursor-pointer'
       )
       const cellStyle = {
-        width: hasExplicitWidth ? (dynamicWidth ?? header.getSize()) : undefined,
+        width: hasExplicitWidth ? layoutWidth : undefined,
         flexShrink: hasExplicitWidth ? 0 : undefined,
       }
       const cellOnClick = canSort ? header.column.getToggleSortingHandler() : undefined
-
       const cellContent = (
         <>
           {header.isPlaceholder
@@ -703,15 +706,10 @@ function HeaderRow<TData>({
               )}
             </span>
           )}
-          {/* Filter dropdown */}
-          {canFilter && (
-            <ColumnFilterDropdown
-              columnId={header.id}
-              options={filterMeta.filterOptions!}
-              mode={filterMeta.filterMode ?? 'select'}
-              currentValue={header.column.getFilterValue()}
-              onFilterChange={(value) => header.column.setFilterValue(value)}
-              onClearFilter={() => header.column.setFilterValue(undefined)}
+          {hasHeaderMenu && (
+            <ColumnHeaderMenu
+              column={header.column}
+              enableColumnVisibility={enableColumnVisibility}
             />
           )}
           {/* Resize handle */}

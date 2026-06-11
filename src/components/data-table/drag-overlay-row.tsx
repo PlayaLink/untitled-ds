@@ -2,7 +2,7 @@
 
 import { flexRender, type Row, type ColumnSizingState } from '@tanstack/react-table'
 import { cx } from '@/utils/cx'
-import { getColumnLayoutWidth } from './column-sizing'
+import { getColumnLayoutWidth, hasColumnLayoutWidth } from './column-sizing'
 
 interface DragOverlayRowProps<TData> {
   row: Row<TData>
@@ -18,8 +18,7 @@ export function DragOverlayRow<TData>({ row, columnSizing, rowHeight }: DragOver
       data-untitled-ds="DragOverlayRow"
     >
       {row.getVisibleCells().map((cell) => {
-        const metaWidth = cell.column.columnDef.meta?.width
-        const hasExplicitWidth = metaWidth !== undefined
+        const hasExplicitWidth = hasColumnLayoutWidth(cell.column, columnSizing)
         const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
 
         return (

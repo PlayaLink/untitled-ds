@@ -12,6 +12,7 @@ interface DraggableHeaderCellProps {
   className?: string
   style?: React.CSSProperties
   onClick?: React.MouseEventHandler<HTMLDivElement>
+  forceDragHandleVisible?: boolean
 }
 
 export function DraggableHeaderCell({
@@ -21,6 +22,7 @@ export function DraggableHeaderCell({
   className,
   style,
   onClick,
+  forceDragHandleVisible = false,
 }: DraggableHeaderCellProps) {
   const {
     attributes,
@@ -58,7 +60,10 @@ export function DraggableHeaderCell({
           ref={setActivatorNodeRef}
           className={cx(
             'ml-auto flex shrink-0 cursor-grab items-center text-quaternary',
-            'opacity-0 transition-opacity group-hover/header:opacity-100',
+            'transition-opacity',
+            (isDragging || forceDragHandleVisible)
+              ? 'opacity-100'
+              : 'opacity-0 group-hover/header:opacity-100',
             'hover:text-tertiary active:cursor-grabbing'
           )}
           {...attributes}

@@ -10,7 +10,15 @@
  * most a few hundred rows.
  */
 
-import { useRef, useEffect, useState, useCallback, type ReactNode } from 'react'
+import {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  type MouseEvent as ReactMouseEvent,
+  type ReactNode,
+  type TouchEvent as ReactTouchEvent,
+} from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -28,6 +36,7 @@ import {
   type FilterFn,
   type Table as ReactTable,
   type Row,
+  type Column,
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import {
@@ -61,7 +70,11 @@ import { DraggableHeaderCell } from './draggable-header-cell'
 import { SortableTableRow } from './sortable-table-row'
 import { DragOverlayRow } from './drag-overlay-row'
 import { injectDragColumn, DRAG_COLUMN_ID } from './inject-drag-column'
-import { getColumnLayoutWidth } from './column-sizing'
+import {
+  clampColumnResizeWidth,
+  getColumnLayoutWidth,
+  hasColumnLayoutWidth,
+} from './column-sizing'
 import { useRowReorder, type RowReorderChange } from '@/hooks/use-row-reorder'
 
 export interface PaginationConfig {
@@ -497,6 +510,7 @@ export function DataTable<TData>({
             table={table}
             columnSizing={columnSizing}
             enableColumnResizing={enableColumnResizing}
+            columnResizeMode={columnResizeMode}
             enableColumnReorder={enableColumnReorder}
             enableColumnVisibility={enableColumnVisibility}
             sensors={columnSensors}
@@ -530,8 +544,7 @@ export function DataTable<TData>({
                     style={{ height: rowHeight }}
                   >
                     {row.getVisibleCells().map((cell) => {
-                      const metaWidth = cell.column.columnDef.meta?.width
-                      const hasExplicitWidth = metaWidth !== undefined
+                      const hasExplicitWidth = hasColumnLayoutWidth(cell.column, columnSizing)
                       const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
 
                       // Drag column gets its own compact padding
@@ -588,8 +601,7 @@ export function DataTable<TData>({
                     transform: `translateY(${virtualRow.start}px)`,
                   }}>
                   {row.getVisibleCells().map((cell) => {
-                    const metaWidth = cell.column.columnDef.meta?.width
-                    const hasExplicitWidth = metaWidth !== undefined
+                    const hasExplicitWidth = hasColumnLayoutWidth(cell.column, columnSizing)
                     const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
 
                     return (
@@ -637,6 +649,7 @@ interface HeaderRowProps<TData> {
   table: ReactTable<TData>
   columnSizing: ColumnSizingState
   enableColumnResizing: boolean
+  columnResizeMode: 'onChange' | 'onEnd'
   enableColumnReorder: boolean
   enableColumnVisibility: boolean
   sensors: SensorDescriptor<SensorOptions>[]
@@ -645,10 +658,23 @@ interface HeaderRowProps<TData> {
   handleDragEnd: (event: DragEndEvent) => void
 }
 
+type HeaderResizeStartEvent =
+  | ReactMouseEvent<HTMLDivElement>
+  | ReactTouchEvent<HTMLDivElement>
+
+function getResizeClientX(event: HeaderResizeStartEvent) {
+  if ('touches' in event) {
+    return event.touches[0]?.clientX ?? null
+  }
+
+  return event.clientX
+}
+
 function HeaderRow<TData>({
   table,
   columnSizing,
   enableColumnResizing,
+  columnResizeMode,
   enableColumnReorder,
   enableColumnVisibility,
   sensors,
@@ -657,12 +683,111 @@ function HeaderRow<TData>({
   handleDragEnd,
 }: HeaderRowProps<TData>) {
   const shouldShowColumnVisibility = enableColumnVisibility && hasHideableColumns(table)
+  const [activeResizeColumnId, setActiveResizeColumnId] = useState<string | null>(null)
+
+  const handleColumnResizeStart = useCallback(
+    (column: Column<TData, unknown>, event: HeaderResizeStartEvent) => {
+      if ('button' in event && event.button !== 0) return
+
+      const startOffset = getResizeClientX(event)
+      if (startOffset === null) return
+
+      event.preventDefault()
+      event.stopPropagation()
+
+      const resizeHandle = event.currentTarget
+      const headerCell = resizeHandle.parentElement
+      const renderedWidth = headerCell?.getBoundingClientRect().width
+      const fallbackWidth = getColumnLayoutWidth(column, columnSizing)
+      const startWidth = renderedWidth && renderedWidth > 0 ? renderedWidth : fallbackWidth
+      let latestWidth = clampColumnResizeWidth(column, startWidth, startWidth)
+
+      const setColumnWidth = (width: number) => {
+        table.setColumnSizing((old) => ({
+          ...old,
+          [column.id]: width,
+        }))
+      }
+
+      setActiveResizeColumnId(column.id)
+      setColumnWidth(latestWidth)
+
+      const updateWidth = (clientX: number, shouldCommit: boolean) => {
+        latestWidth = clampColumnResizeWidth(
+          column,
+          startWidth + clientX - startOffset,
+          startWidth
+        )
+
+        if (shouldCommit) {
+          setColumnWidth(latestWidth)
+        }
+      }
+
+      const ownerDocument = resizeHandle.ownerDocument
+
+      const cleanup = () => {
+        ownerDocument.removeEventListener('mousemove', handleMouseMove)
+        ownerDocument.removeEventListener('mouseup', handleMouseUp)
+        ownerDocument.removeEventListener('touchmove', handleTouchMove)
+        ownerDocument.removeEventListener('touchend', handleTouchEnd)
+        setActiveResizeColumnId(null)
+      }
+
+      const finishResize = (clientX?: number) => {
+        if (typeof clientX === 'number') {
+          updateWidth(clientX, columnResizeMode === 'onChange')
+        }
+
+        if (columnResizeMode === 'onEnd') {
+          setColumnWidth(latestWidth)
+        }
+
+        cleanup()
+      }
+
+      function handleMouseMove(moveEvent: MouseEvent) {
+        updateWidth(moveEvent.clientX, columnResizeMode === 'onChange')
+      }
+
+      function handleMouseUp(upEvent: MouseEvent) {
+        finishResize(upEvent.clientX)
+      }
+
+      function handleTouchMove(moveEvent: TouchEvent) {
+        if (moveEvent.cancelable) {
+          moveEvent.preventDefault()
+          moveEvent.stopPropagation()
+        }
+
+        const clientX = moveEvent.touches[0]?.clientX
+        if (typeof clientX === 'number') {
+          updateWidth(clientX, columnResizeMode === 'onChange')
+        }
+      }
+
+      function handleTouchEnd(endEvent: TouchEvent) {
+        if (endEvent.cancelable) {
+          endEvent.preventDefault()
+          endEvent.stopPropagation()
+        }
+
+        finishResize(endEvent.changedTouches[0]?.clientX)
+      }
+
+      ownerDocument.addEventListener('mousemove', handleMouseMove)
+      ownerDocument.addEventListener('mouseup', handleMouseUp)
+      ownerDocument.addEventListener('touchmove', handleTouchMove, { passive: false })
+      ownerDocument.addEventListener('touchend', handleTouchEnd, { passive: false })
+    },
+    [columnResizeMode, columnSizing, table]
+  )
 
   const headerCells = table.getHeaderGroups().flatMap((headerGroup) =>
     headerGroup.headers.map((header) => {
       const canSort = header.column.getCanSort()
       const canResize = enableColumnResizing && header.column.getCanResize()
-      const isResizing = header.column.getIsResizing()
+      const isResizing = activeResizeColumnId === header.column.id
       const filterMeta = header.column.columnDef.meta
       const canFilter = Boolean(
         filterMeta?.filterable && filterMeta?.filterOptions?.length && header.column.getCanFilter()
@@ -673,8 +798,7 @@ function HeaderRow<TData>({
       const isReorderable = enableColumnReorder && header.column.columnDef.meta?.reorderable !== false
 
       // Get width: prefer dynamic size from columnSizing, fall back to meta width
-      const metaWidth = header.column.columnDef.meta?.width
-      const hasExplicitWidth = metaWidth !== undefined
+      const hasExplicitWidth = hasColumnLayoutWidth(header.column, columnSizing)
       const layoutWidth = getColumnLayoutWidth(header.column, columnSizing)
 
       const isDragCol = header.column.id === DRAG_COLUMN_ID
@@ -703,8 +827,8 @@ function HeaderRow<TData>({
           {/* Resize handle */}
           {canResize && (
             <div
-              onMouseDown={header.getResizeHandler()}
-              onTouchStart={header.getResizeHandler()}
+              onMouseDown={(event) => handleColumnResizeStart(header.column, event)}
+              onTouchStart={(event) => handleColumnResizeStart(header.column, event)}
               onClick={(e) => e.stopPropagation()}
               className={cx(
                 'absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none',
@@ -724,6 +848,7 @@ function HeaderRow<TData>({
             isDraggable={isReorderable}
             className={cellClassName}
             style={cellStyle}
+            forceDragHandleVisible={isResizing}
           >
             {cellContent}
           </DraggableHeaderCell>

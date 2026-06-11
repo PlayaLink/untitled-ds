@@ -2,12 +2,18 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useMemo, useState } from 'react'
 import type { ColumnFiltersState, ColumnOrderState, SortingState, VisibilityState } from '@tanstack/react-table'
 import { DataTable, type DataTableProps } from './data-table'
-import { createColumn, createSelectColumn } from './column-helpers'
+import { createActionsColumn, createColumn, createSelectColumn } from './column-helpers'
 import { Button } from '../button'
+import { ButtonUtility } from '../button-utility'
+import { Dropdown } from '../dropdown'
 import { createIcon } from '../icon'
 
 const GitHubIcon = createIcon('github')
 const FigmaIcon = createIcon('figma')
+const CopyIcon = createIcon('copy')
+const DotsVerticalIcon = createIcon('dots-vertical')
+const EditIcon = createIcon('edit')
+const TrashIcon = createIcon('trash')
 
 // =============================================================================
 // Sample Data
@@ -209,6 +215,27 @@ const filterableColumns = [
   }),
 ]
 
+const overviewColumns = [
+  ...filterableColumns,
+  createActionsColumn<Product>((row) => (
+    <Dropdown.Root>
+      <ButtonUtility
+        aria-label={`Actions for ${row.original.name}`}
+        color="tertiary"
+        icon={DotsVerticalIcon}
+      />
+      <Dropdown.Popover>
+        <Dropdown.Menu onAction={(key) => console.log(`${key}:`, row.original.id)}>
+          <Dropdown.Item id="edit" icon={EditIcon} label="Edit" />
+          <Dropdown.Item id="copy" icon={CopyIcon} label="Copy ID" />
+          <Dropdown.Separator />
+          <Dropdown.Item id="delete" icon={TrashIcon} label="Delete" />
+        </Dropdown.Menu>
+      </Dropdown.Popover>
+    </Dropdown.Root>
+  )),
+]
+
 const columnVisibilityColumns = [
   createSelectColumn<VisibilityProduct>(),
   createColumn<VisibilityProduct>({
@@ -268,9 +295,10 @@ export const Overview: Story = {
           </p>
         </div>
         <DataTable
-          columns={filterableColumns}
+          columns={overviewColumns}
           data={sampleData}
           getRowId={(row) => row.id}
+          enableColumnVisibility
           maxHeight={400}
         />
       </div>

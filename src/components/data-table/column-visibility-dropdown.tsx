@@ -50,6 +50,7 @@ export const styles = sortCx({
 
 export interface ColumnVisibilityDropdownProps<TData> {
   table: ReactTable<TData>
+  iconName?: 'sliders' | 'dots-vertical'
 }
 
 // =============================================================================
@@ -70,7 +71,10 @@ export function hasHideableColumns<TData>(table: ReactTable<TData>) {
 // Component
 // =============================================================================
 
-export function ColumnVisibilityDropdown<TData>({ table }: ColumnVisibilityDropdownProps<TData>) {
+export function ColumnVisibilityDropdown<TData>({
+  table,
+  iconName = 'sliders',
+}: ColumnVisibilityDropdownProps<TData>) {
   const [isOpen, setIsOpen] = useState(false)
   const columns = getVisibilityColumns(table)
   const hasHiddenColumns = columns.some((column) => !column.getIsVisible())
@@ -91,7 +95,7 @@ export function ColumnVisibilityDropdown<TData>({ table }: ColumnVisibilityDropd
         )}
         onClick={(event) => event.stopPropagation()}
       >
-        <Icon name="sliders" size="md" />
+        <Icon name={iconName} size="md" />
       </AriaButton>
       <Popover placement="bottom end" className={styles.popover}>
         <Dialog className={styles.dialog}>

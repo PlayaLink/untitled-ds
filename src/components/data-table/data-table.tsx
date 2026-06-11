@@ -684,6 +684,9 @@ function HeaderRow<TData>({
   handleDragEnd,
 }: HeaderRowProps<TData>) {
   const shouldShowColumnVisibility = enableColumnVisibility && hasHideableColumns(table)
+  const rightmostVisibleColumn = table.getVisibleLeafColumns().at(-1)
+  const shouldPlaceColumnVisibilityInUtilityHeader =
+    shouldShowColumnVisibility && rightmostVisibleColumn?.columnDef.meta?.isUtility === true
   const [activeResizeColumnId, setActiveResizeColumnId] = useState<string | null>(null)
   const headerCellRefs = useRef<Record<string, RefObject<Element | null>>>({})
   const headerCellRefCallbacks = useRef<Record<string, (node: HTMLDivElement | null) => void>>({})
@@ -811,6 +814,11 @@ function HeaderRow<TData>({
         canSort || canFilter || (enableColumnVisibility && header.column.getCanHide())
       )
       const isReorderable = enableColumnReorder && header.column.columnDef.meta?.reorderable !== false
+      const isUtilityCol = header.column.columnDef.meta?.isUtility === true
+      const shouldRenderColumnVisibilityInCell =
+        shouldPlaceColumnVisibilityInUtilityHeader &&
+        header.column.id === rightmostVisibleColumn?.id &&
+        !header.isPlaceholder
 
       // Get width: prefer dynamic size from columnSizing, fall back to meta width
       const hasExplicitWidth = hasColumnLayoutWidth(header.column, columnSizing)
@@ -820,7 +828,7 @@ function HeaderRow<TData>({
 
       const cellClassName = cx(
         'relative flex h-full items-center gap-1',
-        isDragCol ? 'justify-center px-2' : 'py-3 pl-6 pr-3',
+        isDragCol || isUtilityCol ? 'justify-center px-2' : 'py-3 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
         hasHeaderMenu && 'select-none hover:bg-secondary-hover'
       )
@@ -841,6 +849,9 @@ function HeaderRow<TData>({
               enableColumnVisibility={enableColumnVisibility}
               triggerRef={headerCellRef}
             />
+          )}
+          {shouldRenderColumnVisibilityInCell && (
+            <ColumnVisibilityDropdown table={table} iconName="dots-vertical" />
           )}
           {/* Resize handle */}
           {canResize && (
@@ -898,7 +909,7 @@ function HeaderRow<TData>({
           <div
             className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
             {headerCells}
-            {shouldShowColumnVisibility && (
+            {shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader && (
               <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary">
                 <ColumnVisibilityDropdown table={table} />
               </div>
@@ -914,7 +925,7 @@ function HeaderRow<TData>({
       className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary"
       data-untitled-ds='HeaderRow'>
       {headerCells}
-      {shouldShowColumnVisibility && (
+      {shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader && (
         <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary">
           <ColumnVisibilityDropdown table={table} />
         </div>

@@ -28,6 +28,8 @@ declare module '@tanstack/react-table' {
     filterOptions?: FilterOption[]
     filterMode?: 'select' | 'multiSelect'
     reorderable?: boolean
+    /** Display-only utility column, such as row actions. */
+    isUtility?: boolean
   }
 }
 
@@ -267,6 +269,8 @@ export function createActionsColumn<TData>(
     maxSize: width,
     enableResizing: false,
     enableSorting: false,
-    meta: { width, reorderable: false },
+    enableHiding: false,
+    enableColumnFilter: false,
+    meta: { width, reorderable: false, isUtility: true },
   }
 }

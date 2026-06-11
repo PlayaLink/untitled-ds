@@ -5,7 +5,7 @@ import {
   type ColumnDef,
 } from '@tanstack/react-table'
 import { describe, expect, it } from 'vitest'
-import { createColumn, createSelectColumn } from '../column-helpers'
+import { createActionsColumn, createColumn, createSelectColumn } from '../column-helpers'
 
 interface Item {
   id: string
@@ -73,6 +73,7 @@ describe('DataTable column helpers', () => {
             isPrimary: true,
             canHide: true,
           }),
+          createActionsColumn<Item>(() => null),
         ]}
       />
     )
@@ -82,7 +83,20 @@ describe('DataTable column helpers', () => {
       name: true,
       status: false,
       owner: false,
+      actions: false,
     })
+  })
+
+  it('creates actions columns as display-only utility columns', () => {
+    const actionsColumn = createActionsColumn<Item>(() => null)
+
+    expect(actionsColumn.id).toBe('actions')
+    expect(actionsColumn.enableSorting).toBe(false)
+    expect(actionsColumn.enableColumnFilter).toBe(false)
+    expect(actionsColumn.enableHiding).toBe(false)
+    expect(actionsColumn.enableResizing).toBe(false)
+    expect(actionsColumn.meta?.isUtility).toBe(true)
+    expect(actionsColumn.meta?.reorderable).toBe(false)
   })
 
   it('computes a header-aware minimum width for sort and filter controls', () => {

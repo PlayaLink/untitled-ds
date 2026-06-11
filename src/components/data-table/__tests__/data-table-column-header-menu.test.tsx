@@ -29,7 +29,7 @@ vi.mock('@tanstack/react-virtual', async (importOriginal) => {
 // eslint-disable-next-line import/first
 import { DataTable } from '../data-table'
 // eslint-disable-next-line import/first
-import { createColumn, createSelectColumn } from '../column-helpers'
+import { createActionsColumn, createColumn, createSelectColumn } from '../column-helpers'
 
 interface Item {
   id: string
@@ -98,6 +98,11 @@ const columns: ColumnDef<Item, unknown>[] = [
     sortable: false,
     canHide: false,
   }),
+  createActionsColumn<Item>((row) => (
+    <button type="button" aria-label={`Actions for ${row.original.name}`}>
+      ...
+    </button>
+  )),
 ]
 
 function renderTable() {
@@ -113,6 +118,14 @@ function renderTable() {
 
 function getMenuButton(label: string) {
   return screen.getByRole('button', { name: new RegExp(`column menu for ${label}`, 'i') })
+}
+
+function getVisibilityOptions() {
+  const options = document.querySelector('[data-untitled-ds="ColumnVisibilityOptions"]')
+  if (!(options instanceof HTMLElement)) {
+    throw new Error('Column visibility options were not rendered')
+  }
+  return options
 }
 
 describe('DataTable column header menu', () => {
@@ -276,5 +289,16 @@ describe('DataTable column header menu', () => {
     expect(screen.queryByRole('button', { name: /hide column/i })).toBeNull()
     expect(screen.queryByRole('button', { name: /column menu for stock/i })).toBeNull()
     expect(screen.queryByRole('button', { name: /column menu for select/i })).toBeNull()
+  })
+
+  it('treats actions columns as display-only row utility columns', () => {
+    renderTable()
+
+    expect(screen.queryByRole('button', { name: /column menu for actions/i })).toBeNull()
+    expect(screen.getByRole('button', { name: /actions for alpha/i })).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: /manage columns/i }))
+
+    expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: /actions/i })).toBeNull()
   })
 })

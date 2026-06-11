@@ -129,6 +129,14 @@ function getVisibilityOptions() {
   return options
 }
 
+function getFilterOptionsList() {
+  const options = document.querySelector('[data-untitled-ds="ColumnHeaderMenuFilterOptions"]')
+  if (!(options instanceof HTMLElement)) {
+    throw new Error('Column filter options were not rendered')
+  }
+  return options
+}
+
 describe('DataTable column header menu', () => {
   it('uses label, string header, and id fallbacks for menu trigger names', () => {
     renderTable()
@@ -192,12 +200,106 @@ describe('DataTable column header menu', () => {
 
     expect(screen.queryByRole('checkbox', { name: 'Inactive' })).toBeNull()
     expect(screen.getByRole('button', { name: 'Inactive' }).getAttribute('aria-pressed')).toBe('false')
+    expect(screen.queryByRole('searchbox', { name: /search status filter options/i })).toBeNull()
 
     fireEvent.click(screen.getByRole('button', { name: 'Inactive' }))
     fireEvent.click(getMenuButton('Category'))
 
     expect(screen.getByRole('checkbox', { name: 'Hardware' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Hardware' })).toBeNull()
+  })
+
+  it('caps long filter option lists and adds search above 10 options', () => {
+    const optionValues = Array.from({ length: 12 }, (_, index) => `option-${index + 1}`)
+    const largeFilterData = optionValues.map((code, index) => ({
+      id: code,
+      name: `Item ${index + 1}`,
+      code,
+    }))
+    const largeFilterColumns: ColumnDef<(typeof largeFilterData)[number], unknown>[] = [
+      createColumn<(typeof largeFilterData)[number]>({
+        id: 'name',
+        header: 'Name',
+        accessor: 'name',
+      }),
+      createColumn<(typeof largeFilterData)[number]>({
+        id: 'code',
+        header: 'Code',
+        accessor: 'code',
+        sortable: false,
+        filterable: true,
+        filterMode: 'multiSelect',
+        filterOptions: optionValues.map((value, index) => ({
+          value,
+          label: `Option ${index + 1}`,
+        })),
+      }),
+    ]
+
+    render(
+      <DataTable
+        columns={largeFilterColumns}
+        data={largeFilterData}
+        getRowId={(row) => row.id}
+      />
+    )
+
+    fireEvent.click(getMenuButton('Code'))
+
+    expect(getFilterOptionsList().getAttribute('class')).toContain('max-h-[18rem]')
+    expect(getFilterOptionsList().getAttribute('class')).toContain('overflow-y-auto')
+
+    const search = screen.getByRole('searchbox', { name: /search code filter options/i })
+    fireEvent.change(search, { target: { value: '12' } })
+
+    expect(screen.getByRole('checkbox', { name: 'Option 12' })).toBeTruthy()
+    expect(screen.queryByRole('checkbox', { name: 'Option 2' })).toBeNull()
+  })
+
+  it('keeps selected long-list filter options visible while searching', () => {
+    const optionValues = Array.from({ length: 12 }, (_, index) => `option-${index + 1}`)
+    const largeFilterData = optionValues.map((code, index) => ({
+      id: code,
+      name: `Item ${index + 1}`,
+      code,
+    }))
+    const largeFilterColumns: ColumnDef<(typeof largeFilterData)[number], unknown>[] = [
+      createColumn<(typeof largeFilterData)[number]>({
+        id: 'name',
+        header: 'Name',
+        accessor: 'name',
+      }),
+      createColumn<(typeof largeFilterData)[number]>({
+        id: 'code',
+        header: 'Code',
+        accessor: 'code',
+        sortable: false,
+        filterable: true,
+        filterMode: 'multiSelect',
+        filterOptions: optionValues.map((value, index) => ({
+          value,
+          label: `Option ${index + 1}`,
+        })),
+      }),
+    ]
+
+    render(
+      <DataTable
+        columns={largeFilterColumns}
+        data={largeFilterData}
+        getRowId={(row) => row.id}
+      />
+    )
+
+    fireEvent.click(getMenuButton('Code'))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Option 1' }))
+    fireEvent.change(screen.getByRole('searchbox', { name: /search code filter options/i }), {
+      target: { value: '12' },
+    })
+
+    expect(screen.getByRole('checkbox', { name: 'Option 1' })).toBeTruthy()
+    expect(screen.getByRole('checkbox', { name: 'Option 12' })).toBeTruthy()
+    expect(screen.queryByRole('checkbox', { name: 'Option 2' })).toBeNull()
   })
 
   it('keeps multi-select filter menus open while options are selected', () => {

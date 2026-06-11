@@ -34,6 +34,12 @@ export const styles = sortCx({
   section: 'py-1',
   sectionTitle: 'px-3 py-1.5 text-xs font-semibold text-quaternary',
   divider: 'h-px bg-border-secondary',
+  search: {
+    wrapper: 'px-3 pb-2 pt-1',
+    field: 'relative',
+    icon: 'pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-quaternary',
+    input: 'h-9 w-full rounded-md bg-primary py-2 pl-[44px] pr-3 text-sm text-primary outline-none ring-1 ring-border-primary ring-inset placeholder:text-placeholder focus:ring-2 focus:ring-border-brand',
+  },
   action: {
     base: 'flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-secondary outline-none transition-colors hover:bg-secondary focus:bg-secondary',
     disabled: 'cursor-not-allowed text-disabled hover:bg-transparent focus:bg-transparent',
@@ -41,11 +47,15 @@ export const styles = sortCx({
     check: 'ml-auto text-brand-600',
   },
   option: {
+    list: 'max-h-[18rem] overflow-y-auto py-1',
     checkbox: 'w-full px-3 py-2 transition-colors hover:bg-secondary',
     item: 'flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-secondary outline-none transition-colors hover:bg-secondary focus:bg-secondary',
+    empty: 'px-3 py-2 text-sm text-tertiary',
   },
   clearButton: 'text-xs font-medium text-brand-600 hover:text-brand-700',
 })
+
+const FILTER_SEARCH_THRESHOLD = 10
 
 // =============================================================================
 // Types
@@ -77,6 +87,7 @@ export function ColumnHeaderMenu<TData>({
   triggerRef,
 }: ColumnHeaderMenuProps<TData>) {
   const [isOpen, setIsOpen] = useState(false)
+  const [filterSearch, setFilterSearch] = useState('')
 
   const label = resolveColumnLabel(column)
   const filterMeta = column.columnDef.meta
@@ -94,6 +105,17 @@ export function ColumnHeaderMenu<TData>({
   const filterCount = selectedValues.length
   const isActive = Boolean(sortDirection || hasActiveFilter)
   const filterMode = filterMeta?.filterMode ?? 'multiSelect'
+  const shouldShowFilterSearch = filterOptions.length > FILTER_SEARCH_THRESHOLD
+  const normalizedFilterSearch = filterSearch.trim().toLowerCase()
+  const visibleFilterOptions = normalizedFilterSearch
+    ? filterOptions.filter((option) => {
+      const isSelected = selectedValues.includes(option.value)
+      const label = option.label.toLowerCase()
+      const value = option.value.toLowerCase()
+
+      return isSelected || label.includes(normalizedFilterSearch) || value.includes(normalizedFilterSearch)
+    })
+    : filterOptions
   const sortLabel = sortDirection === 'asc'
     ? 'sorted ascending'
     : sortDirection === 'desc'
@@ -137,6 +159,7 @@ export function ColumnHeaderMenu<TData>({
 
   const handleClearFilter = () => {
     column.setFilterValue(undefined)
+    setFilterSearch('')
     if (filterMode === 'select') {
       setIsOpen(false)
     }
@@ -148,10 +171,17 @@ export function ColumnHeaderMenu<TData>({
     setIsOpen(false)
   }
 
+  const handleOpenChange = (nextIsOpen: boolean) => {
+    setIsOpen(nextIsOpen)
+    if (!nextIsOpen) {
+      setFilterSearch('')
+    }
+  }
+
   return (
     <DialogTrigger
       isOpen={isOpen}
-      onOpenChange={setIsOpen}
+      onOpenChange={handleOpenChange}
       data-untitled-ds='ColumnHeaderMenu'>
       <AriaButton
         aria-label={ariaLabel}
@@ -229,8 +259,24 @@ export function ColumnHeaderMenu<TData>({
                   </button>
                 )}
               </div>
-              <div>
-                {filterOptions.map((option) => {
+              {shouldShowFilterSearch && (
+                <div className={styles.search.wrapper}>
+                  <div className={styles.search.field}>
+                    <Icon name="search" size="sm" className={styles.search.icon} />
+                    <input
+                      aria-label={`Search ${label} filter options`}
+                      className={styles.search.input}
+                      onChange={(event) => setFilterSearch(event.target.value)}
+                      onClick={(event) => event.stopPropagation()}
+                      placeholder="Search options"
+                      type="search"
+                      value={filterSearch}
+                    />
+                  </div>
+                </div>
+              )}
+              <div className={styles.option.list} data-untitled-ds='ColumnHeaderMenuFilterOptions'>
+                {visibleFilterOptions.map((option) => {
                   const isSelected = selectedValues.includes(option.value)
 
                   if (filterMode === 'multiSelect') {
@@ -262,6 +308,9 @@ export function ColumnHeaderMenu<TData>({
                     </button>
                   )
                 })}
+                {visibleFilterOptions.length === 0 && (
+                  <div className={styles.option.empty}>No options found</div>
+                )}
               </div>
             </div>
           )}

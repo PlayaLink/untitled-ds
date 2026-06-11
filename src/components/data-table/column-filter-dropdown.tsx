@@ -37,12 +37,21 @@ export const styles = sortCx({
   header: 'flex items-center justify-between border-b border-secondary px-3 py-2',
   headerTitle: 'text-xs font-semibold text-tertiary',
   clearButton: 'text-xs font-medium text-brand-600 hover:text-brand-700 cursor-pointer',
-  optionsList: 'max-h-64 overflow-y-auto py-1',
+  search: {
+    wrapper: 'px-3 pb-2 pt-2',
+    field: 'relative',
+    icon: 'pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-quaternary',
+    input: 'h-9 w-full rounded-md bg-primary py-2 pl-[44px] pr-3 text-sm text-primary outline-none ring-1 ring-border-primary ring-inset placeholder:text-placeholder focus:ring-2 focus:ring-border-brand',
+  },
+  optionsList: 'max-h-[18rem] overflow-y-auto py-1',
   option: {
     wrapper: 'flex items-center gap-2.5 px-3 py-2 cursor-pointer hover:bg-secondary transition-colors',
     label: 'text-sm text-secondary',
+    empty: 'px-3 py-2 text-sm text-tertiary',
   },
 })
+
+const FILTER_SEARCH_THRESHOLD = 10
 
 // =============================================================================
 // Types
@@ -70,6 +79,7 @@ export function ColumnFilterDropdown({
   onClearFilter,
 }: ColumnFilterDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [filterSearch, setFilterSearch] = useState('')
 
   // Normalize currentValue to array for multiSelect, or string for single
   const getSelectedValues = (): string[] => {
@@ -80,6 +90,17 @@ export function ColumnFilterDropdown({
 
   const selectedValues = getSelectedValues()
   const hasActiveFilter = selectedValues.length > 0
+  const shouldShowFilterSearch = options.length > FILTER_SEARCH_THRESHOLD
+  const normalizedFilterSearch = filterSearch.trim().toLowerCase()
+  const visibleOptions = normalizedFilterSearch
+    ? options.filter((option) => {
+      const isSelected = selectedValues.includes(option.value)
+      const label = option.label.toLowerCase()
+      const value = option.value.toLowerCase()
+
+      return isSelected || label.includes(normalizedFilterSearch) || value.includes(normalizedFilterSearch)
+    })
+    : options
 
   const handleOptionToggle = (optionValue: string) => {
     if (mode === 'select') {
@@ -106,15 +127,23 @@ export function ColumnFilterDropdown({
 
   const handleClear = () => {
     onClearFilter()
+    setFilterSearch('')
     if (mode === 'select') {
       setIsOpen(false)
+    }
+  }
+
+  const handleOpenChange = (nextIsOpen: boolean) => {
+    setIsOpen(nextIsOpen)
+    if (!nextIsOpen) {
+      setFilterSearch('')
     }
   }
 
   return (
     <DialogTrigger
       isOpen={isOpen}
-      onOpenChange={setIsOpen}
+      onOpenChange={handleOpenChange}
       data-untitled-ds='ColumnFilterDropdown'>
       <AriaButton
         aria-label={`Filter ${columnId}`}
@@ -138,8 +167,24 @@ export function ColumnFilterDropdown({
               </button>
             )}
           </div>
+          {shouldShowFilterSearch && (
+            <div className={styles.search.wrapper}>
+              <div className={styles.search.field}>
+                <Icon name="search" size="sm" className={styles.search.icon} />
+                <input
+                  aria-label={`Search ${columnId} filter options`}
+                  className={styles.search.input}
+                  onChange={(event) => setFilterSearch(event.target.value)}
+                  onClick={(event) => event.stopPropagation()}
+                  placeholder="Search options"
+                  type="search"
+                  value={filterSearch}
+                />
+              </div>
+            </div>
+          )}
           <div className={styles.optionsList}>
-            {options.map((option) => {
+            {visibleOptions.map((option) => {
               const isSelected = selectedValues.includes(option.value)
               return (
                 <div
@@ -158,6 +203,9 @@ export function ColumnFilterDropdown({
                 </div>
               );
             })}
+            {visibleOptions.length === 0 && (
+              <div className={styles.option.empty}>No options found</div>
+            )}
           </div>
         </Dialog>
       </Popover>

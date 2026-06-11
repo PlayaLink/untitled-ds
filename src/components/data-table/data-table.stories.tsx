@@ -24,6 +24,7 @@ interface Product {
   name: string
   status: 'active' | 'pending' | 'inactive'
   category: 'electronics' | 'clothing' | 'food' | 'books'
+  fulfillmentCenter: string
   price: number
 }
 
@@ -36,17 +37,35 @@ interface HeaderMenuProduct extends VisibilityProduct {
   stock: number
 }
 
+const fulfillmentCenterOptions = [
+  { value: 'atlanta', label: 'Atlanta' },
+  { value: 'austin', label: 'Austin' },
+  { value: 'baltimore', label: 'Baltimore' },
+  { value: 'chicago', label: 'Chicago' },
+  { value: 'denver', label: 'Denver' },
+  { value: 'detroit', label: 'Detroit' },
+  { value: 'houston', label: 'Houston' },
+  { value: 'las-vegas', label: 'Las Vegas' },
+  { value: 'los-angeles', label: 'Los Angeles' },
+  { value: 'miami', label: 'Miami' },
+  { value: 'nashville', label: 'Nashville' },
+  { value: 'new-york', label: 'New York' },
+  { value: 'phoenix', label: 'Phoenix' },
+  { value: 'portland', label: 'Portland' },
+  { value: 'seattle', label: 'Seattle' },
+]
+
 const sampleData: Product[] = [
-  { id: '1', name: 'iPhone 15 Pro', status: 'active', category: 'electronics', price: 999 },
-  { id: '2', name: 'MacBook Pro 14"', status: 'active', category: 'electronics', price: 1999 },
-  { id: '3', name: 'Wool Sweater', status: 'pending', category: 'clothing', price: 89 },
-  { id: '4', name: 'Running Shoes', status: 'active', category: 'clothing', price: 129 },
-  { id: '5', name: 'Organic Coffee Beans', status: 'active', category: 'food', price: 24 },
-  { id: '6', name: 'Chocolate Bar', status: 'inactive', category: 'food', price: 5 },
-  { id: '7', name: 'Clean Code Book', status: 'active', category: 'books', price: 45 },
-  { id: '8', name: 'Design Patterns', status: 'pending', category: 'books', price: 55 },
-  { id: '9', name: 'AirPods Pro', status: 'active', category: 'electronics', price: 249 },
-  { id: '10', name: 'Winter Jacket', status: 'inactive', category: 'clothing', price: 199 },
+  { id: '1', name: 'iPhone 15 Pro', status: 'active', category: 'electronics', fulfillmentCenter: 'atlanta', price: 999 },
+  { id: '2', name: 'MacBook Pro 14"', status: 'active', category: 'electronics', fulfillmentCenter: 'austin', price: 1999 },
+  { id: '3', name: 'Wool Sweater', status: 'pending', category: 'clothing', fulfillmentCenter: 'baltimore', price: 89 },
+  { id: '4', name: 'Running Shoes', status: 'active', category: 'clothing', fulfillmentCenter: 'chicago', price: 129 },
+  { id: '5', name: 'Organic Coffee Beans', status: 'active', category: 'food', fulfillmentCenter: 'denver', price: 24 },
+  { id: '6', name: 'Chocolate Bar', status: 'inactive', category: 'food', fulfillmentCenter: 'detroit', price: 5 },
+  { id: '7', name: 'Clean Code Book', status: 'active', category: 'books', fulfillmentCenter: 'houston', price: 45 },
+  { id: '8', name: 'Design Patterns', status: 'pending', category: 'books', fulfillmentCenter: 'las-vegas', price: 55 },
+  { id: '9', name: 'AirPods Pro', status: 'active', category: 'electronics', fulfillmentCenter: 'los-angeles', price: 249 },
+  { id: '10', name: 'Winter Jacket', status: 'inactive', category: 'clothing', fulfillmentCenter: 'miami', price: 199 },
 ]
 
 const columnVisibilityData: VisibilityProduct[] = sampleData.slice(0, 6).map((product, index) => ({
@@ -217,6 +236,16 @@ const filterableColumns = [
 
 const overviewColumns = [
   ...filterableColumns,
+  createColumn<Product>({
+    id: 'fulfillmentCenter',
+    header: 'Fulfillment Center',
+    accessor: (row) => fulfillmentCenterOptions.find((option) => option.value === row.fulfillmentCenter)?.label ?? row.fulfillmentCenter,
+    filterValue: 'fulfillmentCenter',
+    width: 180,
+    filterable: true,
+    filterMode: 'multiSelect',
+    filterOptions: fulfillmentCenterOptions,
+  }),
   createActionsColumn<Product>((row) => (
     <Dropdown.Root>
       <ButtonUtility
@@ -291,7 +320,7 @@ export const Overview: Story = {
         <div>
           <h3 className="text-lg font-semibold text-primary">Column Filtering</h3>
           <p className="text-sm text-tertiary">
-            Open the column menu in Status or Category to combine multiple filter options.
+            Open the column menu in Status, Category, or Fulfillment Center to combine multiple filter options.
           </p>
         </div>
         <DataTable
@@ -724,14 +753,10 @@ interface PinnedProduct extends Product {
   pinned: boolean
 }
 
-const pinnedSampleData: PinnedProduct[] = [
-  { id: '1', name: 'iPhone 15 Pro', status: 'active', category: 'electronics', price: 999, pinned: true },
-  { id: '2', name: 'MacBook Pro 14"', status: 'active', category: 'electronics', price: 1999, pinned: true },
-  { id: '3', name: 'Wool Sweater', status: 'pending', category: 'clothing', price: 89, pinned: false },
-  { id: '4', name: 'Running Shoes', status: 'active', category: 'clothing', price: 129, pinned: false },
-  { id: '5', name: 'Organic Coffee Beans', status: 'active', category: 'food', price: 24, pinned: false },
-  { id: '6', name: 'Chocolate Bar', status: 'inactive', category: 'food', price: 5, pinned: false },
-]
+const pinnedSampleData: PinnedProduct[] = sampleData.slice(0, 6).map((product, index) => ({
+  ...product,
+  pinned: index < 2,
+}))
 
 function RowReorderPinnedExample() {
   const [items, setItems] = useState(pinnedSampleData)

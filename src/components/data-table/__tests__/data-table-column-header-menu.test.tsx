@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { useState } from 'react'
-import type { ColumnDef } from '@tanstack/react-table'
-import type { VisibilityState } from '@tanstack/react-table'
+import type { ColumnDef, ColumnFiltersState, Updater, VisibilityState } from '@tanstack/react-table'
 import { describe, expect, it, vi } from 'vitest'
 
 // JSDOM gives refs a 0x0 bounding box, which makes TanStack Virtual render
@@ -315,6 +314,79 @@ describe('DataTable column header menu', () => {
 
     expect((screen.getByRole('checkbox', { name: 'Software' }) as HTMLInputElement).checked).toBe(true)
     expect(screen.getByRole('checkbox', { name: 'Hardware' })).toBeTruthy()
+  })
+
+  it('keeps controlled manual multi-select filter menus open while filters update', () => {
+    function Harness() {
+      const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+        { id: 'skuStatus', value: 'active' },
+      ])
+      const [isLoading, setIsLoading] = useState(false)
+      const selectedCollections = columnFilters.find((filter) => filter.id === 'collection')?.value
+      const selectedCollectionValues = Array.isArray(selectedCollections)
+        ? selectedCollections
+        : []
+      const controlledData = selectedCollectionValues.length > 0
+        ? data.filter((item) => selectedCollectionValues.includes(item.category))
+        : data
+      const controlledColumns: ColumnDef<Item, unknown>[] = [
+        createColumn<Item>({
+          id: 'sku',
+          header: 'SKU',
+          accessor: 'sku',
+          isPrimary: true,
+        }),
+        createColumn<Item>({
+          id: 'collection',
+          header: 'Collections',
+          accessor: 'category',
+          sortable: false,
+          filterable: true,
+          filterMode: 'multiSelect',
+          filterOptions: [
+            { value: 'hardware', label: 'Hardware' },
+            { value: 'software', label: 'Software' },
+          ],
+          filterValue: 'category',
+        }),
+        createColumn<Item>({
+          id: 'skuStatus',
+          header: 'Status',
+          accessor: 'status',
+          sortable: false,
+          filterable: true,
+          filterMode: 'select',
+          filterOptions: [
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' },
+          ],
+        }),
+      ]
+      const handleColumnFiltersChange = (updater: Updater<ColumnFiltersState>) => {
+        setIsLoading(true)
+        setColumnFilters(updater)
+      }
+
+      return (
+        <DataTable
+          columns={controlledColumns}
+          data={controlledData}
+          getRowId={(row) => row.id}
+          isLoading={isLoading}
+          manualFiltering
+          columnFilters={columnFilters}
+          onColumnFiltersChange={handleColumnFiltersChange}
+        />
+      )
+    }
+
+    render(<Harness />)
+
+    fireEvent.click(getMenuButton('Collections'))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Hardware' }))
+
+    expect((screen.getByRole('checkbox', { name: 'Hardware' }) as HTMLInputElement).checked).toBe(true)
+    expect(screen.getByRole('checkbox', { name: 'Software' })).toBeTruthy()
   })
 
   it('marks a column menu active when the filter is active', () => {

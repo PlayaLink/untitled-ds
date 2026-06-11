@@ -448,8 +448,9 @@ export function DataTable<TData>({
     overscan: 5,
   })
 
-  // Loading state
-  if (isLoading) {
+  // Initial loading state. During refreshes, keep the current table mounted so
+  // open column menus and selection controls are not reset by a transient fetch.
+  if (isLoading && data.length === 0) {
     return (
       <div
         className="flex items-center justify-center rounded-xl border border-secondary bg-primary shadow-xs"
@@ -487,13 +488,22 @@ export function DataTable<TData>({
   return (
     <div
       className={cx(
-        'overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs',
+        'relative overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs',
         useFlexLayout && 'flex flex-col'
       )}
       style={{
         height: useFlexLayout ? maxHeight : undefined,
       }}
+      aria-busy={isLoading || undefined}
+      data-loading={isLoading ? 'true' : undefined}
       data-untitled-ds='DataTable'>
+      {isLoading && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 top-3 z-20 flex size-8 items-center justify-center rounded-full bg-primary/90 shadow-sm ring-1 ring-border-secondary">
+          <Icon name="loader" size="md" className="animate-spin text-quaternary" />
+        </div>
+      )}
       {/* Selection actions bar */}
       {selectedCount > 0 && selectionActions && (
         <TableActionsBar

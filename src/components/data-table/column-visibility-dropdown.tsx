@@ -27,7 +27,6 @@ export const styles = sortCx({
   trigger: {
     base: 'flex size-8 cursor-pointer items-center justify-center rounded-md transition-colors outline-none',
     default: 'text-quaternary hover:bg-tertiary hover:text-tertiary',
-    active: 'text-brand-600 hover:bg-tertiary hover:text-brand-700',
   },
   popover: [
     'w-64 origin-(--trigger-anchor-point) overflow-hidden rounded-lg bg-primary shadow-lg ring-1 ring-border-secondary-alt',
@@ -50,7 +49,7 @@ export const styles = sortCx({
 
 export interface ColumnVisibilityDropdownProps<TData> {
   table: ReactTable<TData>
-  iconName?: 'sliders' | 'dots-vertical'
+  iconName?: 'sliders' | 'dots-vertical' | 'dots-horizontal'
 }
 
 // =============================================================================
@@ -75,7 +74,7 @@ export function hasHideableColumns<TData>(table: ReactTable<TData>) {
 
 export function ColumnVisibilityDropdown<TData>({
   table,
-  iconName = 'dots-vertical',
+  iconName = 'sliders',
 }: ColumnVisibilityDropdownProps<TData>) {
   const [isOpen, setIsOpen] = useState(false)
   const columns = getVisibilityColumns(table)
@@ -91,10 +90,7 @@ export function ColumnVisibilityDropdown<TData>({
       <AriaButton
         aria-label="Manage columns"
         data-state={hasHiddenColumns ? 'active' : 'inactive'}
-        className={cx(
-          styles.trigger.base,
-          hasHiddenColumns ? styles.trigger.active : styles.trigger.default
-        )}
+        className={cx(styles.trigger.base, styles.trigger.default)}
         onClick={(event) => event.stopPropagation()}
       >
         <Icon name={iconName} size="md" />

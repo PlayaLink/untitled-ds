@@ -256,12 +256,22 @@ export function createSelectColumn<TData>(width = 80): ColumnDef<TData, unknown>
 /**
  * Helper to create an actions column (e.g., edit/delete buttons)
  */
+export interface CreateActionsColumnOptions {
+  /** Column id. Defaults to the conventional `actions` utility column id. */
+  id?: string
+  /** Fixed width for the utility column. */
+  width?: number
+}
+
 export function createActionsColumn<TData>(
   renderActions: (row: Row<TData>) => ReactNode,
-  width = 80
+  widthOrOptions: number | CreateActionsColumnOptions = 80
 ): ColumnDef<TData, unknown> {
+  const options = typeof widthOrOptions === 'number' ? { width: widthOrOptions } : widthOrOptions
+  const { id = 'actions', width = 80 } = options
+
   return {
-    id: 'actions',
+    id,
     header: () => null,
     cell: ({ row }) => renderActions(row),
     size: width,

@@ -99,6 +99,20 @@ describe('DataTable column helpers', () => {
     expect(actionsColumn.meta?.reorderable).toBe(false)
   })
 
+  it('supports configured actions column ids and widths', () => {
+    const actionsColumn = createActionsColumn<Item>(() => null, {
+      id: 'rowActions',
+      width: 64,
+    })
+
+    expect(actionsColumn.id).toBe('rowActions')
+    expect(actionsColumn.size).toBe(64)
+    expect(actionsColumn.minSize).toBe(64)
+    expect(actionsColumn.maxSize).toBe(64)
+    expect(actionsColumn.meta?.width).toBe(64)
+    expect(actionsColumn.meta?.isUtility).toBe(true)
+  })
+
   it('defaults filterable option columns to multi-select mode', () => {
     const statusColumn = createColumn<Item>({
       id: 'status',

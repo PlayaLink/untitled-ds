@@ -137,7 +137,7 @@ describe('DataTable column visibility', () => {
     expect(queryManagerButton()).toBeNull()
   })
 
-  it('uses vertical dots for the column visibility manager trigger', () => {
+  it('uses sliders for the column visibility manager trigger', () => {
     render(
       <DataTable
         columns={columns}
@@ -147,7 +147,33 @@ describe('DataTable column visibility', () => {
       />
     )
 
-    expect(getManagerIconName()).toBe('ellipsis-vertical')
+    const managerButton = getManagerButton()
+    const managerCell = managerButton.parentElement
+
+    expect(getManagerIconName()).toBe('sliders')
+    expect(managerButton.className).toContain('text-quaternary')
+    expect(managerButton.className).not.toContain('text-brand')
+    expect(managerCell?.className).toContain('sticky')
+    expect(managerCell?.className).toContain('right-0')
+    expect(managerCell?.className).toContain('ml-auto')
+  })
+
+  it('keeps the default trigger color when hidden columns make the manager active', () => {
+    render(
+      <DataTable
+        columns={columns}
+        data={data}
+        getRowId={(row) => row.id}
+        enableColumnVisibility
+        defaultColumnVisibility={{ status: false }}
+      />
+    )
+
+    const managerButton = getManagerButton()
+
+    expect(managerButton.getAttribute('data-state')).toBe('active')
+    expect(managerButton.className).toContain('text-quaternary')
+    expect(managerButton.className).not.toContain('text-brand')
   })
 
   it('lists only hideable leaf columns in current order', () => {

@@ -121,7 +121,7 @@ describe('DataTable row actions', () => {
     const managerButton = screen.getByRole('button', { name: /manage columns/i })
     const utilityHeaderCell = managerButton.parentElement
 
-    expect(getButtonIconName(managerButton)).toBe('sliders')
+    expect(getButtonIconName(managerButton)).toBe('ellipsis')
     expect(utilityHeaderCell?.className).toContain('sticky')
     expect(utilityHeaderCell?.className).toContain('ml-auto')
     expect((utilityHeaderCell as HTMLElement | undefined)?.style.right).toBe('0px')

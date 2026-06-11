@@ -180,7 +180,7 @@ describe('DataTable column visibility', () => {
     expect(queryManagerButton()).toBeNull()
   })
 
-  it('uses sliders for the column visibility manager trigger', () => {
+  it('uses horizontal ellipsis for the column visibility manager trigger', () => {
     render(
       <DataTable
         columns={columns}
@@ -193,12 +193,13 @@ describe('DataTable column visibility', () => {
     const managerButton = getManagerButton()
     const managerCell = managerButton.parentElement
 
-    expect(getManagerIconName()).toBe('sliders')
+    expect(getManagerIconName()).toBe('ellipsis')
     expect(managerButton.className).toContain('text-quaternary')
     expect(managerButton.className).not.toContain('text-brand')
     expect(managerCell?.className).toContain('sticky')
     expect(managerCell?.className).toContain('right-0')
     expect(managerCell?.className).toContain('ml-auto')
+    expect(managerCell?.className).not.toContain('border-l')
   })
 
   it('keeps the default trigger color when hidden columns make the manager active', () => {

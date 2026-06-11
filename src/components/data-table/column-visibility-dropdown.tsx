@@ -187,7 +187,7 @@ function ColumnVisibilityOption<TData>({
 
 export function ColumnVisibilityDropdown<TData>({
   table,
-  iconName = 'sliders',
+  iconName = 'dots-horizontal',
 }: ColumnVisibilityDropdownProps<TData>) {
   const [isOpen, setIsOpen] = useState(false)
   const columns = getVisibilityColumns(table)

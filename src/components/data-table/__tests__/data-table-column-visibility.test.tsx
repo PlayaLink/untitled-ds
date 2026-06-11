@@ -29,6 +29,8 @@ vi.mock('@tanstack/react-virtual', async (importOriginal) => {
 import { DataTable } from '../data-table'
 // eslint-disable-next-line import/first
 import { createColumn, createSelectColumn } from '../column-helpers'
+// eslint-disable-next-line import/first
+import { reorderTableColumnOrder } from '../column-visibility-dropdown'
 
 interface Item {
   id: string
@@ -64,6 +66,27 @@ const columns: ColumnDef<Item, unknown>[] = [
   }),
 ]
 
+const reorderableColumns: ColumnDef<Item, unknown>[] = [
+  createSelectColumn<Item>(),
+  createColumn<Item>({
+    id: 'name',
+    header: 'Name',
+    label: 'Product',
+    accessor: 'name',
+    isPrimary: true,
+  }),
+  createColumn<Item>({
+    id: 'status',
+    header: 'Status',
+    accessor: 'status',
+  }),
+  createColumn<Item>({
+    id: 'owner',
+    header: 'Owner',
+    accessor: 'owner',
+  }),
+]
+
 function getManagerButton() {
   return screen.getByRole('button', { name: /manage columns/i })
 }
@@ -93,6 +116,26 @@ function getCheckbox(name: string) {
 }
 
 describe('DataTable column visibility', () => {
+  it('reorders a column within the full table column order', () => {
+    expect(
+      reorderTableColumnOrder(
+        [],
+        ['select', 'name', 'status', 'owner', 'rowActions'],
+        'owner',
+        'status'
+      )
+    ).toEqual(['select', 'name', 'owner', 'status', 'rowActions'])
+
+    expect(
+      reorderTableColumnOrder(
+        ['select', 'status', 'name'],
+        ['select', 'name', 'status', 'owner', 'rowActions'],
+        'owner',
+        'status'
+      )
+    ).toEqual(['select', 'owner', 'status', 'name', 'rowActions'])
+  })
+
   it('renders the manager only when enabled and at least one leaf column can hide', () => {
     const { rerender } = render(
       <DataTable columns={columns} data={data} getRowId={(row) => row.id} />
@@ -199,6 +242,27 @@ describe('DataTable column visibility', () => {
     expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: 'Owner' })).toBeNull()
     expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: 'Product' })).toBeNull()
     expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: 'select' })).toBeNull()
+  })
+
+  it('renders reorder handles when multiple visibility options are available', () => {
+    render(
+      <DataTable
+        columns={reorderableColumns}
+        data={data}
+        getRowId={(row) => row.id}
+        enableColumnVisibility
+      />
+    )
+
+    fireEvent.click(getManagerButton())
+
+    const checkboxes = within(getVisibilityOptions()).getAllByRole('checkbox')
+    expect(checkboxes.map((checkbox) => checkbox.getAttribute('aria-label'))).toEqual([
+      'Status',
+      'Owner',
+    ])
+    expect(screen.getByRole('button', { name: 'Reorder Status column' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Reorder Owner column' })).toBeTruthy()
   })
 
   it('uses defaultColumnVisibility for uncontrolled initial state', () => {

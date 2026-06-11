@@ -185,7 +185,7 @@ interface DataTableBaseProps<TData> {
   manualFiltering?: boolean
   /** Change this value to reset row selection (e.g. after bulk delete). */
   selectionKey?: string | number
-  /** Enable drag-and-drop column reordering via grip handles */
+  /** Enable drag-and-drop column reordering via header grip handles */
   enableColumnReorder?: boolean
   /** Controlled column order state (array of column IDs) */
   columnOrder?: ColumnOrderState
@@ -518,9 +518,10 @@ export function DataTable<TData>({
   const [internalColumnSizing, setInternalColumnSizing] = useState<ColumnSizingState>({})
   // Internal column filters state (used when uncontrolled)
   const [internalColumnFilters, setInternalColumnFilters] = useState<ColumnFiltersState>([])
+  const shouldManageColumnOrder = enableColumnReorder || enableColumnVisibility
   // Internal column order state (used when uncontrolled) — eagerly initialize from column IDs
   const [internalColumnOrder, setInternalColumnOrder] = useState<ColumnOrderState>(() =>
-    enableColumnReorder ? normalizeColumnOrder([], effectiveColumns) : []
+    shouldManageColumnOrder ? normalizeColumnOrder([], effectiveColumns) : []
   )
   // Internal column visibility state (used when uncontrolled)
   const [internalColumnVisibility, setInternalColumnVisibility] = useState<VisibilityState>(
@@ -714,14 +715,14 @@ export function DataTable<TData>({
       columnSizing,
       columnFilters,
       columnVisibility,
-      ...(enableColumnReorder ? { columnOrder } : {}),
+      ...(shouldManageColumnOrder ? { columnOrder } : {}),
     },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnSizingChange: handleColumnSizingChange,
     onColumnFiltersChange: handleColumnFiltersChange,
     onColumnVisibilityChange: handleColumnVisibilityChange,
-    ...(enableColumnReorder ? { onColumnOrderChange: handleColumnOrderChange } : {}),
+    ...(shouldManageColumnOrder ? { onColumnOrderChange: handleColumnOrderChange } : {}),
     enableRowSelection: true,
     enableSorting: true,
     enableColumnResizing,

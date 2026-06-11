@@ -235,7 +235,7 @@ describe('DataTable column visibility', () => {
 
     fireEvent.click(getManagerButton())
 
-    expect(screen.getByText('Column visibility')).toBeTruthy()
+    expect(screen.getByText('Column Visibility + Order')).toBeTruthy()
     const checkboxes = within(getVisibilityOptions()).getAllByRole('checkbox')
     expect(checkboxes.map((checkbox) => checkbox.getAttribute('aria-label'))).toEqual([
       'Status',

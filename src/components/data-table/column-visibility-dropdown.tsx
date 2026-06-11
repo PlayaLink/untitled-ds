@@ -232,7 +232,7 @@ export function ColumnVisibilityDropdown<TData>({
       <Popover placement="bottom end" className={styles.popover}>
         <Dialog className={styles.dialog}>
           <div className={styles.header}>
-            <span className={styles.headerTitle}>Column visibility</span>
+            <span className={styles.headerTitle}>Column Visibility + Order</span>
           </div>
           <DndContext
             sensors={reorderSensors}

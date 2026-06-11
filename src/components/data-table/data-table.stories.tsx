@@ -21,6 +21,10 @@ interface Product {
   price: number
 }
 
+interface VisibilityProduct extends Product {
+  sku: string
+}
+
 const sampleData: Product[] = [
   { id: '1', name: 'iPhone 15 Pro', status: 'active', category: 'electronics', price: 999 },
   { id: '2', name: 'MacBook Pro 14"', status: 'active', category: 'electronics', price: 1999 },
@@ -33,6 +37,11 @@ const sampleData: Product[] = [
   { id: '9', name: 'AirPods Pro', status: 'active', category: 'electronics', price: 249 },
   { id: '10', name: 'Winter Jacket', status: 'inactive', category: 'clothing', price: 199 },
 ]
+
+const columnVisibilityData: VisibilityProduct[] = sampleData.slice(0, 6).map((product, index) => ({
+  ...product,
+  sku: ['APL-15P', 'APL-M14', 'APP-WOL', 'APP-RUN', 'GRC-COF', 'GRC-CHO'][index],
+}))
 
 // =============================================================================
 // Meta
@@ -187,6 +196,49 @@ const filterableColumns = [
   }),
 ]
 
+const columnVisibilityColumns = [
+  createSelectColumn<VisibilityProduct>(),
+  createColumn<VisibilityProduct>({
+    id: 'name',
+    header: 'Product Name',
+    accessor: 'name',
+    isPrimary: true,
+  }),
+  createColumn<VisibilityProduct>({
+    id: 'status',
+    header: () => (
+      <span className="flex items-center gap-2 text-xs font-semibold text-tertiary">
+        Status
+        <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-quaternary">
+          Live
+        </span>
+      </span>
+    ),
+    label: 'Lifecycle status',
+    accessor: 'status',
+    width: 160,
+  }),
+  createColumn<VisibilityProduct>({
+    id: 'category',
+    header: 'Category',
+    accessor: 'category',
+    width: 140,
+  }),
+  createColumn<VisibilityProduct>({
+    id: 'price',
+    header: 'Price',
+    accessor: (row) => `$${row.price}`,
+    sortValue: 'price',
+    width: 100,
+  }),
+  createColumn<VisibilityProduct>({
+    id: 'sku',
+    header: 'SKU',
+    accessor: 'sku',
+    width: 120,
+  }),
+]
+
 // =============================================================================
 // OVERVIEW
 // =============================================================================
@@ -288,6 +340,28 @@ export const Overview: Story = {
 
       {/* Row Reordering — mixed pinned / draggable rows */}
       <RowReorderPinnedExample />
+    </div>
+  ),
+}
+
+export const ColumnVisibility: StoryObj<typeof DataTable<VisibilityProduct>> = {
+  name: 'Column Visibility',
+  render: () => (
+    <div className="flex max-w-5xl flex-col gap-4 px-4 py-8">
+      <div>
+        <h3 className="text-lg font-semibold text-primary">Column Visibility</h3>
+        <p className="text-sm text-tertiary">
+          Open the sliders control to hide visible columns or restore the SKU column.
+        </p>
+      </div>
+      <DataTable
+        columns={columnVisibilityColumns}
+        data={columnVisibilityData}
+        getRowId={(row) => row.id}
+        enableColumnVisibility
+        defaultColumnVisibility={{ sku: false }}
+        maxHeight={420}
+      />
     </div>
   ),
 }

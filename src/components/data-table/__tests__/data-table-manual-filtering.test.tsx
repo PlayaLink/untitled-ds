@@ -39,6 +39,21 @@ const columns: ColumnDef<Item, unknown>[] = [
     header: 'Status',
     accessor: 'status',
     filterable: true,
+    filterMode: 'select',
+    filterOptions: [
+      { value: 'active', label: 'Active' },
+      { value: 'inactive', label: 'Inactive' },
+    ],
+  }),
+]
+
+const defaultMultiSelectColumns: ColumnDef<Item, unknown>[] = [
+  createColumn<Item>({ id: 'name', header: 'Name', accessor: 'name' }),
+  createColumn<Item>({
+    id: 'status',
+    header: 'Status',
+    accessor: 'status',
+    filterable: true,
     filterOptions: [
       { value: 'active', label: 'Active' },
       { value: 'inactive', label: 'Inactive' },
@@ -123,6 +138,22 @@ describe('DataTable manualFiltering', () => {
     render(
       <DataTable
         columns={columns}
+        data={data}
+        getRowId={(row) => row.id}
+        columnFilters={[{ id: 'status', value: 'inactive' }]}
+        onColumnFiltersChange={() => {}}
+      />
+    )
+
+    expect(screen.queryByText('Alpha')).toBeNull()
+    expect(screen.getByText('Bravo')).toBeTruthy()
+    expect(screen.queryByText('Charlie')).toBeNull()
+  })
+
+  it('normalizes legacy string values for default multi-select filters', () => {
+    render(
+      <DataTable
+        columns={defaultMultiSelectColumns}
         data={data}
         getRowId={(row) => row.id}
         columnFilters={[{ id: 'status', value: 'inactive' }]}

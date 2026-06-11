@@ -99,6 +99,22 @@ describe('DataTable column helpers', () => {
     expect(actionsColumn.meta?.reorderable).toBe(false)
   })
 
+  it('defaults filterable option columns to multi-select mode', () => {
+    const statusColumn = createColumn<Item>({
+      id: 'status',
+      header: 'Status',
+      accessor: 'status',
+      filterable: true,
+      filterOptions: [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+      ],
+    })
+
+    expect(statusColumn.meta?.filterMode).toBe('multiSelect')
+    expect(statusColumn.filterFn).toBe('multiSelect')
+  })
+
   it('computes a header-aware minimum width for sort and filter controls', () => {
     const statusColumn = createColumn<Item>({
       id: 'status',

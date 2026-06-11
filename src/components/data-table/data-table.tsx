@@ -383,10 +383,16 @@ export function DataTable<TData>({
   }, [])
 
   // Custom filter function for multi-select
-  const multiSelectFilterFn: FilterFn<TData> = (row, columnId, filterValue: string[]) => {
-    if (!filterValue?.length) return true
+  const multiSelectFilterFn: FilterFn<TData> = (row, columnId, filterValue: string[] | string | null | undefined) => {
+    const selectedValues = Array.isArray(filterValue)
+      ? filterValue
+      : filterValue === undefined || filterValue === null
+        ? []
+        : [String(filterValue)]
+
+    if (!selectedValues.length) return true
     const cellValue = row.getValue(columnId)
-    return filterValue.includes(String(cellValue))
+    return selectedValues.includes(String(cellValue))
   }
 
   // Inject the drag column to the left of the caller's columns when row reorder is enabled

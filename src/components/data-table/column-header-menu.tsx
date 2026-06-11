@@ -93,7 +93,7 @@ export function ColumnHeaderMenu<TData>({
   const hasActiveFilter = selectedValues.length > 0
   const filterCount = selectedValues.length
   const isActive = Boolean(sortDirection || hasActiveFilter)
-  const filterMode = filterMeta?.filterMode ?? 'select'
+  const filterMode = filterMeta?.filterMode ?? 'multiSelect'
   const sortLabel = sortDirection === 'asc'
     ? 'sorted ascending'
     : sortDirection === 'desc'

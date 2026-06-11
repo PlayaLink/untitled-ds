@@ -62,6 +62,7 @@ const columns: ColumnDef<Item, unknown>[] = [
     accessor: 'status',
     sortable: false,
     filterable: true,
+    filterMode: 'select',
     filterOptions: [
       { value: 'active', label: 'Active' },
       { value: 'inactive', label: 'Inactive' },
@@ -197,6 +198,21 @@ describe('DataTable column header menu', () => {
 
     expect(screen.getByRole('checkbox', { name: 'Hardware' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Hardware' })).toBeNull()
+  })
+
+  it('keeps multi-select filter menus open while options are selected', () => {
+    renderTable()
+
+    fireEvent.click(getMenuButton('Category'))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Hardware' }))
+
+    expect((screen.getByRole('checkbox', { name: 'Hardware' }) as HTMLInputElement).checked).toBe(true)
+    expect(screen.getByRole('checkbox', { name: 'Software' })).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Software' }))
+
+    expect((screen.getByRole('checkbox', { name: 'Software' }) as HTMLInputElement).checked).toBe(true)
+    expect(screen.getByRole('checkbox', { name: 'Hardware' })).toBeTruthy()
   })
 
   it('marks a column menu active when the filter is active', () => {

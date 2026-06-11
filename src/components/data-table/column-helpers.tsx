@@ -59,7 +59,7 @@ interface CreateColumnOptions<TData> {
   filterable?: boolean
   /** Dropdown filter options (required when filterable is true) */
   filterOptions?: FilterOption[]
-  /** Filter mode: single select or multi-select (default: 'select') */
+  /** Filter mode: multi-select by default; use 'select' for exclusive filters */
   filterMode?: 'select' | 'multiSelect'
   /** Extract filterable value (use when accessor returns ReactNode) */
   filterValue?: keyof TData | ((row: TData) => string | number | null)
@@ -126,7 +126,7 @@ export function createColumn<TData>({
   enableResizing = true,
   filterable = false,
   filterOptions,
-  filterMode = 'select',
+  filterMode = 'multiSelect',
   filterValue,
 }: CreateColumnOptions<TData>): ColumnDef<TData, unknown> {
   const isAccessorKey = typeof accessor !== 'function'

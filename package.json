@@ -1,6 +1,6 @@
 {
   "name": "@playalink/untitled-ds",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "type": "module",
   "engines": {
     "node": ">=20 <23"

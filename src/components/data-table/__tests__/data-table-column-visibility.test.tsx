@@ -198,7 +198,7 @@ describe('DataTable column visibility', () => {
     expect(managerButton.className).not.toContain('text-brand')
     expect(managerCell?.className).toContain('sticky')
     expect(managerCell?.className).toContain('right-0')
-    expect(managerCell?.className).toContain('w-14')
+    expect((managerCell as HTMLElement | null)?.style.width).toBe('56px')
     expect(managerCell?.className).toContain('ml-auto')
     expect(managerCell?.className).not.toContain('border-l')
   })

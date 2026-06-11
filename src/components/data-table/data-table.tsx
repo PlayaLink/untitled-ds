@@ -1008,6 +1008,8 @@ type HeaderResizeStartEvent =
   | ReactMouseEvent<HTMLDivElement>
   | ReactTouchEvent<HTMLDivElement>
 
+const COLUMN_VISIBILITY_TRIGGER_CELL_WIDTH = 56
+
 function getResizeClientX(event: HeaderResizeStartEvent) {
   if ('touches' in event) {
     return event.touches[0]?.clientX ?? null
@@ -1297,7 +1299,9 @@ function HeaderRow<TData>({
             className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
             {headerCells}
             {shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader && (
-              <div className="sticky right-0 z-20 ml-auto flex h-full w-14 shrink-0 items-center justify-center bg-secondary">
+              <div
+                className="sticky right-0 z-20 ml-auto flex h-full shrink-0 items-center justify-center bg-secondary"
+                style={{ width: COLUMN_VISIBILITY_TRIGGER_CELL_WIDTH }}>
                 <ColumnVisibilityDropdown table={table} />
               </div>
             )}
@@ -1313,7 +1317,9 @@ function HeaderRow<TData>({
       data-untitled-ds='HeaderRow'>
       {headerCells}
       {shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader && (
-        <div className="sticky right-0 z-20 ml-auto flex h-full w-14 shrink-0 items-center justify-center bg-secondary">
+        <div
+          className="sticky right-0 z-20 ml-auto flex h-full shrink-0 items-center justify-center bg-secondary"
+          style={{ width: COLUMN_VISIBILITY_TRIGGER_CELL_WIDTH }}>
           <ColumnVisibilityDropdown table={table} />
         </div>
       )}

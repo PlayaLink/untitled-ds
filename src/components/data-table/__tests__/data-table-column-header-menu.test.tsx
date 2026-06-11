@@ -492,13 +492,15 @@ describe('DataTable column header menu', () => {
     expect(within(getVisibilityOptions()).queryByRole('checkbox', { name: /actions/i })).toBeNull()
   })
 
-  it('insets the utility-header column visibility trigger from the scrollbar edge', () => {
+  it('aligns the utility-header column visibility trigger with row actions', () => {
     renderTable()
 
     const managerButton = screen.getByRole('button', { name: /manage columns/i })
     const utilityHeaderCell = managerButton.parentElement
+    const rowActionButton = screen.getByRole('button', { name: /actions for alpha/i })
+    const rowActionCell = rowActionButton.parentElement?.parentElement
 
-    expect(utilityHeaderCell?.getAttribute('class')).toContain('pl-2')
-    expect(utilityHeaderCell?.getAttribute('class')).toContain('pr-6')
+    expect(utilityHeaderCell?.getAttribute('class')).toContain('px-6')
+    expect(rowActionCell?.getAttribute('class')).toContain('px-6')
   })
 })

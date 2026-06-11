@@ -844,7 +844,7 @@ function HeaderRow<TData>({
 
       const compactCellClassName = cx(
         'justify-center',
-        shouldRenderColumnVisibilityInCell ? 'pl-2 pr-6' : 'px-2'
+        shouldRenderColumnVisibilityInCell ? 'px-6' : 'px-2'
       )
       const cellClassName = cx(
         'relative flex h-full items-center gap-1',

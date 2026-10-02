@@ -2,16 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useMemo, useState } from 'react'
 import type { ColumnFiltersState, ColumnOrderState, SortingState, VisibilityState } from '@tanstack/react-table'
 import { DataTable, type DataTableProps } from './data-table'
-import { createActionsColumn, createColumn, createSelectColumn } from './column-helpers'
+import { createColumn, createSelectColumn } from './column-helpers'
 import { Button } from '../button'
-import { ButtonUtility } from '../button-utility'
-import { Dropdown } from '../dropdown'
 import { createIcon } from '../icon'
 
 const GitHubIcon = createIcon('github')
 const FigmaIcon = createIcon('figma')
 const CopyIcon = createIcon('copy')
-const DotsVerticalIcon = createIcon('dots-vertical')
 const EditIcon = createIcon('edit')
 const TrashIcon = createIcon('trash')
 
@@ -246,24 +243,32 @@ const overviewColumns = [
     filterMode: 'multiSelect',
     filterOptions: fulfillmentCenterOptions,
   }),
-  createActionsColumn<Product>((row) => (
-    <Dropdown.Root>
-      <ButtonUtility
-        aria-label={`Actions for ${row.original.name}`}
-        color="tertiary"
-        icon={DotsVerticalIcon}
-      />
-      <Dropdown.Popover>
-        <Dropdown.Menu onAction={(key) => console.log(`${key}:`, row.original.id)}>
-          <Dropdown.Item id="edit" icon={EditIcon} label="Edit" />
-          <Dropdown.Item id="copy" icon={CopyIcon} label="Copy ID" />
-          <Dropdown.Separator />
-          <Dropdown.Item id="delete" icon={TrashIcon} label="Delete" />
-        </Dropdown.Menu>
-      </Dropdown.Popover>
-    </Dropdown.Root>
-  )),
 ]
+
+const overviewRowActions: DataTableProps<Product>['rowActions'] = {
+  ariaLabel: (row) => `Actions for ${row.original.name}`,
+  actions: (row) => [
+    {
+      id: 'edit',
+      label: 'Edit',
+      icon: EditIcon,
+      onAction: () => console.log('edit:', row.original.id),
+    },
+    {
+      id: 'copy',
+      label: 'Copy ID',
+      icon: CopyIcon,
+      onAction: () => console.log('copy:', row.original.id),
+    },
+    { type: 'separator' },
+    {
+      id: 'delete',
+      label: 'Delete',
+      icon: TrashIcon,
+      onAction: () => console.log('delete:', row.original.id),
+    },
+  ],
+}
 
 const columnVisibilityColumns = [
   createSelectColumn<VisibilityProduct>(),
@@ -328,6 +333,7 @@ export const Overview: Story = {
           data={sampleData}
           getRowId={(row) => row.id}
           enableColumnVisibility
+          rowActions={overviewRowActions}
           maxHeight={400}
         />
       </div>
@@ -386,6 +392,7 @@ export const Overview: Story = {
           data={sampleData}
           getRowId={(row) => row.id}
           enableColumnReorder
+          rowActions={overviewRowActions}
           maxHeight={400}
         />
       </div>

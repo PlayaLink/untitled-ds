@@ -15,6 +15,9 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo,
+  type FC,
+  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
   type RefObject,
@@ -62,9 +65,12 @@ import {
 } from '@dnd-kit/sortable'
 import { cx } from '@/utils/cx'
 import { Checkbox } from '@/components/checkbox'
+import { ButtonUtility } from '@/components/button-utility'
+import { Dropdown } from '@/components/dropdown'
 import { Icon } from '@/components/icon'
 import { Pagination } from '@/components/pagination'
 import { TableActionsBar, type TableAction } from './table-actions-bar'
+import { createActionsColumn } from './column-helpers'
 import { ColumnHeaderMenu } from './column-header-menu'
 import { ColumnVisibilityDropdown, hasHideableColumns } from './column-visibility-dropdown'
 import { DraggableHeaderCell } from './draggable-header-cell'
@@ -76,7 +82,7 @@ import {
   getColumnLayoutWidth,
   hasColumnLayoutWidth,
 } from './column-sizing'
-import { isUtilityColumn } from './column-utils'
+import { isUtilityColumn, isUtilityColumnId } from './column-utils'
 import { useRowReorder, type RowReorderChange } from '@/hooks/use-row-reorder'
 
 export interface PaginationConfig {
@@ -86,6 +92,53 @@ export interface PaginationConfig {
   total?: number
   label?: string
 }
+
+export interface DataTableRowActionItem<TData> {
+  /** Unique key for the action inside the row menu. */
+  id: string | number
+  /** Display label for the action. */
+  label: ReactNode
+  /** Optional leading icon. */
+  icon?: FC<{ className?: string }>
+  /** Click handler for this action. Receives the TanStack row. */
+  onAction?: (row: Row<TData>) => void
+  /** Whether the action is disabled. */
+  isDisabled?: boolean
+  /** Compatibility alias for `isDisabled`. */
+  disabled?: boolean
+  /** Optional className forwarded to the dropdown item. */
+  className?: string
+  /** Optional text value for non-string labels. */
+  textValue?: string
+  /** Optional aria label for the dropdown item. */
+  'aria-label'?: string
+  /** Optional data attributes forwarded to the dropdown item. */
+  [dataAttribute: `data-${string}`]: string | number | boolean | undefined
+}
+
+export interface DataTableRowActionSeparator {
+  type: 'separator'
+  id?: string | number
+}
+
+export type DataTableRowAction<TData> =
+  | DataTableRowActionItem<TData>
+  | DataTableRowActionSeparator
+
+export interface DataTableRowActionsConfig<TData> {
+  /** Returns menu items or fully custom row-action content for a row. */
+  actions: (row: Row<TData>) => DataTableRowAction<TData>[] | ReactNode
+  /** Fixed width for the internally managed utility column. Defaults to 64px. */
+  width?: number
+  /** Accessible label for the row-action trigger. Defaults to "Row actions". */
+  ariaLabel?: string | ((row: Row<TData>) => string)
+  /** When true, rows with no actions render an empty cell instead of a disabled trigger. */
+  hideWhenEmpty?: boolean
+}
+
+export type DataTableRowActions<TData> =
+  | ((row: Row<TData>) => DataTableRowAction<TData>[] | ReactNode)
+  | DataTableRowActionsConfig<TData>
 
 interface DataTableBaseProps<TData> {
   columns: ColumnDef<TData, unknown>[]
@@ -107,6 +160,11 @@ interface DataTableBaseProps<TData> {
   columnResizeMode?: 'onChange' | 'onEnd'
   /** Function that returns actions for selected rows. Receives selected rows and returns array of TableAction. */
   selectionActions?: (selectedRows: TData[]) => TableAction[]
+  /**
+   * Row-level actions. When provided, DataTable appends a fixed, non-hideable,
+   * non-reorderable utility column at the right edge.
+   */
+  rowActions?: DataTableRowActions<TData>
   /** Pagination configuration. When provided, renders pagination footer. */
   pagination?: PaginationConfig
   /** Initial sorting state (uncontrolled; useful for stories and default sort). */
@@ -127,7 +185,7 @@ interface DataTableBaseProps<TData> {
   manualFiltering?: boolean
   /** Change this value to reset row selection (e.g. after bulk delete). */
   selectionKey?: string | number
-  /** Enable drag-and-drop column reordering via grip handles */
+  /** Enable drag-and-drop column reordering via header grip handles */
   enableColumnReorder?: boolean
   /** Controlled column order state (array of column IDs) */
   columnOrder?: ColumnOrderState
@@ -178,6 +236,225 @@ export type DataTableProps<TData> = DataTableBaseProps<TData> & (
     }
 )
 
+const ROW_ACTIONS_COLUMN_ID = 'rowActions'
+const DEFAULT_ROW_ACTIONS_WIDTH = 64
+
+function isRowActionSeparator<TData>(
+  action: DataTableRowAction<TData>
+): action is DataTableRowActionSeparator {
+  return 'type' in action && action.type === 'separator'
+}
+
+function isRowAction(value: unknown): value is DataTableRowAction<unknown> {
+  if (typeof value !== 'object' || value === null) return false
+  if ('type' in value && value.type === 'separator') return true
+
+  return 'id' in value && 'label' in value
+}
+
+function isRowActionArray<TData>(value: unknown): value is DataTableRowAction<TData>[] {
+  return Array.isArray(value) && value.every(isRowAction)
+}
+
+function resolveRowActionsConfig<TData>(
+  rowActions: DataTableRowActions<TData> | undefined
+): DataTableRowActionsConfig<TData> | undefined {
+  if (!rowActions) return undefined
+
+  return typeof rowActions === 'function' ? { actions: rowActions } : rowActions
+}
+
+function getRowActionTriggerLabel<TData>(
+  config: DataTableRowActionsConfig<TData>,
+  row: Row<TData>
+) {
+  if (typeof config.ariaLabel === 'function') return config.ariaLabel(row)
+  return config.ariaLabel ?? 'Row actions'
+}
+
+function renderRowActions<TData>(
+  row: Row<TData>,
+  config: DataTableRowActionsConfig<TData>
+) {
+  const renderedActions = config.actions(row)
+  if (!isRowActionArray<TData>(renderedActions)) return renderedActions
+
+  const menuActions = renderedActions.filter(
+    (action): action is DataTableRowActionItem<TData> => !isRowActionSeparator(action)
+  )
+
+  if (menuActions.length === 0) {
+    if (config.hideWhenEmpty === false) {
+      return (
+        <ButtonUtility
+          aria-label={getRowActionTriggerLabel(config, row)}
+          color="tertiary"
+          icon={<Icon name="dots-horizontal" size="sm" />}
+          isDisabled
+        />
+      )
+    }
+
+    return null
+  }
+
+  return (
+    <Dropdown.Root>
+      <ButtonUtility
+        aria-label={getRowActionTriggerLabel(config, row)}
+        color="tertiary"
+        icon={<Icon name="dots-horizontal" size="sm" />}
+      />
+      <Dropdown.Popover placement="bottom end">
+        <Dropdown.Menu
+          onAction={(key) => {
+            const action = menuActions.find((item) => String(item.id) === String(key))
+            action?.onAction?.(row)
+          }}
+        >
+          {renderedActions.map((action, index) => {
+            if (isRowActionSeparator(action)) {
+              return <Dropdown.Separator key={action.id ?? `separator-${index}`} />
+            }
+
+            const {
+              id,
+              label,
+              icon,
+              onAction,
+              isDisabled,
+              disabled,
+              ...itemProps
+            } = action
+
+            return (
+              <Dropdown.Item
+                key={id}
+                id={id}
+                icon={icon}
+                isDisabled={isDisabled ?? disabled}
+                label={typeof label === 'string' ? label : undefined}
+                {...itemProps}
+              >
+                {label}
+              </Dropdown.Item>
+            )
+          })}
+        </Dropdown.Menu>
+      </Dropdown.Popover>
+    </Dropdown.Root>
+  )
+}
+
+function getColumnDefId<TData>(column: ColumnDef<TData, unknown>) {
+  return typeof column.id === 'string' ? column.id : undefined
+}
+
+function getLeafColumnDefs<TData>(columns: ColumnDef<TData, unknown>[]) {
+  return columns.flatMap((column): ColumnDef<TData, unknown>[] => {
+    const childColumns = (column as { columns?: ColumnDef<TData, unknown>[] }).columns
+    return childColumns?.length ? getLeafColumnDefs(childColumns) : [column]
+  })
+}
+
+function shouldForceColumnVisible<TData>(column: ColumnDef<TData, unknown>) {
+  const id = getColumnDefId(column)
+  return (
+    column.enableHiding === false ||
+    column.meta?.isPrimary === true ||
+    column.meta?.isUtility === true ||
+    (id !== undefined && isUtilityColumnId(id))
+  )
+}
+
+function normalizeColumnVisibility<TData>(
+  visibility: VisibilityState,
+  columns: ColumnDef<TData, unknown>[]
+) {
+  let normalizedVisibility: VisibilityState | null = null
+
+  for (const column of getLeafColumnDefs(columns)) {
+    const id = getColumnDefId(column)
+    if (!id || visibility[id] !== false || !shouldForceColumnVisible(column)) continue
+
+    normalizedVisibility ??= { ...visibility }
+    normalizedVisibility[id] = true
+  }
+
+  return normalizedVisibility ?? visibility
+}
+
+function areColumnOrdersEqual(left: ColumnOrderState, right: ColumnOrderState) {
+  return left.length === right.length && left.every((id, index) => id === right[index])
+}
+
+function normalizeColumnOrder<TData>(
+  order: ColumnOrderState,
+  columns: ColumnDef<TData, unknown>[]
+) {
+  const leafColumns = getLeafColumnDefs(columns)
+  const columnById = new Map(
+    leafColumns
+      .map((column) => [getColumnDefId(column), column] as const)
+      .filter((entry): entry is readonly [string, ColumnDef<TData, unknown>] => entry[0] !== undefined)
+  )
+  const allColumnIds = Array.from(columnById.keys())
+  if (allColumnIds.length === 0) return order
+
+  const requestedIds = order.filter((id) => columnById.has(id))
+  const requestedSet = new Set(requestedIds)
+  const orderedIds = [
+    ...requestedIds,
+    ...allColumnIds.filter((id) => !requestedSet.has(id)),
+  ]
+  const leftUtilityIds = orderedIds.filter((id) => id === DRAG_COLUMN_ID)
+  const rightUtilityIds = orderedIds.filter((id) => {
+    const column = columnById.get(id)
+    return (
+      id !== DRAG_COLUMN_ID &&
+      (isUtilityColumnId(id) || column?.meta?.isUtility === true)
+    )
+  })
+  const utilityIds = new Set([...leftUtilityIds, ...rightUtilityIds])
+  const regularIds = orderedIds.filter((id) => !utilityIds.has(id))
+  const normalizedOrder = [...leftUtilityIds, ...regularIds, ...rightUtilityIds]
+
+  return areColumnOrdersEqual(order, normalizedOrder) ? order : normalizedOrder
+}
+
+function getRightPinnedUtilityColumns<TData>(visibleColumns: Column<TData, unknown>[]) {
+  const pinnedColumns: Column<TData, unknown>[] = []
+
+  for (let index = visibleColumns.length - 1; index >= 0; index -= 1) {
+    const column = visibleColumns[index]
+    if (!isUtilityColumn(column)) break
+
+    pinnedColumns.unshift(column)
+  }
+
+  return pinnedColumns
+}
+
+function getRightPinnedColumnOffset<TData>(
+  column: Column<TData, unknown>,
+  pinnedColumns: Column<TData, unknown>[],
+  columnSizing: ColumnSizingState
+) {
+  const pinnedIndex = pinnedColumns.findIndex((pinnedColumn) => pinnedColumn.id === column.id)
+  if (pinnedIndex === -1) return undefined
+
+  return pinnedColumns
+    .slice(pinnedIndex + 1)
+    .reduce((offset, pinnedColumn) => offset + getColumnLayoutWidth(pinnedColumn, columnSizing), 0)
+}
+
+function isFirstRightPinnedColumn<TData>(
+  column: Column<TData, unknown>,
+  pinnedColumns: Column<TData, unknown>[]
+) {
+  return pinnedColumns[0]?.id === column.id
+}
+
 export function DataTable<TData>({
   columns,
   data,
@@ -192,6 +469,7 @@ export function DataTable<TData>({
   onColumnSizingChange,
   columnResizeMode = 'onChange',
   selectionActions,
+  rowActions,
   selectionKey,
   pagination,
   columnFilters: controlledColumnFilters,
@@ -210,6 +488,23 @@ export function DataTable<TData>({
   initialSorting,
 }: DataTableProps<TData>) {
   const tableContainerRef = useRef<HTMLDivElement>(null)
+  const rowActionsConfig = useMemo(() => resolveRowActionsConfig(rowActions), [rowActions])
+  const effectiveColumns = useMemo(() => {
+    const columnsWithRowActions = rowActionsConfig
+      ? [
+          ...columns,
+          createActionsColumn<TData>(
+            (row) => renderRowActions(row, rowActionsConfig),
+            {
+              id: ROW_ACTIONS_COLUMN_ID,
+              width: rowActionsConfig.width ?? DEFAULT_ROW_ACTIONS_WIDTH,
+            }
+          ),
+        ]
+      : columns
+
+    return injectDragColumn(columnsWithRowActions, { enabled: enableRowReorder })
+  }, [columns, enableRowReorder, rowActionsConfig])
 
   // Row selection state
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
@@ -223,13 +518,14 @@ export function DataTable<TData>({
   const [internalColumnSizing, setInternalColumnSizing] = useState<ColumnSizingState>({})
   // Internal column filters state (used when uncontrolled)
   const [internalColumnFilters, setInternalColumnFilters] = useState<ColumnFiltersState>([])
+  const shouldManageColumnOrder = enableColumnReorder || enableColumnVisibility
   // Internal column order state (used when uncontrolled) — eagerly initialize from column IDs
   const [internalColumnOrder, setInternalColumnOrder] = useState<ColumnOrderState>(() =>
-    enableColumnReorder ? columns.map((c) => c.id!) : []
+    shouldManageColumnOrder ? normalizeColumnOrder([], effectiveColumns) : []
   )
   // Internal column visibility state (used when uncontrolled)
   const [internalColumnVisibility, setInternalColumnVisibility] = useState<VisibilityState>(
-    () => defaultColumnVisibility ?? {}
+    () => normalizeColumnVisibility(defaultColumnVisibility ?? {}, effectiveColumns)
   )
 
   // Use controlled or uncontrolled column sizing
@@ -238,11 +534,19 @@ export function DataTable<TData>({
   const columnFilters = controlledColumnFilters ?? internalColumnFilters
   // Use controlled or uncontrolled column order
   // Treat empty array as "no custom order" — fall through to internal state (eagerly initialized from column IDs)
-  const columnOrder = (controlledColumnOrder && controlledColumnOrder.length > 0)
+  const rawColumnOrder = (controlledColumnOrder && controlledColumnOrder.length > 0)
     ? controlledColumnOrder
     : internalColumnOrder
+  const columnOrder = useMemo(
+    () => normalizeColumnOrder(rawColumnOrder, effectiveColumns),
+    [effectiveColumns, rawColumnOrder]
+  )
   // Use controlled or uncontrolled column visibility
-  const columnVisibility = controlledColumnVisibility ?? internalColumnVisibility
+  const rawColumnVisibility = controlledColumnVisibility ?? internalColumnVisibility
+  const columnVisibility = useMemo(
+    () => normalizeColumnVisibility(rawColumnVisibility, effectiveColumns),
+    [effectiveColumns, rawColumnVisibility]
+  )
 
   // Handler for column sizing changes - wraps external callback or uses internal state
   const handleColumnSizingChange = (updaterOrValue: Updater<ColumnSizingState>) => {
@@ -269,9 +573,10 @@ export function DataTable<TData>({
   // Handler for column visibility changes - updates internal state when uncontrolled and reports next state
   const handleColumnVisibilityChange = useCallback(
     (updaterOrValue: Updater<VisibilityState>) => {
-      const newValue = typeof updaterOrValue === 'function'
+      const updatedValue = typeof updaterOrValue === 'function'
         ? updaterOrValue(columnVisibilityRef.current)
         : updaterOrValue
+      const newValue = normalizeColumnVisibility(updatedValue, effectiveColumns)
 
       if (controlledColumnVisibility === undefined) {
         setInternalColumnVisibility(newValue)
@@ -281,7 +586,7 @@ export function DataTable<TData>({
         onColumnVisibilityChange(newValue)
       }
     },
-    [controlledColumnVisibility, onColumnVisibilityChange]
+    [controlledColumnVisibility, effectiveColumns, onColumnVisibilityChange]
   )
 
   // Ref to always hold the latest effective column order (avoids stale closures in callbacks)
@@ -292,9 +597,10 @@ export function DataTable<TData>({
   // Resolves updater functions against the effective column order to handle empty controlled state
   const handleColumnOrderChange = useCallback(
     (updaterOrValue: Updater<ColumnOrderState>) => {
-      const newValue = typeof updaterOrValue === 'function'
+      const updatedValue = typeof updaterOrValue === 'function'
         ? updaterOrValue(columnOrderRef.current)
         : updaterOrValue
+      const newValue = normalizeColumnOrder(updatedValue, effectiveColumns)
 
       // Always update internal state so DnD context stays in sync
       setInternalColumnOrder(newValue)
@@ -303,7 +609,7 @@ export function DataTable<TData>({
         onColumnOrderChange(newValue)
       }
     },
-    [onColumnOrderChange]
+    [effectiveColumns, onColumnOrderChange]
   )
 
   // Column-reorder DnD sensors (8px activation + keyboard coordinates for parity with row reorder)
@@ -396,9 +702,6 @@ export function DataTable<TData>({
     return selectedValues.includes(String(cellValue))
   }
 
-  // Inject the drag column to the left of the caller's columns when row reorder is enabled
-  const effectiveColumns = injectDragColumn(columns, { enabled: enableRowReorder })
-
   const table = useReactTable({
     data,
     columns: effectiveColumns,
@@ -412,14 +715,14 @@ export function DataTable<TData>({
       columnSizing,
       columnFilters,
       columnVisibility,
-      ...(enableColumnReorder ? { columnOrder } : {}),
+      ...(shouldManageColumnOrder ? { columnOrder } : {}),
     },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnSizingChange: handleColumnSizingChange,
     onColumnFiltersChange: handleColumnFiltersChange,
     onColumnVisibilityChange: handleColumnVisibilityChange,
-    ...(enableColumnReorder ? { onColumnOrderChange: handleColumnOrderChange } : {}),
+    ...(shouldManageColumnOrder ? { onColumnOrderChange: handleColumnOrderChange } : {}),
     enableRowSelection: true,
     enableSorting: true,
     enableColumnResizing,
@@ -440,6 +743,7 @@ export function DataTable<TData>({
   const { rows } = table.getRowModel()
   const selectedRows = table.getSelectedRowModel().rows
   const selectedCount = selectedRows.length
+  const rightPinnedColumns = getRightPinnedUtilityColumns(table.getVisibleLeafColumns())
 
   // Virtualizer — skipped when row reorder is enabled (all rows render directly)
   const rowVirtualizer = useVirtualizer({
@@ -564,6 +868,12 @@ export function DataTable<TData>({
                     {row.getVisibleCells().map((cell) => {
                       const hasExplicitWidth = hasColumnLayoutWidth(cell.column, columnSizing)
                       const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
+                      const rightPinnedOffset = getRightPinnedColumnOffset(
+                        cell.column,
+                        rightPinnedColumns,
+                        columnSizing
+                      )
+                      const isRightPinned = rightPinnedOffset !== undefined
 
                       // Drag column gets its own compact padding
                       const isDragCol = cell.column.id === DRAG_COLUMN_ID
@@ -574,11 +884,17 @@ export function DataTable<TData>({
                           className={cx(
                             'flex h-full min-w-0 items-center overflow-hidden',
                             isDragCol ? 'justify-center px-2' : 'px-6 py-4',
-                            hasExplicitWidth ? 'shrink-0' : 'flex-1'
+                            hasExplicitWidth ? 'shrink-0' : 'flex-1',
+                            isRightPinned && 'sticky z-10',
+                            isRightPinned && (row.getIsSelected() ? 'bg-secondary' : 'bg-primary'),
+                            isRightPinned &&
+                              isFirstRightPinnedColumn(cell.column, rightPinnedColumns) &&
+                              'ml-auto'
                           )}
                           style={{
                             width: hasExplicitWidth ? layoutWidth : undefined,
                             flexShrink: hasExplicitWidth ? 0 : undefined,
+                            right: rightPinnedOffset,
                           }}>
                           <div className="w-full min-w-0">
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -621,17 +937,29 @@ export function DataTable<TData>({
                   {row.getVisibleCells().map((cell) => {
                     const hasExplicitWidth = hasColumnLayoutWidth(cell.column, columnSizing)
                     const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
+                    const rightPinnedOffset = getRightPinnedColumnOffset(
+                      cell.column,
+                      rightPinnedColumns,
+                      columnSizing
+                    )
+                    const isRightPinned = rightPinnedOffset !== undefined
 
                     return (
                       <div
                         key={cell.id}
                         className={cx(
                           'flex h-full min-w-0 items-center overflow-hidden px-6 py-4',
-                          hasExplicitWidth ? 'shrink-0' : 'flex-1'
+                          hasExplicitWidth ? 'shrink-0' : 'flex-1',
+                          isRightPinned && 'sticky z-10',
+                          isRightPinned && (row.getIsSelected() ? 'bg-secondary' : 'bg-primary'),
+                          isRightPinned &&
+                            isFirstRightPinnedColumn(cell.column, rightPinnedColumns) &&
+                            'ml-auto'
                         )}
                         style={{
                           width: hasExplicitWidth ? layoutWidth : undefined,
                           flexShrink: hasExplicitWidth ? 0 : undefined,
+                          right: rightPinnedOffset,
                         }}>
                         <div className="w-full min-w-0">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -680,6 +1008,8 @@ type HeaderResizeStartEvent =
   | ReactMouseEvent<HTMLDivElement>
   | ReactTouchEvent<HTMLDivElement>
 
+const COLUMN_VISIBILITY_TRIGGER_CELL_WIDTH = 56
+
 function getResizeClientX(event: HeaderResizeStartEvent) {
   if ('touches' in event) {
     return event.touches[0]?.clientX ?? null
@@ -706,6 +1036,7 @@ function HeaderRow<TData>({
     shouldShowColumnVisibility &&
     rightmostVisibleColumn !== undefined &&
     isUtilityColumn(rightmostVisibleColumn)
+  const rightPinnedColumns = getRightPinnedUtilityColumns(table.getVisibleLeafColumns())
   const [activeResizeColumnId, setActiveResizeColumnId] = useState<string | null>(null)
   const headerCellRefs = useRef<Record<string, RefObject<Element | null>>>({})
   const headerCellRefCallbacks = useRef<Record<string, (node: HTMLDivElement | null) => void>>({})
@@ -843,6 +1174,12 @@ function HeaderRow<TData>({
       // Get width: prefer dynamic size from columnSizing, fall back to meta width
       const hasExplicitWidth = hasColumnLayoutWidth(header.column, columnSizing)
       const layoutWidth = getColumnLayoutWidth(header.column, columnSizing)
+      const rightPinnedOffset = getRightPinnedColumnOffset(
+        header.column,
+        rightPinnedColumns,
+        columnSizing
+      )
+      const isRightPinned = rightPinnedOffset !== undefined
 
       const isDragCol = header.column.id === DRAG_COLUMN_ID
 
@@ -851,22 +1188,50 @@ function HeaderRow<TData>({
         shouldRenderColumnVisibilityInCell ? 'px-6' : 'px-2'
       )
       const cellClassName = cx(
-        'relative flex h-full items-center gap-1',
+        'group/header relative flex h-full items-center gap-1',
         isDragCol || isUtilityCol ? compactCellClassName : 'py-3 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
-        hasHeaderMenu && 'select-none hover:bg-secondary-hover'
+        hasHeaderMenu && 'select-none hover:bg-secondary-hover',
+        isRightPinned && 'sticky z-20 bg-secondary',
+        isRightPinned &&
+          isFirstRightPinnedColumn(header.column, rightPinnedColumns) &&
+          'ml-auto'
       )
       const cellStyle = {
         width: hasExplicitWidth ? layoutWidth : undefined,
         flexShrink: hasExplicitWidth ? 0 : undefined,
+        right: rightPinnedOffset,
       }
       const headerCellRef = getHeaderCellRef(header.id)
       const setHeaderCellRef = getHeaderCellRefCallback(header.id)
+      const handleHeaderLabelSort = (
+        event: ReactMouseEvent<HTMLElement> | ReactKeyboardEvent<HTMLElement>
+      ) => {
+        event.stopPropagation()
+        header.column.getToggleSortingHandler()?.(event)
+      }
+      const handleHeaderLabelKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return
+
+        event.preventDefault()
+        handleHeaderLabelSort(event)
+      }
+      const renderedHeader = header.isPlaceholder
+        ? null
+        : flexRender(header.column.columnDef.header, header.getContext())
       const cellContent = (
         <>
-          {header.isPlaceholder
-            ? null
-            : flexRender(header.column.columnDef.header, header.getContext())}
+          {canSort && !header.isPlaceholder ? (
+            <span
+              role="button"
+              tabIndex={0}
+              className="inline-flex min-w-0 cursor-pointer items-center outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-border-brand"
+              onClick={handleHeaderLabelSort}
+              onKeyDown={handleHeaderLabelKeyDown}
+            >
+              {renderedHeader}
+            </span>
+          ) : renderedHeader}
           {hasHeaderMenu && (
             <ColumnHeaderMenu
               column={header.column}
@@ -875,7 +1240,7 @@ function HeaderRow<TData>({
             />
           )}
           {shouldRenderColumnVisibilityInCell && (
-            <ColumnVisibilityDropdown table={table} iconName="dots-vertical" />
+            <ColumnVisibilityDropdown table={table} />
           )}
           {/* Resize handle */}
           {canResize && (
@@ -934,7 +1299,9 @@ function HeaderRow<TData>({
             className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
             {headerCells}
             {shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader && (
-              <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary">
+              <div
+                className="sticky right-0 z-20 ml-auto flex h-full shrink-0 items-center justify-center bg-secondary"
+                style={{ width: COLUMN_VISIBILITY_TRIGGER_CELL_WIDTH }}>
                 <ColumnVisibilityDropdown table={table} />
               </div>
             )}
@@ -950,7 +1317,9 @@ function HeaderRow<TData>({
       data-untitled-ds='HeaderRow'>
       {headerCells}
       {shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader && (
-        <div className="sticky right-0 z-20 flex h-full w-11 shrink-0 items-center justify-center border-l border-secondary bg-secondary">
+        <div
+          className="sticky right-0 z-20 ml-auto flex h-full shrink-0 items-center justify-center bg-secondary"
+          style={{ width: COLUMN_VISIBILITY_TRIGGER_CELL_WIDTH }}>
           <ColumnVisibilityDropdown table={table} />
         </div>
       )}

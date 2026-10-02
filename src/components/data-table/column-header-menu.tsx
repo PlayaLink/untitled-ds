@@ -19,7 +19,7 @@ import { resolveColumnLabel } from './column-utils'
 
 export const styles = sortCx({
   trigger: {
-    base: 'group/menu-trigger ml-1.5 flex h-5 min-w-5 cursor-pointer items-center justify-center gap-1.5 rounded px-0.5 outline-none transition-colors',
+    base: 'group/menu-trigger ml-1.5 flex h-5 min-w-5 shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded px-0.5 outline-none transition-colors',
     default: 'text-quaternary hover:bg-tertiary hover:text-tertiary',
     active: 'text-brand-600 hover:bg-tertiary hover:text-brand-700',
     activeBadge: 'flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-semibold leading-none text-white',

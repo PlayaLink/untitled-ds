@@ -195,7 +195,18 @@ export {
 
 // Data Table
 export { DataTable, createColumn, createSelectColumn, createActionsColumn, TableActionsBar } from './components/data-table'
-export type { DataTableProps, PaginationConfig, TableAction, TableActionsBarProps } from './components/data-table'
+export type {
+  DataTableProps,
+  PaginationConfig,
+  TableAction,
+  TableActionsBarProps,
+  DataTableRowAction,
+  DataTableRowActionItem,
+  DataTableRowActionSeparator,
+  DataTableRowActions,
+  DataTableRowActionsConfig,
+  CreateActionsColumnOptions,
+} from './components/data-table'
 
 // File Upload
 export {

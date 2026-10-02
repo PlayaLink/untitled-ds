@@ -19,11 +19,12 @@ import { resolveColumnLabel } from './column-utils'
 
 export const styles = sortCx({
   trigger: {
-    base: 'ml-1.5 flex h-5 min-w-5 cursor-pointer items-center justify-center gap-1.5 rounded px-0.5 outline-none transition-colors',
+    base: 'group/menu-trigger ml-1.5 flex h-5 min-w-5 cursor-pointer items-center justify-center gap-1.5 rounded px-0.5 outline-none transition-colors',
     default: 'text-quaternary hover:bg-tertiary hover:text-tertiary',
     active: 'text-brand-600 hover:bg-tertiary hover:text-brand-700',
     activeBadge: 'flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-semibold leading-none text-white',
     sortIcon: 'text-current',
+    chevronIcon: 'text-current transition-opacity',
   },
   popover: [
     'w-64 origin-(--trigger-anchor-point) overflow-hidden rounded-lg bg-primary shadow-lg ring-1 ring-border-secondary-alt',
@@ -206,7 +207,16 @@ export function ColumnHeaderMenu<TData>({
             className={styles.trigger.sortIcon}
           />
         )}
-        <Icon name="chevron-down" size="sm" />
+        <Icon
+          name="chevron-down"
+          size="sm"
+          className={cx(
+            styles.trigger.chevronIcon,
+            isOpen
+              ? 'opacity-100'
+              : 'opacity-0 group-hover/header:opacity-100 group-focus-visible/menu-trigger:opacity-100'
+          )}
+        />
       </AriaButton>
       <Popover placement="bottom start" triggerRef={triggerRef} className={styles.popover}>
         <Dialog className={styles.dialog} onClick={(event) => event.stopPropagation()}>

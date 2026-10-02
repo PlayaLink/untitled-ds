@@ -120,6 +120,14 @@ function getMenuButton(label: string) {
   return screen.getByRole('button', { name: new RegExp(`column menu for ${label}`, 'i') })
 }
 
+function getMenuChevron(menuButton: HTMLElement) {
+  const chevron = menuButton.querySelector('[data-icon="chevron-down"]')
+  if (!(chevron instanceof SVGElement)) {
+    throw new Error('Column menu chevron was not rendered')
+  }
+  return chevron
+}
+
 function getVisibilityOptions() {
   const options = document.querySelector('[data-untitled-ds="ColumnVisibilityOptions"]')
   if (!(options instanceof HTMLElement)) {
@@ -143,6 +151,20 @@ describe('DataTable column header menu', () => {
     expect(getMenuButton('Product')).toBeTruthy()
     expect(getMenuButton('Status')).toBeTruthy()
     expect(getMenuButton('SKU')).toBeTruthy()
+  })
+
+  it('keeps the menu chevron hidden until header hover or menu open', () => {
+    renderTable()
+
+    const menuButton = getMenuButton('Product')
+    const chevron = getMenuChevron(menuButton)
+
+    expect(chevron.classList.contains('opacity-0')).toBe(true)
+    expect(chevron.classList.contains('group-hover/header:opacity-100')).toBe(true)
+
+    fireEvent.click(menuButton)
+
+    expect(getMenuChevron(menuButton).classList.contains('opacity-100')).toBe(true)
   })
 
   it('sorts a sortable column through the unified menu', () => {
@@ -170,13 +192,29 @@ describe('DataTable column header menu', () => {
     expect(menuButton.getAttribute('data-sort-direction')).toBe('desc')
   })
 
-  it('does not toggle sorting when the sortable header label is clicked', () => {
+  it('cycles sorting when the sortable header label is clicked', () => {
     renderTable()
 
-    fireEvent.click(screen.getByText('Name'))
+    const headerLabel = screen.getByText('Name')
+
+    fireEvent.click(headerLabel)
 
     const renderedRows = screen.getAllByText(/Alpha|Bravo|Charlie/).map((node) => node.textContent)
     expect(renderedRows).toEqual(['Alpha', 'Bravo', 'Charlie'])
+    expect(getMenuButton('Product').getAttribute('data-state')).toBe('active')
+    expect(getMenuButton('Product').getAttribute('data-sort-direction')).toBe('asc')
+
+    fireEvent.click(headerLabel)
+
+    const descendingRows = screen.getAllByText(/Alpha|Bravo|Charlie/).map((node) => node.textContent)
+    expect(descendingRows).toEqual(['Charlie', 'Bravo', 'Alpha'])
+    expect(getMenuButton('Product').getAttribute('data-state')).toBe('active')
+    expect(getMenuButton('Product').getAttribute('data-sort-direction')).toBe('desc')
+
+    fireEvent.click(headerLabel)
+
+    const unsortedRows = screen.getAllByText(/Alpha|Bravo|Charlie/).map((node) => node.textContent)
+    expect(unsortedRows).toEqual(['Alpha', 'Bravo', 'Charlie'])
     expect(getMenuButton('Product').getAttribute('data-state')).toBe('inactive')
     expect(getMenuButton('Product').getAttribute('data-sort-direction')).toBeNull()
   })

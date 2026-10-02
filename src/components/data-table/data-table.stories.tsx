@@ -866,3 +866,21 @@ export const SourceCodeAndDesign: Story = {
     </div>
   ),
 }
+
+/** Controlled pagination: the app supplies the page slice and page-size policy. */
+export const PageSizeOptions: Story = {
+  render: () => {
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(5)
+    const columns = useMemo(() => [
+      createSelectColumn<Product>(),
+      createColumn<Product>({ id: 'name', header: 'Name', accessor: 'name' }),
+    ], [])
+    return <DataTable columns={columns} data={sampleData.slice((page - 1) * pageSize, page * pageSize)}
+      getRowId={(row) => row.id} pagination={{ currentPage: page,
+        totalPages: Math.ceil(sampleData.length / pageSize), total: sampleData.length,
+        onPageChange: setPage, pageSize, pageSizeOptions: [5, 10, 25],
+        onPageSizeChange: (size) => { setPageSize(size); setPage(1) },
+      }} />
+  },
+}

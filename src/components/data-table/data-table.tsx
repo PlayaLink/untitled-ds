@@ -68,7 +68,7 @@ import { Checkbox } from '@/components/checkbox'
 import { ButtonUtility } from '@/components/button-utility'
 import { Dropdown } from '@/components/dropdown'
 import { Icon } from '@/components/icon'
-import { Pagination } from '@/components/pagination'
+import { Pagination, type PaginationProps } from '@/components/pagination'
 import { TableActionsBar, type TableAction } from './table-actions-bar'
 import { createActionsColumn } from './column-helpers'
 import { ColumnHeaderMenu } from './column-header-menu'
@@ -85,13 +85,7 @@ import {
 import { isUtilityColumn, isUtilityColumnId } from './column-utils'
 import { useRowReorder, type RowReorderChange } from '@/hooks/use-row-reorder'
 
-export interface PaginationConfig {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-  total?: number
-  label?: string
-}
+export type PaginationConfig = Omit<PaginationProps, 'className'>
 
 export interface DataTableRowActionItem<TData> {
   /** Unique key for the action inside the row menu. */
@@ -508,10 +502,13 @@ export function DataTable<TData>({
 
   // Row selection state
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  // Page-size-aware tables clear bulk selection when their page or size changes.
+  const paginationPage = pagination?.pageSize === undefined ? undefined : pagination.currentPage
+  const paginationSize = pagination?.pageSize
   // Reset selection when selectionKey changes
   useEffect(() => {
     setRowSelection({})
-  }, [selectionKey])
+  }, [selectionKey, paginationPage, paginationSize])
   // Sorting state
   const [sorting, setSorting] = useState<SortingState>(initialSorting ?? [])
   // Internal column sizing state (used when uncontrolled)
@@ -753,15 +750,23 @@ export function DataTable<TData>({
     overscan: 5,
   })
 
+  const paginationFooter = pagination && (
+    pagination.totalPages > 1 ||
+    (pagination.pageSize !== undefined && pagination.pageSizeOptions?.length && pagination.onPageSizeChange)
+  ) ? <Pagination {...pagination} /> : null
+
   // Initial loading state. During refreshes, keep the current table mounted so
   // open column menus and selection controls are not reset by a transient fetch.
   if (isLoading && data.length === 0) {
     return (
       <div
-        className="flex items-center justify-center rounded-xl border border-secondary bg-primary shadow-xs"
+        className="flex flex-col overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs"
         style={{ height: typeof maxHeight === 'number' ? maxHeight : 400 }}
         data-untitled-ds='DataTable'>
-        <Icon name="loader" size="2xl" className="animate-spin text-quaternary" />
+        <div className="flex min-h-0 flex-1 items-center justify-center">
+          <Icon name="loader" size="2xl" className="animate-spin text-quaternary" />
+        </div>
+        {paginationFooter}
       </div>
     );
   }
@@ -773,6 +778,7 @@ export function DataTable<TData>({
         className="w-full overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs"
         data-untitled-ds='DataTable'>
         {emptyState}
+        {paginationFooter}
       </div>
     );
   }
@@ -974,15 +980,7 @@ export function DataTable<TData>({
         )}
       </div>
       {/* Pagination footer */}
-      {pagination && pagination.totalPages > 1 && (
-        <Pagination
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          onPageChange={pagination.onPageChange}
-          total={pagination.total}
-          label={pagination.label}
-        />
-      )}
+      {paginationFooter}
     </div>
   );
 }

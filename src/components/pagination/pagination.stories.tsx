@@ -207,3 +207,14 @@ export const SourceCodeAndDesign: Story = {
         </div>
     ),
 }
+
+/** The application owns allowed sizes, page reset, and fetching the new page. */
+export const PageSizeSelector: Story = {
+    render: () => {
+        const [page, setPage] = useState(1)
+        const [pageSize, setPageSize] = useState(50)
+        return <Pagination currentPage={page} totalPages={Math.ceil(420 / pageSize)} total={420}
+            onPageChange={setPage} pageSize={pageSize} pageSizeOptions={[50, 100, 150]}
+            onPageSizeChange={(size) => { setPageSize(size); setPage(1) }} />
+    },
+}

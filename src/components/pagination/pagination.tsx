@@ -6,6 +6,7 @@
  * @figma https://www.figma.com/design/BKdSTgTBkVSNMbQ9LipOBb/?node-id=18491-69560
  */
 
+import { useId } from "react";
 import { Icon } from "@/components/icon";
 import { cx, sortCx } from "@/utils/cx";
 
@@ -47,6 +48,14 @@ export interface PaginationProps {
     total?: number;
     /** Label for items (e.g., "SKUs", "products"). Defaults to "items" */
     label?: string;
+    /** Controlled page size. Supply options and a callback to show the selector. */
+    pageSize?: number;
+    /** Page-size choices are owned by the consuming application. */
+    pageSizeOptions?: readonly number[];
+    /** Called with the selected size. The consumer owns page reset and data fetching. */
+    onPageSizeChange?: (pageSize: number) => void;
+    /** Accessible, visible selector label; can be localized by the consumer. */
+    pageSizeLabel?: string;
     /** Additional class name */
     className?: string;
 }
@@ -87,13 +96,21 @@ function getPageNumbers(currentPage: number, totalPages: number): (number | "ell
 // =============================================================================
 
 export function Pagination({
-    currentPage,
-    totalPages,
+    currentPage: requestedPage,
+    totalPages: requestedTotalPages,
     onPageChange,
     total,
     label = "items",
     className,
+    pageSize,
+    pageSizeOptions,
+    onPageSizeChange,
+    pageSizeLabel = "Rows per page",
 }: PaginationProps) {
+    const pageSizeId = useId();
+    const currentPage = Math.max(1, requestedPage);
+    const totalPages = Math.max(1, requestedTotalPages);
+    const showPageSize = pageSize !== undefined && Boolean(pageSizeOptions?.length) && Boolean(onPageSizeChange);
     const canGoPrevious = currentPage > 1;
     const canGoNext = currentPage < totalPages;
 
@@ -112,60 +129,76 @@ export function Pagination({
     const pageNumbers = getPageNumbers(currentPage, totalPages);
 
     return (
-        <div className={cx(styles.root, className)} data-untitled-ds='Pagination'>
-            {/* Previous Button */}
-            <button
-                type="button"
-                onClick={handlePrevious}
-                disabled={!canGoPrevious}
-                className={cx(styles.button.base, styles.button.nav)}
-                aria-label="Go to previous page">
-                <Icon name="arrow-left" size="lg" className={styles.buttonIcon} />
-                <span className={styles.buttonText}>Previous</span>
-            </button>
-            {/* Mobile: Page X of Y */}
-            <span className={styles.mobileText}>
-                Page {currentPage} of {totalPages}
-            </span>
-            {/* Desktop: Page Numbers */}
-            <div className={styles.pageNumbers}>
-                {pageNumbers.map((page, index) =>
-                    page === "ellipsis" ? (
-                        <span key={`ellipsis-${index}`} className={styles.ellipsis}>
-                            ...
-                        </span>
-                    ) : (
-                        <button
-                            key={page}
-                            type="button"
-                            onClick={() => onPageChange(page)}
-                            className={cx(
-                                styles.pageButton.base,
-                                page === currentPage ? styles.pageButton.current : styles.pageButton.default
-                            )}
-                            aria-label={`Go to page ${page}`}
-                            aria-current={page === currentPage ? "page" : undefined}>
-                            {page}
-                        </button>
-                    )
+        <div className={cx("flex shrink-0 flex-wrap items-center border-t border-secondary", className)} data-untitled-ds='Pagination'>
+            {showPageSize && (
+                <div className="flex items-center gap-2 px-4 py-3 md:px-6">
+                    <label htmlFor={pageSizeId} className="text-sm font-medium text-secondary">
+                        {pageSizeLabel}
+                    </label>
+                    <select
+                        id={pageSizeId}
+                        value={pageSize}
+                        onChange={(event) => onPageSizeChange?.(Number(event.target.value))}
+                        className="rounded-lg border border-primary bg-primary px-3 py-2 text-sm text-primary shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                        {pageSizeOptions?.map((size) => <option key={size} value={size}>{size}</option>)}
+                    </select>
+                </div>
+            )}
+            <div className={cx(styles.root, "min-w-0 flex-1 border-t-0", showPageSize && "basis-full md:basis-0")}>
+                {/* Previous Button */}
+                <button
+                    type="button"
+                    onClick={handlePrevious}
+                    disabled={!canGoPrevious}
+                    className={cx(styles.button.base, styles.button.nav)}
+                    aria-label="Go to previous page">
+                    <Icon name="arrow-left" size="lg" className={styles.buttonIcon} />
+                    <span className={styles.buttonText}>Previous</span>
+                </button>
+                {/* Mobile: Page X of Y */}
+                <span className={styles.mobileText}>
+                    Page {currentPage} of {totalPages}
+                </span>
+                {/* Desktop: Page Numbers */}
+                <div className={styles.pageNumbers}>
+                    {pageNumbers.map((page, index) =>
+                        page === "ellipsis" ? (
+                            <span key={`ellipsis-${index}`} className={styles.ellipsis}>
+                                ...
+                            </span>
+                        ) : (
+                            <button
+                                key={page}
+                                type="button"
+                                onClick={() => onPageChange(page)}
+                                className={cx(
+                                    styles.pageButton.base,
+                                    page === currentPage ? styles.pageButton.current : styles.pageButton.default
+                                )}
+                                aria-label={`Go to page ${page}`}
+                                aria-current={page === currentPage ? "page" : undefined}>
+                                {page}
+                            </button>
+                        )
+                    )}
+                </div>
+                {/* Next Button */}
+                <button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={!canGoNext}
+                    className={cx(styles.button.base, styles.button.nav)}
+                    aria-label="Go to next page">
+                    <span className={styles.buttonText}>Next</span>
+                    <Icon name="arrow-right" size="lg" className={styles.buttonIcon} />
+                </button>
+                {/* Total count (desktop only) */}
+                {total !== undefined && (
+                    <span className={styles.totalCount}>
+                        {total.toLocaleString()} {label}
+                    </span>
                 )}
             </div>
-            {/* Next Button */}
-            <button
-                type="button"
-                onClick={handleNext}
-                disabled={!canGoNext}
-                className={cx(styles.button.base, styles.button.nav)}
-                aria-label="Go to next page">
-                <span className={styles.buttonText}>Next</span>
-                <Icon name="arrow-right" size="lg" className={styles.buttonIcon} />
-            </button>
-            {/* Total count (desktop only) */}
-            {total !== undefined && (
-                <span className={styles.totalCount}>
-                    {total.toLocaleString()} {label}
-                </span>
-            )}
         </div>
     );
 }

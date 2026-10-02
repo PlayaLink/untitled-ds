@@ -1186,7 +1186,7 @@ function HeaderRow<TData>({
         shouldRenderColumnVisibilityInCell ? 'px-6' : 'px-2'
       )
       const cellClassName = cx(
-        'group/header relative flex h-full items-center gap-1',
+        'group/header relative flex h-full min-w-0 items-center gap-1',
         isDragCol || isUtilityCol ? compactCellClassName : 'py-3 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
         hasHeaderMenu && 'select-none hover:bg-secondary-hover',
@@ -1223,13 +1223,15 @@ function HeaderRow<TData>({
             <span
               role="button"
               tabIndex={0}
-              className="inline-flex min-w-0 cursor-pointer items-center outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-border-brand"
+              className="min-w-0 truncate cursor-pointer outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-border-brand"
               onClick={handleHeaderLabelSort}
               onKeyDown={handleHeaderLabelKeyDown}
             >
               {renderedHeader}
             </span>
-          ) : renderedHeader}
+          ) : isUtilityCol ? renderedHeader : (
+            <span className="min-w-0 truncate">{renderedHeader}</span>
+          )}
           {hasHeaderMenu && (
             <ColumnHeaderMenu
               column={header.column}

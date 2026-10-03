@@ -761,7 +761,7 @@ export function DataTable<TData>({
     return (
       <div
         className="flex flex-col overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs"
-        style={{ height: typeof maxHeight === 'number' ? maxHeight : 400 }}
+        style={{ height: maxHeight }}
         data-untitled-ds='DataTable'>
         <div className="flex min-h-0 flex-1 items-center justify-center">
           <Icon name="loader" size="2xl" className="animate-spin text-quaternary" />

@@ -108,6 +108,10 @@ export function Pagination({
     pageSizeLabel = "Rows per page",
 }: PaginationProps) {
     const pageSizeId = useId();
+    // Empty states have nothing to paginate, even when an API reports one page.
+    // Check the requested count before it is clamped for nonempty navigation.
+    if (total === 0 || requestedTotalPages < 1) return null;
+
     const currentPage = Math.max(1, requestedPage);
     const totalPages = Math.max(1, requestedTotalPages);
     const showPageSize = pageSize !== undefined && Boolean(pageSizeOptions?.length) && Boolean(onPageSizeChange);

@@ -10,6 +10,14 @@ const pagination = {
 }
 
 describe('DataTable pagination', () => {
+  it('hides pagination below an empty state with zero results', () => {
+    render(<DataTable columns={[]} data={[]} emptyState={<div>No records</div>}
+      pagination={{ ...pagination, total: 0, totalPages: 0 }} />)
+    expect(screen.getByText('No records')).toBeTruthy()
+    expect(screen.queryByRole('combobox')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Go to next page' })).toBeNull()
+  })
+
   it.each(['empty', 'loading', 'single-page'] as const)('renders the shared selector for %s tables', (state) => {
     render(<DataTable columns={[]} data={[]} isLoading={state === 'loading'}
       emptyState={state === 'empty' ? <div>No records</div> : undefined}

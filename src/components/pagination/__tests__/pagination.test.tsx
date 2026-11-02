@@ -28,12 +28,9 @@ describe('Pagination page sizes', () => {
     expect(select.value).toBe('25')
   })
 
-  it('keeps the size selector usable with no results and disables navigation', () => {
-    render(<Pagination currentPage={1} totalPages={0} total={0} onPageChange={vi.fn()}
+  it.each([0, 1])('hides the size selector and navigation with no results and %s pages', (totalPages) => {
+    const { container } = render(<Pagination currentPage={1} totalPages={totalPages} total={0} onPageChange={vi.fn()}
       pageSize={50} pageSizeOptions={[50, 100, 150]} onPageSizeChange={vi.fn()} />)
-    expect(screen.getByRole('combobox', { name: 'Rows per page' })).toBeTruthy()
-    expect((screen.getByRole('button', { name: 'Go to previous page' }) as HTMLButtonElement).disabled).toBe(true)
-    expect((screen.getByRole('button', { name: 'Go to next page' }) as HTMLButtonElement).disabled).toBe(true)
-    expect(screen.getByText('Page 1 of 1')).toBeTruthy()
+    expect(container.childElementCount).toBe(0)
   })
 })

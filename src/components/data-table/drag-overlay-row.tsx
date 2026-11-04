@@ -7,14 +7,15 @@ import { getColumnLayoutWidth, hasColumnLayoutWidth } from './column-sizing'
 interface DragOverlayRowProps<TData> {
   row: Row<TData>
   columnSizing: ColumnSizingState
+  layoutStyle?: React.CSSProperties
   rowHeight: number
 }
 
-export function DragOverlayRow<TData>({ row, columnSizing, rowHeight }: DragOverlayRowProps<TData>) {
+export function DragOverlayRow<TData>({ row, columnSizing, rowHeight, layoutStyle }: DragOverlayRowProps<TData>) {
   return (
     <div
       className="flex w-full min-w-max items-center rounded-md border border-secondary bg-primary shadow-lg"
-      style={{ height: rowHeight }}
+      style={{ ...layoutStyle, height: rowHeight }}
       data-untitled-ds="DragOverlayRow"
     >
       {row.getVisibleCells().map((cell) => {

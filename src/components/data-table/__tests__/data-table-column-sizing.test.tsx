@@ -152,3 +152,17 @@ describe('DataTable column sizing', () => {
     expect(getBodyCell('Alpha').style.width).toBe('320px')
   })
 })
+
+
+describe('shared column tracks', () => {
+  it.each([false, true])('uses identical header/body tracks with row reorder %s', (enableRowReorder) => {
+    const { container } = render(<DataTable columns={columns} data={data} getRowId={row => row.id} enableColumnVisibility enableRowReorder={enableRowReorder} />)
+    const header = container.querySelector('[data-untitled-ds="HeaderRow"]') as HTMLElement
+    const row = container.querySelector(enableRowReorder ? '[data-untitled-ds="SortableTableRow"]' : '[data-index="0"]') as HTMLElement
+    expect(header.style.display).toBe('grid')
+    expect(header.style.gridTemplateColumns).toBe(row.style.gridTemplateColumns)
+    expect(header.style.gridTemplateColumns).toContain('minmax(48px, 1fr)')
+    expect(header.style.gridTemplateColumns).toMatch(/56px$/)
+    expect(header.style.minWidth).toBe(row.style.minWidth)
+  })
+})

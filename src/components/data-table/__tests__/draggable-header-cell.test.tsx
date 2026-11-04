@@ -67,4 +67,11 @@ describe('DraggableHeaderCell', () => {
       screen.getByText('Name').closest('[data-untitled-ds="DraggableHeaderCell"]')
     )
   })
+  it('does not override sticky positioning on utility headers', () => {
+    const { container } = renderCell({ className: 'sticky right-0' })
+    const cell = container.querySelector('[data-untitled-ds="DraggableHeaderCell"]') as HTMLElement
+    expect(cell.className).toContain('sticky')
+    expect(cell.style.position).toBe('')
+  })
+
 })

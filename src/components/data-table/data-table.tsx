@@ -79,6 +79,7 @@ import { DragOverlayRow } from './drag-overlay-row'
 import { injectDragColumn, DRAG_COLUMN_ID } from './inject-drag-column'
 import {
   clampColumnResizeWidth,
+  getTableLayoutStyle,
   getColumnLayoutWidth,
   hasColumnLayoutWidth,
 } from './column-sizing'
@@ -786,6 +787,12 @@ export function DataTable<TData>({
   const virtualRows = rowVirtualizer.getVirtualItems()
   const totalSize = rowVirtualizer.getTotalSize()
 
+  const layoutStyle = getTableLayoutStyle(
+    table.getVisibleLeafColumns(), columnSizing,
+    enableColumnVisibility && hasHideableColumns(table) &&
+      !(table.getVisibleLeafColumns().at(-1) &&
+        isUtilityColumn(table.getVisibleLeafColumns().at(-1)!))
+  )
   const useFlexLayout = typeof maxHeight !== 'number'
 
   // Find the TanStack Table row matching the currently-dragged data item
@@ -869,7 +876,7 @@ export function DataTable<TData>({
                       'flex w-full min-w-max items-center border-b border-secondary',
                       row.getIsSelected() && 'bg-secondary'
                     )}
-                    style={{ height: rowHeight }}
+                    style={{ ...layoutStyle, height: rowHeight }}
                   >
                     {row.getVisibleCells().map((cell) => {
                       const hasExplicitWidth = hasColumnLayoutWidth(cell.column, columnSizing)
@@ -918,6 +925,7 @@ export function DataTable<TData>({
                   row={activeTableRow}
                   columnSizing={columnSizing}
                   rowHeight={rowHeight}
+                  layoutStyle={layoutStyle}
                 />
               )}
             </DragOverlay>
@@ -937,6 +945,7 @@ export function DataTable<TData>({
                     row.getIsSelected() && 'bg-secondary'
                   )}
                   style={{
+                    ...layoutStyle,
                     height: rowHeight,
                     transform: `translateY(${virtualRow.start}px)`,
                   }}>
@@ -1034,6 +1043,8 @@ function HeaderRow<TData>({
     shouldShowColumnVisibility &&
     rightmostVisibleColumn !== undefined &&
     isUtilityColumn(rightmostVisibleColumn)
+  const layoutStyle = getTableLayoutStyle(table.getVisibleLeafColumns(), columnSizing,
+    shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader)
   const rightPinnedColumns = getRightPinnedUtilityColumns(table.getVisibleLeafColumns())
   const [activeResizeColumnId, setActiveResizeColumnId] = useState<string | null>(null)
   const headerCellRefs = useRef<Record<string, RefObject<Element | null>>>({})
@@ -1185,9 +1196,11 @@ function HeaderRow<TData>({
         'justify-center',
         shouldRenderColumnVisibilityInCell ? 'px-6' : 'px-2'
       )
+      // The row owns the height; vertical padding can enlarge its grid track
+      // and paint the hover background over the bottom border.
       const cellClassName = cx(
-        'group/header relative flex h-full min-w-0 items-center gap-1',
-        isDragCol || isUtilityCol ? compactCellClassName : 'py-3 pl-6 pr-3',
+        'group/header relative flex h-full min-h-0 min-w-0 items-center gap-1',
+        isDragCol || isUtilityCol ? compactCellClassName : 'py-0 pl-6 pr-3',
         hasExplicitWidth ? 'shrink-0' : 'flex-1',
         hasHeaderMenu && 'select-none hover:bg-secondary-hover',
         isRightPinned && 'sticky z-20 bg-secondary',
@@ -1296,6 +1309,7 @@ function HeaderRow<TData>({
         data-untitled-ds='HeaderRow'>
         <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
           <div
+            style={layoutStyle}
             className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
             {headerCells}
             {shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader && (
@@ -1313,7 +1327,8 @@ function HeaderRow<TData>({
 
   return (
     <div
-      className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary"
+      style={layoutStyle}
+            className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary"
       data-untitled-ds='HeaderRow'>
       {headerCells}
       {shouldShowColumnVisibility && !shouldPlaceColumnVisibilityInUtilityHeader && (

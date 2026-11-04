@@ -53,13 +53,12 @@ export function DraggableHeaderCell({
   return (
     <div
       ref={setCombinedNodeRef}
-      className={cx('group/header', className)}
+      className={cx('group/header relative', className)}
       style={{
         ...style,
         transform: transformStyle,
         transition,
         opacity: isDragging ? 0.5 : undefined,
-        position: 'relative',
       }}
       onClick={onClick}
       data-untitled-ds='DraggableHeaderCell'>

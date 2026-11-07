@@ -11,6 +11,8 @@
  */
 
 import {
+  Fragment,
+  useId,
   useRef,
   useEffect,
   useState,
@@ -83,7 +85,8 @@ import {
   getColumnLayoutWidth,
   hasColumnLayoutWidth,
 } from './column-sizing'
-import { isUtilityColumn, isUtilityColumnId } from './column-utils'
+import type { DataTableColumnLabels } from './column-labels'
+import { isUtilityColumn, isUtilityColumnId, resolveColumnLabel } from './column-utils'
 import { useRowReorder, type RowReorderChange } from '@/hooks/use-row-reorder'
 
 export type PaginationConfig = Omit<PaginationProps, 'className'>
@@ -139,6 +142,7 @@ interface DataTableBaseProps<TData> {
   columns: ColumnDef<TData, unknown>[]
   data: TData[]
   isLoading?: boolean
+  columnLabels?: DataTableColumnLabels
   emptyState?: ReactNode
   onRowSelectionChange?: (rows: TData[]) => void
   rowHeight?: number
@@ -160,6 +164,16 @@ interface DataTableBaseProps<TData> {
    * non-reorderable utility column at the right edge.
    */
   rowActions?: DataTableRowActions<TData>
+  /** Controlled inline details for small, paginated datasets. Disables virtualization.
+   * Do not combine with row reordering. The disclosure button supplies keyboard access.
+   */
+  rowExpansion?: {
+    expandedRowId: string | null
+    onExpandedRowChange: (id: string | null) => void
+    getLabel: (row: Row<TData>) => string
+    getTriggerId?: (row: Row<TData>) => string
+    renderDetails: (row: Row<TData>) => ReactNode
+  }
   /** Pagination configuration. When provided, renders pagination footer. */
   pagination?: PaginationConfig
   /** Initial sorting state (uncontrolled; useful for stories and default sort). */
@@ -225,6 +239,7 @@ export type DataTableProps<TData> = DataTableBaseProps<TData> & (
        * Requires `getRowId` for stable row identity.
        * Disables row virtualization — suited for datasets up to a few hundred rows.
        */
+      rowExpansion?: never
       enableRowReorder: true
       /** Required when `enableRowReorder` is true. Must return a unique, stable string per row. */
       getRowId: (row: TData) => string
@@ -412,7 +427,12 @@ function normalizeColumnOrder<TData>(
   })
   const utilityIds = new Set([...leftUtilityIds, ...rightUtilityIds])
   const regularIds = orderedIds.filter((id) => !utilityIds.has(id))
-  const normalizedOrder = [...leftUtilityIds, ...regularIds, ...rightUtilityIds]
+  const lockedPrimaryIds = regularIds.filter(id => {
+    const meta = columnById.get(id)?.meta
+    return meta?.isPrimary === true && meta.reorderable === false
+  })
+  const normalizedOrder = [...leftUtilityIds, ...lockedPrimaryIds,
+    ...regularIds.filter(id => !lockedPrimaryIds.includes(id)), ...rightUtilityIds]
 
   return areColumnOrdersEqual(order, normalizedOrder) ? order : normalizedOrder
 }
@@ -454,6 +474,7 @@ export function DataTable<TData>({
   columns,
   data,
   isLoading = false,
+  columnLabels,
   emptyState,
   onRowSelectionChange,
   rowHeight = 72,
@@ -465,6 +486,7 @@ export function DataTable<TData>({
   columnResizeMode = 'onChange',
   selectionActions,
   rowActions,
+  rowExpansion,
   selectionKey,
   pagination,
   columnFilters: controlledColumnFilters,
@@ -482,6 +504,10 @@ export function DataTable<TData>({
   canDragRow,
   initialSorting,
 }: DataTableProps<TData>) {
+  const detailsId = useId()
+  const expansionRef = useRef(rowExpansion)
+  expansionRef.current = rowExpansion
+  const hasRowExpansion = Boolean(rowExpansion)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const rowActionsConfig = useMemo(() => resolveRowActionsConfig(rowActions), [rowActions])
   const effectiveColumns = useMemo(() => {
@@ -498,8 +524,21 @@ export function DataTable<TData>({
         ]
       : columns
 
-    return injectDragColumn(columnsWithRowActions, { enabled: enableRowReorder })
-  }, [columns, enableRowReorder, rowActionsConfig])
+    const expandedColumns = hasRowExpansion ? [...columnsWithRowActions,
+      createActionsColumn<TData>(row => {
+        const expansion = expansionRef.current!
+        const expanded = expansion.expandedRowId === row.id
+        return <button type="button" data-referenceid="table-row-disclosure" id={expansion.getTriggerId?.(row)}
+          aria-label={expansion.getLabel(row)} aria-expanded={expanded}
+          aria-controls={expanded ? `${detailsId}-${row.id}` : undefined}
+          onClick={() => expansion.onExpandedRowChange(expanded ? null : row.id)}
+          className="mx-auto flex size-9 cursor-pointer items-center justify-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-border-brand">
+          <Icon name={expanded ? 'chevron-down' : 'chevron-right'} size="sm" />
+        </button>
+      }, { id: 'rowDetails', width: 60 }),
+    ] : columnsWithRowActions
+    return injectDragColumn(expandedColumns, { enabled: enableRowReorder })
+  }, [columns, enableRowReorder, rowActionsConfig, hasRowExpansion, detailsId])
 
   // Row selection state
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
@@ -745,7 +784,7 @@ export function DataTable<TData>({
 
   // Virtualizer — skipped when row reorder is enabled (all rows render directly)
   const rowVirtualizer = useVirtualizer({
-    count: enableRowReorder ? 0 : rows.length,
+    count: enableRowReorder || rowExpansion ? 0 : rows.length,
     getScrollElement: () => tableContainerRef.current,
     estimateSize: () => rowHeight,
     overscan: 5,
@@ -763,6 +802,7 @@ export function DataTable<TData>({
       <div
         className="flex flex-col overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs"
         style={{ height: maxHeight }}
+        role={rowExpansion ? 'table' : undefined}
         data-untitled-ds='DataTable'>
         <div className="flex min-h-0 flex-1 items-center justify-center">
           <Icon name="loader" size="2xl" className="animate-spin text-quaternary" />
@@ -793,6 +833,40 @@ export function DataTable<TData>({
       !(table.getVisibleLeafColumns().at(-1) &&
         isUtilityColumn(table.getVisibleLeafColumns().at(-1)!))
   )
+  const renderCells = (row: Row<TData>) => row.getVisibleCells().map((cell) => {
+    const hasExplicitWidth = hasColumnLayoutWidth(cell.column, columnSizing)
+    const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
+    const rightPinnedOffset = getRightPinnedColumnOffset(
+      cell.column,
+      rightPinnedColumns,
+      columnSizing
+    )
+    const isRightPinned = rightPinnedOffset !== undefined
+
+    return (
+      <div
+        role={rowExpansion ? 'cell' : undefined}
+        key={cell.id}
+        className={cx(
+          'flex h-full min-w-0 items-center overflow-hidden px-6 py-4',
+          hasExplicitWidth ? 'shrink-0' : 'flex-1',
+          isRightPinned && 'sticky z-10',
+          isRightPinned && (row.getIsSelected() ? 'bg-secondary' : 'bg-primary'),
+          isRightPinned &&
+            isFirstRightPinnedColumn(cell.column, rightPinnedColumns) &&
+            'ml-auto'
+        )}
+        style={{
+          width: hasExplicitWidth ? layoutWidth : undefined,
+          flexShrink: hasExplicitWidth ? 0 : undefined,
+          right: rightPinnedOffset,
+        }}>
+        <div className="w-full min-w-0">
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </div>
+      </div>
+    );
+  })
   const useFlexLayout = typeof maxHeight !== 'number'
 
   // Find the TanStack Table row matching the currently-dragged data item
@@ -812,6 +886,7 @@ export function DataTable<TData>({
       style={{
         height: useFlexLayout ? maxHeight : undefined,
       }}
+      role={rowExpansion ? 'table' : undefined}
       aria-busy={isLoading || undefined}
       data-loading={isLoading ? 'true' : undefined}
       data-untitled-ds='DataTable'>
@@ -840,9 +915,11 @@ export function DataTable<TData>({
               : undefined,
         }}>
         {/* Sticky header - scrolls horizontally with body, stays pinned vertically */}
-        <div className="sticky top-0 z-10">
+        <div className="sticky top-0 z-10" role={rowExpansion ? 'rowgroup' : undefined}>
           <HeaderRow
             table={table}
+            semanticRows={Boolean(rowExpansion)}
+            columnLabels={columnLabels}
             columnSizing={columnSizing}
             enableColumnResizing={enableColumnResizing}
             columnResizeMode={columnResizeMode}
@@ -930,6 +1007,26 @@ export function DataTable<TData>({
               )}
             </DragOverlay>
           </DndContext>
+        ) : rowExpansion ? (
+          <div role="rowgroup" style={{ minWidth: layoutStyle.minWidth }}>
+            {rows.map(row => {
+              const expanded = rowExpansion.expandedRowId === row.id
+              return <Fragment key={row.id}>
+                <div role="row" data-referenceid="table-summary-row" data-expansion-row={row.id}
+                  className={cx('w-full min-w-max cursor-pointer border-b border-secondary',
+                    expanded ? 'bg-brand-50 dark:bg-brand-950' : 'hover:bg-secondary')}
+                  style={{ ...layoutStyle, minHeight: rowHeight }}
+                  onClick={event => {
+                    if ((event.target as HTMLElement).closest('a, button, input, select, textarea, [role="button"]')) return
+                    rowExpansion.onExpandedRowChange(expanded ? null : row.id)
+                  }}>
+                  {renderCells(row)}
+                </div>
+                {expanded && <div role="row"><div role="cell" aria-colspan={table.getVisibleLeafColumns().length}
+                  id={`${detailsId}-${row.id}`}>{rowExpansion.renderDetails(row)}</div></div>}
+              </Fragment>
+            })}
+          </div>
         ) : (
           /* Virtualized path (default) */
           <div style={{ height: totalSize, position: 'relative' }}>
@@ -949,39 +1046,7 @@ export function DataTable<TData>({
                     height: rowHeight,
                     transform: `translateY(${virtualRow.start}px)`,
                   }}>
-                  {row.getVisibleCells().map((cell) => {
-                    const hasExplicitWidth = hasColumnLayoutWidth(cell.column, columnSizing)
-                    const layoutWidth = getColumnLayoutWidth(cell.column, columnSizing)
-                    const rightPinnedOffset = getRightPinnedColumnOffset(
-                      cell.column,
-                      rightPinnedColumns,
-                      columnSizing
-                    )
-                    const isRightPinned = rightPinnedOffset !== undefined
-
-                    return (
-                      <div
-                        key={cell.id}
-                        className={cx(
-                          'flex h-full min-w-0 items-center overflow-hidden px-6 py-4',
-                          hasExplicitWidth ? 'shrink-0' : 'flex-1',
-                          isRightPinned && 'sticky z-10',
-                          isRightPinned && (row.getIsSelected() ? 'bg-secondary' : 'bg-primary'),
-                          isRightPinned &&
-                            isFirstRightPinnedColumn(cell.column, rightPinnedColumns) &&
-                            'ml-auto'
-                        )}
-                        style={{
-                          width: hasExplicitWidth ? layoutWidth : undefined,
-                          flexShrink: hasExplicitWidth ? 0 : undefined,
-                          right: rightPinnedOffset,
-                        }}>
-                        <div className="w-full min-w-0">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      </div>
-                    );
-                  })}
+                  {renderCells(row)}
                 </div>
               );
             })}
@@ -999,6 +1064,8 @@ export function DataTable<TData>({
 // =============================================================================
 
 interface HeaderRowProps<TData> {
+  columnLabels?: DataTableColumnLabels
+  semanticRows?: boolean
   table: ReactTable<TData>
   columnSizing: ColumnSizingState
   enableColumnResizing: boolean
@@ -1026,6 +1093,8 @@ function getResizeClientX(event: HeaderResizeStartEvent) {
 }
 
 function HeaderRow<TData>({
+  columnLabels,
+  semanticRows,
   table,
   columnSizing,
   enableColumnResizing,
@@ -1248,16 +1317,37 @@ function HeaderRow<TData>({
           {hasHeaderMenu && (
             <ColumnHeaderMenu
               column={header.column}
+              labels={columnLabels}
               enableColumnVisibility={enableColumnVisibility}
               triggerRef={headerCellRef}
             />
           )}
           {shouldRenderColumnVisibilityInCell && (
-            <ColumnVisibilityDropdown table={table} />
+            <ColumnVisibilityDropdown table={table} labels={columnLabels} />
           )}
           {/* Resize handle */}
           {canResize && (
             <div
+              role="separator"
+              data-referenceid="table-column-resize"
+              tabIndex={0}
+              aria-orientation="vertical"
+              aria-label={columnLabels?.resizeColumn?.(resolveColumnLabel(header.column)) ?? `Resize ${resolveColumnLabel(header.column)} column`}
+              aria-valuenow={layoutWidth}
+              aria-valuemin={header.column.columnDef.minSize ?? 48}
+              aria-valuemax={Math.min(header.column.columnDef.maxSize ?? 800, 800)}
+              onKeyDown={event => {
+                const min = header.column.columnDef.minSize ?? 48
+                const max = Math.min(header.column.columnDef.maxSize ?? 800, 800)
+                const increment = event.shiftKey ? 50 : 10
+                const next = event.key === 'Home' ? min : event.key === 'End' ? max
+                  : event.key === 'ArrowLeft' ? layoutWidth - increment
+                  : event.key === 'ArrowRight' ? layoutWidth + increment : null
+                if (next === null) return
+                event.preventDefault()
+                event.stopPropagation()
+                table.setColumnSizing(previous => ({ ...previous, [header.column.id]: Math.max(min, Math.min(max, next)) }))
+              }}
               onMouseDown={(event) => handleColumnResizeStart(header.column, event)}
               onTouchStart={(event) => handleColumnResizeStart(header.column, event)}
               onClick={(e) => e.stopPropagation()}
@@ -1276,6 +1366,8 @@ function HeaderRow<TData>({
           <DraggableHeaderCell
             key={header.id}
             id={header.id}
+            role={semanticRows ? 'columnheader' : undefined}
+            dragLabel={columnLabels?.dragColumn}
             isDraggable={isReorderable}
             className={cellClassName}
             style={cellStyle}
@@ -1289,6 +1381,7 @@ function HeaderRow<TData>({
 
       return (
         <div
+          role={semanticRows ? 'columnheader' : undefined}
           key={header.id}
           className={cellClassName}
           ref={setHeaderCellRef}
@@ -1309,6 +1402,7 @@ function HeaderRow<TData>({
         data-untitled-ds='HeaderRow'>
         <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
           <div
+            role={semanticRows ? 'row' : undefined}
             style={layoutStyle}
             className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary">
             {headerCells}
@@ -1316,7 +1410,7 @@ function HeaderRow<TData>({
               <div
                 className="sticky right-0 z-20 ml-auto flex h-full shrink-0 items-center justify-center bg-secondary"
                 style={{ width: COLUMN_VISIBILITY_TRIGGER_CELL_WIDTH }}>
-                <ColumnVisibilityDropdown table={table} />
+                <ColumnVisibilityDropdown table={table} labels={columnLabels} />
               </div>
             )}
           </div>
@@ -1327,6 +1421,7 @@ function HeaderRow<TData>({
 
   return (
     <div
+      role={semanticRows ? 'row' : undefined}
       style={layoutStyle}
             className="flex h-[44px] w-full min-w-max items-center border-b border-secondary bg-secondary"
       data-untitled-ds='HeaderRow'>
@@ -1335,7 +1430,7 @@ function HeaderRow<TData>({
         <div
           className="sticky right-0 z-20 ml-auto flex h-full shrink-0 items-center justify-center bg-secondary"
           style={{ width: COLUMN_VISIBILITY_TRIGGER_CELL_WIDTH }}>
-          <ColumnVisibilityDropdown table={table} />
+          <ColumnVisibilityDropdown table={table} labels={columnLabels} />
         </div>
       )}
     </div>

@@ -1,5 +1,7 @@
 'use client'
 
+import type { DataTableColumnLabels } from './column-labels'
+
 import { type RefObject, useState } from 'react'
 import type { Column } from '@tanstack/react-table'
 import {
@@ -63,6 +65,7 @@ const FILTER_SEARCH_THRESHOLD = 10
 // =============================================================================
 
 export interface ColumnHeaderMenuProps<TData> {
+  labels?: DataTableColumnLabels
   column: Column<TData, unknown>
   enableColumnVisibility: boolean
   triggerRef?: RefObject<Element | null>
@@ -83,6 +86,7 @@ function getSelectedValues(currentValue: unknown): string[] {
 // =============================================================================
 
 export function ColumnHeaderMenu<TData>({
+  labels,
   column,
   enableColumnVisibility,
   triggerRef,
@@ -128,7 +132,7 @@ export function ColumnHeaderMenu<TData>({
   const activeDescription = [sortLabel, filterLabel].filter(Boolean).join(', ')
   const ariaLabel = activeDescription
     ? `Column menu for ${label}, ${activeDescription}`
-    : `Column menu for ${label}`
+    : labels?.columnMenu?.(label) ?? `Column menu for ${label}`
 
   const handleSort = (direction: 'asc' | 'desc') => {
     column.toggleSorting(direction === 'desc')
@@ -337,7 +341,7 @@ export function ColumnHeaderMenu<TData>({
                 onClick={handleHideColumn}
               >
                 <Icon name="x-close" size="md" className={styles.action.icon} />
-                Hide column
+                {labels?.hideColumn ?? "Hide column"}
               </button>
             </div>
           )}

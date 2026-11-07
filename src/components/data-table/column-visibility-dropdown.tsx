@@ -36,6 +36,7 @@ import {
 import { Checkbox } from '@/components/checkbox'
 import { Icon } from '@/components/icon'
 import { cx, sortCx } from '@/utils/cx'
+import type { DataTableColumnLabels } from './column-labels'
 import { DRAG_COLUMN_ID } from './inject-drag-column'
 import { isUtilityColumn, resolveColumnLabel } from './column-utils'
 
@@ -74,6 +75,7 @@ export const styles = sortCx({
 // =============================================================================
 
 export interface ColumnVisibilityDropdownProps<TData> {
+  labels?: DataTableColumnLabels
   table: ReactTable<TData>
   iconName?: 'sliders' | 'dots-vertical' | 'dots-horizontal'
 }
@@ -118,11 +120,13 @@ export function reorderTableColumnOrder(
 }
 
 interface ColumnVisibilityOptionProps<TData> {
+  labels?: DataTableColumnLabels
   column: Column<TData, unknown>
   canReorder: boolean
 }
 
 function ColumnVisibilityOption<TData>({
+  labels,
   column,
   canReorder,
 }: ColumnVisibilityOptionProps<TData>) {
@@ -168,7 +172,7 @@ function ColumnVisibilityOption<TData>({
         <button
           ref={setActivatorNodeRef}
           type="button"
-          aria-label={`Reorder ${label} column`}
+          aria-label={labels?.reorderColumn?.(label) ?? `Reorder ${label} column`}
           className={styles.option.dragHandle}
           onClick={(event) => event.stopPropagation()}
           {...attributes}
@@ -187,6 +191,7 @@ function ColumnVisibilityOption<TData>({
 
 export function ColumnVisibilityDropdown<TData>({
   table,
+  labels,
   iconName = 'dots-horizontal',
 }: ColumnVisibilityDropdownProps<TData>) {
   const [isOpen, setIsOpen] = useState(false)
@@ -222,7 +227,7 @@ export function ColumnVisibilityDropdown<TData>({
       onOpenChange={setIsOpen}
       data-untitled-ds='ColumnVisibilityDropdown'>
       <AriaButton
-        aria-label="Manage columns"
+        aria-label={labels?.manageColumns ?? "Manage columns"}
         data-state={hasHiddenColumns ? 'active' : 'inactive'}
         className={cx(styles.trigger.base, styles.trigger.default)}
         onClick={(event) => event.stopPropagation()}
@@ -230,9 +235,9 @@ export function ColumnVisibilityDropdown<TData>({
         <Icon name={iconName} size="md" />
       </AriaButton>
       <Popover placement="bottom end" className={styles.popover}>
-        <Dialog className={styles.dialog}>
+        <Dialog aria-label={labels?.visibilityAndOrder ?? "Column Visibility + Order"} className={styles.dialog}>
           <div className={styles.header}>
-            <span className={styles.headerTitle}>Column Visibility + Order</span>
+            <span className={styles.headerTitle}>{labels?.visibilityAndOrder ?? "Column Visibility + Order"}</span>
           </div>
           <DndContext
             sensors={reorderSensors}
@@ -244,6 +249,7 @@ export function ColumnVisibilityDropdown<TData>({
                   <ColumnVisibilityOption
                     key={column.id}
                     column={column}
+                    labels={labels}
                     canReorder={canReorderColumns}
                   />
                 ))}

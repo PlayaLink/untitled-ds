@@ -397,6 +397,8 @@ export const Overview: Story = {
         />
       </div>
 
+      <InlineDetailsExample />
+
       {/* Controlled Column Order */}
       <ControlledColumnOrderExample />
 
@@ -883,4 +885,38 @@ export const PageSizeOptions: Story = {
         onPageSizeChange: (size) => { setPageSize(size); setPage(1) },
       }} />
   },
+}
+
+function InlineDetailsExample() {
+  const [expandedRowId, onExpandedRowChange] = useState<string | null>(null);
+  return (
+    <div className="flex flex-col gap-4">
+      <h3 className="text-lg font-semibold text-primary">
+        Inline details (paginated data)
+      </h3>
+      <p className="text-sm text-tertiary">
+        Row details grow naturally. Use this non-virtualized mode for small
+        server-paginated pages.
+      </p>
+      <DataTable
+        columns={overviewColumns}
+        data={sampleData.slice(0, 3)}
+        getRowId={(row) => row.id}
+        enableColumnReorder
+        enableColumnVisibility
+        maxHeight="auto"
+        rowExpansion={{
+          expandedRowId,
+          onExpandedRowChange,
+          getLabel: (row) => `Details for ${row.original.name}`,
+          renderDetails: (row) => (
+            <div className="p-6 text-sm text-secondary">
+              Stock evidence for {row.original.name}. This area can contain
+              forms, timelines, or asynchronously loaded content.
+            </div>
+          ),
+        }}
+      />
+    </div>
+  );
 }

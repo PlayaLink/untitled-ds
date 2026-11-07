@@ -1367,6 +1367,7 @@ function HeaderRow<TData>({
             key={header.id}
             id={header.id}
             role={semanticRows ? 'columnheader' : undefined}
+            ariaLabel={semanticRows ? resolveColumnLabel(header.column) : undefined}
             dragLabel={columnLabels?.dragColumn}
             isDraggable={isReorderable}
             className={cellClassName}
@@ -1382,6 +1383,7 @@ function HeaderRow<TData>({
       return (
         <div
           role={semanticRows ? 'columnheader' : undefined}
+          aria-label={semanticRows ? resolveColumnLabel(header.column) : undefined}
           key={header.id}
           className={cellClassName}
           ref={setHeaderCellRef}

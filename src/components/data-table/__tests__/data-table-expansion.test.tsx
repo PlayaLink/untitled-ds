@@ -40,6 +40,7 @@ describe("inline row details", () => {
   it("renders the page without fixed-height virtualization and expands only the chosen row", () => {
     render(<Example />);
     expect(screen.getByRole("link", { name: "Alpha" })).toBeTruthy();
+    expect(screen.getByRole("columnheader", { name: "Name" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Work for Alpha" }));
     expect(screen.getByText("Evidence for Alpha")).toBeTruthy();
     expect(

@@ -6,6 +6,7 @@ import { Icon } from '@/components/icon'
 import { cx } from '@/utils/cx'
 
 interface DraggableHeaderCellProps {
+  ariaLabel?: string
   dragLabel?: string
   role?: React.AriaRole
   id: string
@@ -19,6 +20,7 @@ interface DraggableHeaderCellProps {
 }
 
 export function DraggableHeaderCell({
+  ariaLabel,
   dragLabel = "Drag to reorder column",
   role,
   id,
@@ -57,6 +59,7 @@ export function DraggableHeaderCell({
   return (
     <div
       role={role}
+      aria-label={ariaLabel}
       ref={setCombinedNodeRef}
       className={cx('group/header relative', className)}
       style={{
